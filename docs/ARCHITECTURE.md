@@ -74,4 +74,13 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 
 **Backend šifranti (naloga 01):**
-`Tipi/Tezavnosti` seznam → `TipiModel::getListQuery()` → `Tipi\HtmlView` → `administrator/tmpl/tipi/default.php`; urejanje prek `TipController` (FormController) → `TipModel` (AdminModel) → `TipTable`.
+`Tipi/Tezavnosti` seznam → `TipiModel::getListQuery()` / `TezavnostiModel::getListQuery()` → `Tipi\HtmlView` / `Tezavnosti\HtmlView` → `administrator/tmpl/tipi/default.php` / `administrator/tmpl/tezavnosti/default.php`; urejanje prek `TipController` / `TezavnostController` (`FormController`) → `TipModel` / `TezavnostModel` (`AdminModel`) → `TipTable` / `TezavnostTable`.
+
+Ključni razredi naloge 01:
+- `Belaunce\Component\Belauncerunde\Administrator\Extension\BelauncerundeComponent`
+- `Belaunce\Component\Belauncerunde\Administrator\Model\TipiModel`
+- `Belaunce\Component\Belauncerunde\Administrator\Model\TezavnostiModel`
+- `Belaunce\Component\Belauncerunde\Administrator\Table\TipTable`
+- `Belaunce\Component\Belauncerunde\Administrator\Table\TezavnostTable`
+
+Namestitveni skript `paket/com_belauncerunde/skript.php` ob namestitvi in posodobitvi pripravi skupino **Člani** pod **Registered** in njen ID shrani v parameter `skupina_clani`. Odstranitev podatkov je nadzorovana z možnostjo `ohrani_podatke`; manifest namenoma nima `<uninstall><sql>`, da Joomla tabel ne izbriše mimo te možnosti.

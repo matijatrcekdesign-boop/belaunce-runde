@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+	<update>
+		<name>Runde Belaunce</name>
+		<description>Paket za organizacijo kolesarskih rund Belaunce.</description>
+		<element>pkg_belauncerunde</element>
+		<type>package</type>
+		<version>0.1.0</version>
+		<client>site</client>
+		<infourl title="Runde Belaunce">https://github.com/matijatrcekdesign-boop/belaunce-runde</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/matijatrcekdesign-boop/belaunce-runde/releases/download/v0.1.0/pkg_belauncerunde-0.1.0.zip</downloadurl>
+		</downloads>
+		<sha256></sha256>
+		<targetplatform name="joomla" version="6\.[0-9]+" />
+	</update>
+</updates>

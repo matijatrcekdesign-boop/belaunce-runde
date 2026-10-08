@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="component" method="upgrade">
+	<name>COM_BELAUNCERUNDE</name>
+	<version>0.1.0</version>
+	<creationDate>2026-10</creationDate>
+	<author>Belaunce</author>
+	<authorEmail>info@belaunce.cc</authorEmail>
+	<authorUrl>https://www.belaunce.cc</authorUrl>
+	<copyright>(C) 2026 Belaunce</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<description>COM_BELAUNCERUNDE_XML_DESCRIPTION</description>
+	<scriptfile>skript.php</scriptfile>
+	<namespace path="src">Belaunce\Component\Belauncerunde</namespace>
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+	<administration>
+		<menu img="class:calendar">COM_BELAUNCERUNDE</menu>
+		<submenu>
+			<menu link="option=com_belauncerunde&amp;view=tipi" view="tipi" img="class:list" alt="Runde Belaunce/Tipi">COM_BELAUNCERUNDE_SUBMENU_TIPI</menu>
+			<menu link="option=com_belauncerunde&amp;view=tezavnosti" view="tezavnosti" img="class:list" alt="Runde Belaunce/Težavnosti">COM_BELAUNCERUNDE_SUBMENU_TEZAVNOSTI</menu>
+		</submenu>
+		<files folder="administrator">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<folder>forms</folder>
+			<folder>services</folder>
+			<folder>sql</folder>
+			<folder>src</folder>
+			<folder>tmpl</folder>
+		</files>
+		<languages folder="administrator/language">
+			<language tag="sl-SI">sl-SI/com_belauncerunde.ini</language>
+			<language tag="sl-SI">sl-SI/com_belauncerunde.sys.ini</language>
+			<language tag="en-GB">en-GB/com_belauncerunde.ini</language>
+			<language tag="en-GB">en-GB/com_belauncerunde.sys.ini</language>
+		</languages>
+	</administration>
+</extension>

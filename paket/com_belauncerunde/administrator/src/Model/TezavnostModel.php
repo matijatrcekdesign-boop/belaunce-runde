@@ -23,14 +23,6 @@ use Joomla\CMS\MVC\Model\AdminModel;
 class TezavnostModel extends AdminModel
 {
     /**
-     * Predpona za dogodke modela.
-     *
-     * @var    string
-     * @since  0.1.0
-     */
-    protected $event_after_save = 'onBelauncerundeAfterSave';
-
-    /**
      * Vrne obrazec urejanja.
      *
      * @param   array  $data      Podatki za obrazec.
@@ -61,5 +53,26 @@ class TezavnostModel extends AdminModel
         }
 
         return $data;
+    }
+
+    /**
+     * Novi težavnosti dodeli naslednji vrstni red.
+     *
+     * @param   \Joomla\CMS\Table\Table  $table  Zapis za shranjevanje.
+     *
+     * @return  void
+     *
+     * @since   0.1.0
+     */
+    protected function prepareTable($table)
+    {
+        if (empty($table->id) && empty($table->ordering)) {
+            $db = $this->getDatabase();
+            $query = $db->createQuery()
+                ->select('MAX(' . $db->quoteName('ordering') . ')')
+                ->from($db->quoteName('#__belaunce_tezavnosti'));
+            $db->setQuery($query);
+            $table->ordering = (int) $db->loadResult() + 1;
+        }
     }
 }

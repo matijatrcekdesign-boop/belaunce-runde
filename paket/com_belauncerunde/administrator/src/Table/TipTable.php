@@ -27,6 +27,14 @@ use Joomla\String\StringHelper;
 class TipTable extends Table
 {
     /**
+     * Dovoli NULL za polji zaklepa ob odklepanju zapisa.
+     *
+     * @var    bool
+     * @since  0.1.0
+     */
+    protected $_supportNullValue = true;
+
+    /**
      * Ustvari povezavo na tabelo in alias za standardno objavljanje.
      *
      * @param   DatabaseInterface     $db          Povezava z bazo.

@@ -73,7 +73,14 @@ class Com_BelauncerundeInstallerScript
 
         try {
             $db      = Factory::getContainer()->get(DatabaseInterface::class);
-            $sqlPath = __DIR__ . '/administrator/sql/uninstall.mysql.utf8.sql';
+            $sqlPath = __DIR__ . '/sql/uninstall.mysql.utf8.sql';
+
+            if (!is_file($sqlPath)) {
+                Log::add(Text::sprintf('COM_BELAUNCERUNDE_INSTALL_UNINSTALL_SQL_MISSING', $sqlPath), Log::ERROR, 'com_belauncerunde');
+
+                return true;
+            }
+
             $queries = $this->razdeliSql((string) file_get_contents($sqlPath));
 
             foreach ($queries as $query) {

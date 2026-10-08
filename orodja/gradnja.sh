@@ -53,8 +53,22 @@ fi
 echo "Preverjanje prepovedanih vzorcev: OK"
 
 while IFS= read -r file; do
-    if grep -qi 'CREATE TABLE' "$file" && ! grep -qi 'utf8mb4' "$file"; then
-        echo "Napaka: CREATE TABLE v $file ne vsebuje utf8mb4." >&2
+    if ! awk '
+        BEGIN { RS = ";" }
+        {
+            statement = tolower($0)
+            if (statement ~ /create[[:space:]]+table/) {
+                tables++
+                if (statement !~ /utf8mb4/) missing = 1
+            }
+            count = split(statement, lines, "\n")
+            for (i = 1; i <= count; i++) {
+                if (lines[i] ~ /utf8mb4/) charsets++
+            }
+        }
+        END { if (missing || tables != charsets) exit 1 }
+    ' "$file"; then
+        echo "Napaka: vsak CREATE TABLE v $file mora imeti svojo vrstico z utf8mb4." >&2
         exit 1
     fi
 done < <(find paket -name '*.sql' -print)

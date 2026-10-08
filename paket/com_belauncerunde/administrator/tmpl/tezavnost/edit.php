@@ -16,6 +16,7 @@ use Joomla\CMS\Router\Route;
 
 $wa = $this->getDocument()->getWebAssetManager();
 $wa->useScript('form.validate');
+$wa->useScript('keepalive');
 ?>
 <form action="<?php echo Route::_('index.php?option=com_belauncerunde&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="tezavnost-form" class="form-validate">
     <div class="main-card">

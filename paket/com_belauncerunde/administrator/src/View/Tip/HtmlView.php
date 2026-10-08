@@ -44,11 +44,12 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null): void
     {
-        $this->item  = $this->get('Item');
-        $this->form  = $this->get('Form');
-        $this->state = $this->get('State');
+        $model = $this->getModel();
+        $this->item  = $model->getItem();
+        $this->form  = $model->getForm();
+        $this->state = $model->getState();
 
-        if (\count($errors = $this->get('Errors'))) {
+        if (\count($errors = $model->getErrors())) {
             throw new GenericDataException(implode("\n", $errors), 500);
         }
 

@@ -55,6 +55,9 @@ class HtmlView extends BaseHtmlView
         $this->pagination    = $model->getPagination();
         $this->state         = $model->getState();
         $this->filterForm    = $model->getFilterForm();
+        if ($this->filterForm !== null) {
+            $this->filterForm->addControlField('task')->addControlField('boxchecked', '0');
+        }
         $this->activeFilters = $model->getActiveFilters();
 
         if (\count($errors = $model->getErrors())) {

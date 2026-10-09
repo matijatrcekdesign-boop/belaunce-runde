@@ -10,8 +10,8 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 
 | # | Naloga | Verzija | Odvisna od | Stanje |
 |---|---|---|---|---|
-| 01 | Okostje paketa, gradnja ZIP, update server, skupina "Člani", šifranti tipi in težavnosti (backend CRUD) | 0.1.0 | — | ⬜ |
-| 02 | Backend runde: tabela, seznam s filtri, urejanje, brisanje, zamenjava vodje, `CasHelper` (UTC ↔ `casovni_pas`) | 0.2.0 | 01 | ⬜ |
+| 01 | Okostje paketa, gradnja ZIP, update server, skupina "Člani", šifranti tipi in težavnosti (backend CRUD) | 0.1.0 | — | ✅ |
+| 02 | Backend runde: tabela, seznam s filtri, urejanje, brisanje, zamenjava vodje, `CasHelper` (UTC ↔ `casovni_pas`) | 0.2.0 | 01 | 🟡 |
 | 03 | **Spike + adapter AcyMailing:** kako dobiti člane liste (API ali tabele), kako v Joomli 6 izvesti prijavo z žetonom; kratek dokument + razred `AcymailingAdapter` | 0.3.0 | 01 | ⬜ |
 | 04 | Prijava z magic linkom: obrazec za email, žetoni, omejitve poskusov, vtičnik za avtentikacijo, ustvarjanje uporabnika v skupini "Člani", "Zapomni si me" | 0.4.0 | 03 | ⬜ |
 | 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | ⬜ |
@@ -45,4 +45,4 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
-(še nič)
+- **01** — PR #1, združen 2026-10-09 (`f3e74ec`). Vseh 13 meril ✅ na DDEV. Med testom najdene in odpravljene napake → pravila 13–15 v `ARCHITECTURE.md`.

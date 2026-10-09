@@ -117,15 +117,19 @@ Skripta pred gradnjo preveri: enake verzije v vseh manifestih, `php -l` (če je 
 
 Pred PR poženi gradnjo in v opis PR prilepi njen izpis.
 
-### Namestitev na DDEV (samo Matija)
+### Namestitev na DDEV (samo Matija) — preverjeno
 ```bash
-cp dist/pkg_belauncerunde-X.Y.Z.zip ~/joomla-dev/tmp/
+cd ~/belaunce-runde && git pull && bash orodja/gradnja.sh
+cp dist/pkg_belauncerunde-X.Y.Z.zip ~/joomla-dev/tmp/      # pred VSAKO namestitvijo: Joomla ZIP po namestitvi izbriše
 cd ~/joomla-dev
-ddev exec php cli/joomla.php extension:install --path=tmp/pkg_belauncerunde-X.Y.Z.zip
+ddev exec php cli/joomla.php extension:install --path=/var/www/html/tmp/pkg_belauncerunde-X.Y.Z.zip
 ```
-ali v administraciji: *Sistem → Namesti → Razširitve → Naloži paket*.
+Predpona tabel na DDEV: `dipxn_`. Namesto CLI lahko tudi *System → Install → Extensions*.
 
 **Nikoli** ročno kopiranje datotek v Joomlo (D39).
+
+### PHP v tvojem okolju
+Če PHP ni na voljo, `php -l` preskoči in to navedi v PR; arhitekt ob pregledu zažene gradnjo s PHP.
 
 ## 7. Definicija "končano"
 - Vsa merila sprejema iz naloge so izpolnjena ali jasno označena ⚠️ z razlogom.

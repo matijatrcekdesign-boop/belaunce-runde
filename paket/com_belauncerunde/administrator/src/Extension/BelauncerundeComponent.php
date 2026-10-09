@@ -10,6 +10,7 @@
 namespace Belaunce\Component\Belauncerunde\Administrator\Extension;
 
 use Joomla\CMS\Extension\MVCComponent;
+use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
 
 \defined('_JEXEC') or die;
 
@@ -20,4 +21,5 @@ use Joomla\CMS\Extension\MVCComponent;
  */
 class BelauncerundeComponent extends MVCComponent
 {
+    use HTMLRegistryAwareTrait;
 }

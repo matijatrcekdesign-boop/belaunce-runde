@@ -70,8 +70,20 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 10. **`services/provider.php`** je obvezen za vsako razširitev (komponenta, vsak vtičnik).
 11. **Relativne poti** (slike, AJAX) se pred izpisom absolutizirajo z `Uri::root()`, ker se na SEF poteh relativne poti razrešijo napačno.
 12. **Namestitev samo prek paketa** (D39). Ročna namestitev je pri kisegonmi skrila 6 napak (manjkajoči `<menu>`, `<submenu>`, `.sys.ini`, metadata XML, nizi v napačni `.sys.ini`, napačen gumb Možnosti).
+13. Če `provider.php` kliče `setRegistry()`, mora razred komponente uporabljati `HTMLRegistryAwareTrait` (sicer fatalna napaka ob vsakem pogledu).
+14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj.
+15. Polja s `layout="joomla.form.field.radio.switcher"` imajo možnosti vedno v vrstnem redu `0` (`JNO`), `1` (`JYES`), kot v jedru.
 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 
 **Backend šifranti (naloga 01):**
-`Tipi/Tezavnosti` seznam → `TipiModel::getListQuery()` → `Tipi\HtmlView` → `administrator/tmpl/tipi/default.php`; urejanje prek `TipController` (FormController) → `TipModel` (AdminModel) → `TipTable`.
+`Tipi/Tezavnosti` seznam → `TipiModel::getListQuery()` / `TezavnostiModel::getListQuery()` → `Tipi\HtmlView` / `Tezavnosti\HtmlView` → `administrator/tmpl/tipi/default.php` / `administrator/tmpl/tezavnosti/default.php`; urejanje prek `TipController` / `TezavnostController` (`FormController`) → `TipModel` / `TezavnostModel` (`AdminModel`) → `TipTable` / `TezavnostTable`.
+
+Ključni razredi naloge 01:
+- `Belaunce\Component\Belauncerunde\Administrator\Extension\BelauncerundeComponent`
+- `Belaunce\Component\Belauncerunde\Administrator\Model\TipiModel`
+- `Belaunce\Component\Belauncerunde\Administrator\Model\TezavnostiModel`
+- `Belaunce\Component\Belauncerunde\Administrator\Table\TipTable`
+- `Belaunce\Component\Belauncerunde\Administrator\Table\TezavnostTable`
+
+Namestitveni skript `paket/com_belauncerunde/skript.php` ob namestitvi in posodobitvi pripravi skupino **Člani** pod **Registered** in njen ID shrani v parameter `skupina_clani`. Odstranitev podatkov je nadzorovana z možnostjo `ohrani_podatke`; manifest namenoma nima `<uninstall><sql>`, da Joomla tabel ne izbriše mimo te možnosti.

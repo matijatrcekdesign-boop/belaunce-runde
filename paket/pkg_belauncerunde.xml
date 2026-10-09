@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="package" method="upgrade">
+	<name>PKG_BELAUNCERUNDE</name>
+	<packagename>belauncerunde</packagename>
+	<version>0.1.0</version>
+	<creationDate>2026-10</creationDate>
+	<author>Belaunce</author>
+	<authorEmail>info@belaunce.cc</authorEmail>
+	<authorUrl>https://www.belaunce.cc</authorUrl>
+	<copyright>(C) 2026 Belaunce</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<description>PKG_BELAUNCERUNDE_XML_DESCRIPTION</description>
+	<blockChildUninstall>true</blockChildUninstall>
+	<files folder="packages">
+		<file type="component" id="com_belauncerunde">com_belauncerunde.zip</file>
+	</files>
+	<languages folder="language">
+		<language tag="sl-SI">sl-SI/pkg_belauncerunde.sys.ini</language>
+		<language tag="en-GB">en-GB/pkg_belauncerunde.sys.ini</language>
+	</languages>
+	<updateservers>
+		<server type="extension" name="Runde Belaunce">https://raw.githubusercontent.com/matijatrcekdesign-boop/belaunce-runde/main/posodobitve.xml</server>
+	</updateservers>
+</extension>

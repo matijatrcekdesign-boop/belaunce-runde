@@ -23,12 +23,12 @@ use Joomla\CMS\Router\Route;
 class DisplayController extends BaseController
 {
     /**
-     * Privzeti pogled do naloge, ki doda runde.
+     * Privzeti pogled administracije.
      *
      * @var    string
      * @since  0.1.0
      */
-    protected $default_view = 'tipi';
+    protected $default_view = 'runde';
 
     /**
      * Prikaže pogled in varuje neposreden dostop do obrazcev brez zaklepa.
@@ -45,6 +45,16 @@ class DisplayController extends BaseController
         $view   = $this->input->getCmd('view', $this->default_view);
         $layout = $this->input->getCmd('layout', 'default');
         $id     = $this->input->getInt('id');
+
+        if ($view === 'runda' && $layout === 'edit' && !$this->checkEditId('com_belauncerunde.edit.runda', $id)) {
+            if (!\count($this->app->getMessageQueue())) {
+                $this->setMessage(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id), 'error');
+            }
+
+            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=runde', false));
+
+            return false;
+        }
 
         if ($view === 'tip' && $layout === 'edit' && !$this->checkEditId('com_belauncerunde.edit.tip', $id)) {
             if (!\count($this->app->getMessageQueue())) {

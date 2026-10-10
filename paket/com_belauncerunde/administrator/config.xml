@@ -50,6 +50,28 @@
 			<option value="300">COM_BELAUNCERUNDE_TRAJANJE_5H</option>
 		</field>
 	</fieldset>
+	<fieldset
+		name="acymailing"
+		label="COM_BELAUNCERUNDE_CONFIG_FIELDSET_ACYMAILING"
+		addfieldprefix="Belaunce\Component\Belauncerunde\Administrator\Field"
+	>
+		<field
+			name="lista_clanov"
+			type="acymlista"
+			label="COM_BELAUNCERUNDE_CONFIG_LISTA_CLANOV_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_LISTA_CLANOV_DESC"
+			default="0"
+			filter="integer"
+		/>
+		<field
+			name="lista_runde"
+			type="acymlista"
+			label="COM_BELAUNCERUNDE_CONFIG_LISTA_RUNDE_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_LISTA_RUNDE_DESC"
+			default="0"
+			filter="integer"
+		/>
+	</fieldset>
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL">
 		<field
 			name="rules"

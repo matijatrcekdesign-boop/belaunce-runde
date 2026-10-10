@@ -6,6 +6,15 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.3.0] - 2026-10-10
+### Dodano
+- Bralni `AcymailingAdapter` za preverjanje članstva po AcyMailing listi.
+- Nastavitve AcyMailing list članov in rund v možnostih komponente.
+- Administrativno orodje **Preveri člana** za diagnostiko emaila in števila članov liste.
+
+### Spremenjeno
+- Obvestila pri zaščitenem brisanju tipov in težavnosti uporabljajo množinske jezikovne nize.
+
 ## [0.2.0] - 2026-10-09
 ### Dodano
 - Administracijska tabela, seznam in obrazec za runde z odpovedjo, obnovo, brisanjem in zamenjavo vodje.

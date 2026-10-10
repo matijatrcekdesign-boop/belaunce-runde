@@ -21,6 +21,19 @@ Rundo lahko v obrazcu ali na seznamu označiš kot **Odpovedano** z gumbom **Odp
 
 V *Možnosti → Splošno* so za runde pomembna polja **Časovni pas rund**, **Privzeta lokacija** in **Privzeto trajanje**. Privzeto trajanje se uporablja pri filtrih in oznaki preteklih rund, kadar runda nima vpisanega trajanja.
 
+### Nastavitev AcyMailinga
+V *Komponente → Runde Belaunce → Možnosti → AcyMailing* izberi:
+
+- **Lista članov**: lista, ki določa članstvo v društvu in dovoljenje za poznejšo prijavo z magic linkom.
+- **Lista Runde**: lista za obvestila o rundah; v v1 je nastavitev samo pripravljena za poznejši povzetek.
+
+Na DDEV sta preverjena ID-ja **6** za člane in **9** za listo Runde. Na produkciji sta ID-ja lahko drugačna, zato list vedno izberi po imenu v spustnem seznamu.
+
+### Preveri člana
+Orodje je v administraciji pod *Komponente → Runde Belaunce → Preveri člana* in je namenjeno hitremu testu po posodobitvah AcyMailinga ali spremembah list.
+
+Vpiši email in izberi **Preveri**. Rezultat pove, ali je naslov član, neveljaven, neaktiven, odjavljen, ni naročnik ali ni na listi članov. Pri članu se prikaže še AcyMailing ID, ime in podatek, ali je naročnik povezan z Joomla uporabnikom. Orodje emaila ne zapisuje v dnevnik in ne spreminja AcyMailing podatkov.
+
 ### Šifranti: tipi in težavnosti
 Šifranti so v administraciji pod *Komponente → Runde Belaunce*:
 

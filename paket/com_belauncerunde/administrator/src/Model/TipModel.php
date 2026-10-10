@@ -11,7 +11,9 @@ namespace Belaunce\Component\Belauncerunde\Administrator\Model;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\Database\ParameterType;
 
 \defined('_JEXEC') or die;
 
@@ -74,5 +76,64 @@ class TipModel extends AdminModel
             $db->setQuery($query);
             $table->ordering = (int) $db->loadResult() + 1;
         }
+    }
+
+    /**
+     * Izbriše samo tipe, ki jih ne uporablja nobena runda.
+     *
+     * @param   array  &$pks  ID-ji za brisanje.
+     *
+     * @return  bool
+     *
+     * @since   0.2.0
+     */
+    public function delete(&$pks): bool
+    {
+        $brisanje = [];
+        $app      = Factory::getApplication();
+
+        foreach ((array) $pks as $pk) {
+            $pk = (int) $pk;
+            $uporabe = $this->prestejRunde($pk);
+
+            if ($uporabe > 0) {
+                $app->enqueueMessage(Text::sprintf('COM_BELAUNCERUNDE_ERROR_TIP_IN_USE', $uporabe), 'warning');
+                continue;
+            }
+
+            $brisanje[] = $pk;
+        }
+
+        if ($brisanje === []) {
+            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_NO_TIPI_DELETED'));
+
+            return false;
+        }
+
+        $pks = $brisanje;
+
+        return parent::delete($brisanje);
+    }
+
+    /**
+     * Prešteje runde, ki uporabljajo tip.
+     *
+     * @param   int  $id  ID tipa.
+     *
+     * @return  int
+     *
+     * @since   0.2.0
+     */
+    private function prestejRunde(int $id): int
+    {
+        $db = $this->getDatabase();
+        $query = $db->createQuery()
+            ->select('COUNT(*)')
+            ->from($db->quoteName('#__belaunce_runde'))
+            ->where($db->quoteName('tip_id') . ' = :id')
+            ->bind(':id', $id, ParameterType::INTEGER);
+        $db->setQuery($query);
+
+        return (int) $db->loadResult();
     }
 }

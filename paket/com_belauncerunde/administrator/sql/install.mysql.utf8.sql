@@ -26,6 +26,36 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_tezavnosti` (
   KEY `idx_stanje` (`stanje`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `#__belaunce_runde` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `naslov` VARCHAR(255) NOT NULL,
+  `alias` VARCHAR(255) NOT NULL,
+  `tip_id` INT UNSIGNED NOT NULL,
+  `tezavnost_id` INT UNSIGNED NOT NULL,
+  `lokacija` VARCHAR(255) NOT NULL,
+  `zacetek` DATETIME NOT NULL,
+  `dolzina_km` DECIMAL(5,1) UNSIGNED NOT NULL,
+  `trajanje_min` SMALLINT UNSIGNED NULL,
+  `opombe` TEXT NULL,
+  `trasa_url` VARCHAR(2048) NULL,
+  `odprto_za_goste` TINYINT(1) NOT NULL DEFAULT 0,
+  `stanje` TINYINT NOT NULL DEFAULT 1,
+  `odpovedano` DATETIME NULL,
+  `vodja_id` INT UNSIGNED NOT NULL,
+  `ustvaril_id` INT UNSIGNED NOT NULL,
+  `ustvarjeno` DATETIME NOT NULL,
+  `spremenil_id` INT UNSIGNED NULL,
+  `spremenjeno` DATETIME NULL,
+  `checked_out` INT UNSIGNED NULL,
+  `checked_out_time` DATETIME NULL,
+  `dodatno` TEXT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_stanje_zacetek` (`stanje`, `zacetek`),
+  KEY `idx_vodja` (`vodja_id`),
+  KEY `idx_tip` (`tip_id`),
+  KEY `idx_tezavnost` (`tezavnost_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 INSERT IGNORE INTO `#__belaunce_tipi` (`naziv`, `alias`, `opis`, `stanje`, `ordering`) VALUES
 ('MTB', 'mtb', NULL, 1, 1),
 ('Cestno', 'cestno', NULL, 1, 2),

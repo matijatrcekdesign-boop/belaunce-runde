@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Belaunce\Component\Belauncerunde\Administrator\Field">
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			label="COM_BELAUNCERUNDE_FILTER_SEARCH_LABEL"
+			description="COM_BELAUNCERUNDE_FILTER_RUNDE_SEARCH_DESC"
+			hint="JSEARCH_FILTER"
+		/>
+		<field
+			name="tip_id"
+			type="tip"
+			label="COM_BELAUNCERUNDE_FIELD_TIP_LABEL"
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_BELAUNCERUNDE_FILTER_TIP</option>
+		</field>
+		<field
+			name="tezavnost_id"
+			type="tezavnost"
+			label="COM_BELAUNCERUNDE_FIELD_TEZAVNOST_LABEL"
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_BELAUNCERUNDE_FILTER_TEZAVNOST</option>
+		</field>
+		<field
+			name="stanje"
+			type="list"
+			label="JSTATUS"
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_BELAUNCERUNDE_FILTER_STANJE</option>
+			<option value="1">COM_BELAUNCERUNDE_STANJE_OBJAVLJENA</option>
+			<option value="2">COM_BELAUNCERUNDE_STANJE_ODPOVEDANA</option>
+		</field>
+		<field
+			name="vodja_id"
+			type="user"
+			label="COM_BELAUNCERUNDE_FIELD_VODJA_LABEL"
+			onchange="this.form.submit();"
+		/>
+		<field
+			name="obdobje"
+			type="list"
+			label="COM_BELAUNCERUNDE_FILTER_OBDOBJE_LABEL"
+			default=""
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_BELAUNCERUNDE_FILTER_OBDOBJE_VSE</option>
+			<option value="prihajajoce">COM_BELAUNCERUNDE_FILTER_OBDOBJE_PRIHAJAJOCE</option>
+			<option value="pretekle">COM_BELAUNCERUNDE_FILTER_OBDOBJE_PRETEKLE</option>
+		</field>
+	</fields>
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="COM_BELAUNCERUNDE_LIST_FULL_ORDERING"
+			default="a.zacetek DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="a.zacetek ASC">COM_BELAUNCERUNDE_ZACETEK_ASC</option>
+			<option value="a.zacetek DESC">COM_BELAUNCERUNDE_ZACETEK_DESC</option>
+			<option value="a.naslov ASC">COM_BELAUNCERUNDE_NASLOV_ASC</option>
+			<option value="a.naslov DESC">COM_BELAUNCERUNDE_NASLOV_DESC</option>
+			<option value="a.stanje ASC">JSTATUS_ASC</option>
+			<option value="a.stanje DESC">JSTATUS_DESC</option>
+			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+		<field
+			name="limit"
+			type="limitbox"
+			label="JGLOBAL_LIST_LIMIT"
+			default="20"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>

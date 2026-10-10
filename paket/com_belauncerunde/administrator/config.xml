@@ -20,6 +20,35 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
+		<field
+			name="casovni_pas"
+			type="timezone"
+			label="COM_BELAUNCERUNDE_CONFIG_CASOVNI_PAS_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_CASOVNI_PAS_DESC"
+			default="Europe/Ljubljana"
+		/>
+		<field
+			name="privzeta_lokacija"
+			type="text"
+			label="COM_BELAUNCERUNDE_CONFIG_PRIVZETA_LOKACIJA_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_PRIVZETA_LOKACIJA_DESC"
+			default="Gorenja vas"
+			maxlength="255"
+			filter="string"
+		/>
+		<field
+			name="privzeto_trajanje_min"
+			type="list"
+			label="COM_BELAUNCERUNDE_CONFIG_PRIVZETO_TRAJANJE_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_PRIVZETO_TRAJANJE_DESC"
+			default="180"
+			filter="integer"
+			>
+			<option value="120">COM_BELAUNCERUNDE_TRAJANJE_2H</option>
+			<option value="180">COM_BELAUNCERUNDE_TRAJANJE_3H</option>
+			<option value="240">COM_BELAUNCERUNDE_TRAJANJE_4H</option>
+			<option value="300">COM_BELAUNCERUNDE_TRAJANJE_5H</option>
+		</field>
 	</fieldset>
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL">
 		<field

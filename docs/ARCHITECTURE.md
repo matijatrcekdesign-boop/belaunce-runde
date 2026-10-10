@@ -52,7 +52,7 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 ## Ključne komponente *(načrtovano, dopolnjuje se po nalogah)*
 
 - `Administrator\Helper\AcymailingAdapter` — edini dostop do AcyMailinga (naloga 03)
-- `Administrator\Helper\CasHelper` — pretvorba UTC ↔ `casovni_pas` (naloga 02)
+- `Administrator\Helper\CasHelper` — pretvorba UTC ↔ `casovni_pas`
 - `Administrator\Helper\OmejitevHelper` — omejevanje poskusov prek `#__belaunce_poskusi` (naloga 04)
 - `Site\Service\Router` — SEF `/runde`, `/runde/{id}-{alias}` (naloga 05)
 
@@ -73,6 +73,7 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 13. Če `provider.php` kliče `setRegistry()`, mora razred komponente uporabljati `HTMLRegistryAwareTrait` (sicer fatalna napaka ob vsakem pogledu).
 14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj.
 15. Polja s `layout="joomla.form.field.radio.switcher"` imajo možnosti vedno v vrstnem redu `0` (`JNO`), `1` (`JYES`), kot v jedru.
+16. `bind()` sprejme vrednost po referenci: nikoli ne podajaj izraza (npr. `(int) $x`) in v zanki ne uporabljaj iste spremenljivke za več vezav.
 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 
@@ -87,3 +88,12 @@ Ključni razredi naloge 01:
 - `Belaunce\Component\Belauncerunde\Administrator\Table\TezavnostTable`
 
 Namestitveni skript `paket/com_belauncerunde/skript.php` ob namestitvi in posodobitvi pripravi skupino **Člani** pod **Registered** in njen ID shrani v parameter `skupina_clani`. Odstranitev podatkov je nadzorovana z možnostjo `ohrani_podatke`; manifest namenoma nima `<uninstall><sql>`, da Joomla tabel ne izbriše mimo te možnosti.
+
+**Backend runde (naloga 02):**
+`Runde` seznam → `RundeModel::getListQuery()` → `Runde\HtmlView` → `administrator/tmpl/runde/default.php`; urejanje prek `RundaController` (`FormController`) → `RundaModel` (`AdminModel`) → `RundaTable`. Privzeti pogled komponente je `runde`; podmeni je v vrstnem redu Runde, Tipi, Težavnosti.
+
+Časi rund se v bazi hranijo v UTC, obrazec in seznam pa uporabljata `Administrator\Helper\CasHelper`, ki bere parameter `casovni_pas` (privzeto `Europe/Ljubljana`). `CalendarField` namenoma nima filtra `user_utc` ali `server_utc`: `RundaModel::getItem()` pretvori `zacetek` iz UTC za prikaz, `RundaModel::save()` pa pred shranjevanjem pretvori lokalni vnos nazaj v UTC.
+
+Polji `Administrator\Field\TipField` in `Administrator\Field\TezavnostField` bereta objavljene šifrante po `ordering`; če obstoječa runda uporablja skrit šifrant, ga polje še vedno pokaže z oznako "(skrito)", da ga shranjevanje ne izgubi. `TipModel::delete()` in `TezavnostModel::delete()` zavrneta brisanje šifranta, ki ga uporablja vsaj ena runda.
+
+`RundaTable` ne uporablja `setColumnAlias('published', 'stanje')`, ker stanje runde ni Joomlino objavljeno/skrito stanje: `1 = objavljena`, `2 = odpovedana`. Prehod v stanje 2 nastavi `odpovedano` v UTC, prehod nazaj v stanje 1 pa ga počisti.

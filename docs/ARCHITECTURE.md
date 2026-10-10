@@ -51,7 +51,7 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 
 ## Ključne komponente *(načrtovano, dopolnjuje se po nalogah)*
 
-- `Administrator\Helper\AcymailingAdapter` — edini dostop do AcyMailinga (naloga 03)
+- `Administrator\Service\AcymailingAdapter` — edini dostop do AcyMailinga, samo branje (naloga 03, D45)
 - `Administrator\Helper\CasHelper` — pretvorba UTC ↔ `casovni_pas`
 - `Administrator\Helper\OmejitevHelper` — omejevanje poskusov prek `#__belaunce_poskusi` (naloga 04)
 - `Site\Service\Router` — SEF `/runde`, `/runde/{id}-{alias}` (naloga 05)

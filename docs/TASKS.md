@@ -11,8 +11,8 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | # | Naloga | Verzija | Odvisna od | Stanje |
 |---|---|---|---|---|
 | 01 | Okostje paketa, gradnja ZIP, update server, skupina "Člani", šifranti tipi in težavnosti (backend CRUD) | 0.1.0 | — | ✅ |
-| 02 | Backend runde: tabela, seznam s filtri, urejanje, brisanje, zamenjava vodje, `CasHelper` (UTC ↔ `casovni_pas`) | 0.2.0 | 01 | 🟡 |
-| 03 | **Spike + adapter AcyMailing:** kako dobiti člane liste (API ali tabele), kako v Joomli 6 izvesti prijavo z žetonom; kratek dokument + razred `AcymailingAdapter` | 0.3.0 | 01 | ⬜ |
+| 02 | Backend runde: tabela, seznam s filtri, urejanje, brisanje, zamenjava vodje, `CasHelper` (UTC ↔ `casovni_pas`) | 0.2.0 | 01 | ✅ |
+| 03 | Adapter AcyMailing (samo branje, D45), izbira list v Možnostih (D46), diagnostika "Preveri člana" | 0.3.0 | 01 | 🟡 |
 | 04 | Prijava z magic linkom: obrazec za email, žetoni, omejitve poskusov, vtičnik za avtentikacijo, ustvarjanje uporabnika v skupini "Člani", "Zapomni si me" | 0.4.0 | 03 | ⬜ |
 | 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | ⬜ |
 | 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | ⬜ |
@@ -24,10 +24,15 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 12 | Scheduler opravila: sinhronizacija članov, izbris gostov (30 dni), čiščenje žetonov in poskusov | 0.12.0 | 04, 08 | ⬜ |
 | 13 | Backend statistika in izvoz v CSV | 0.13.0 | 02 | ⬜ |
 | 14 | Zaključni pregled: varnost, ACL, GDPR (orodja za zasebnost), dostopnost, PHPDoc, `NAVODILA.md` | 0.14.0 | vse | ⬜ |
+| 15 | **Povzetek načina dela** (za katerikoli agent, za prihodnje projekte): brainstorming z Matijo (želje, osnutek, ideja) → pregled zahtev in vprašanja → vir resnice → postavitev repozitorija → naloge arhitekt/izvajalec → pregled → test v pravem okolju → zapis lekcij. Pripravi arhitekt z Matijo. | — | 14 | ⬜ |
 
 Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo ostati izpolnjene.
 
 ## Kontrolni seznam pred zagonom na produkciji (ni naloga za Codex)
+
+- [ ] **Pred nalogo 04 (DDEV):** Joomla mail na DDEV preusmerjen na Mailpit (SMTP `localhost:1025`, brez avtentikacije in šifriranja), AcyMailing na DDEV ne pošilja navzven; testni email dodan na listo članov (ID 6). Na DDEV so pravi člani!
+- [ ] AcyMailing na produkciji: "Automatically subscribe to" prazno; razmisliti o izklopu "Delete the subscriber on site account deletion" (D47)
+- [ ] Možnosti na produkciji: izbrani pravi listi članov in "Runde" (ID-ja sta drugačna kot na DDEV)
 
 - [ ] **Predloga j4starter:** `<jdoc:include type="message" />` tudi v veji brez modula `sidebar` (sicer uporabniki ne vidijo sporočil o prijavi) — D41
 - [ ] AcyMailing: javni obrazec vpisuje samo na listo "Runde"; ID liste članov in liste "Runde" vpisana v možnosti
@@ -45,4 +50,5 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
+- **02** — PR #2, združen 2026-10-10 (`918c64c`). Vseh 16 meril ✅ na DDEV (posodobitev 0.1.0 → 0.2.0, čas poleti/pozimi, brez dvojne pretvorbe). Med pregledom najdena napaka `bind()` po referenci → pravilo 16.
 - **01** — PR #1, združen 2026-10-09 (`f3e74ec`). Vseh 13 meril ✅ na DDEV. Med testom najdene in odpravljene napake → pravila 13–15 v `ARCHITECTURE.md`.

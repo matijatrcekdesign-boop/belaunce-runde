@@ -1,5 +1,5 @@
 # Belaunce – aplikacija za kolesarske runde
-**Osnova projekta (vir resnice)** · stanje: 8. 10. 2026 · faza: priprava na razvoj (naloga 01)
+**Osnova projekta (vir resnice)** · stanje: 10. 10. 2026 · faza: priprava na razvoj (naloga 01)
 
 Priloga: `docs/osnutek-vmesnika.pdf` (5 zaslonov: seznam, stran runde, nova runda, moje runde, namizje). PDF je **wireframe**: razpored in funkcije so osnova, barve in slog prevzame predloga belaunce.cc. Kjer se PDF in ta dokument razlikujeta, velja ta dokument.
 
@@ -63,6 +63,10 @@ Priloga: `docs/osnutek-vmesnika.pdf` (5 zaslonov: seznam, stran runde, nova rund
 | D41 | **Predloga se ureja kasneje, izven projekta.** Izvajalec predloge ne spreminja. Popravek prikaza sistemskih sporočil v predlogi je pogoj pred zagonom (glej `docs/TASKS.md`). |
 | D42 | Časi se shranjujejo v **UTC**. Časovni pas strani ostane UTC, zato komponenta za prikaz in vnos uporablja **lasten parameter `casovni_pas`** (privzeto `Europe/Ljubljana`). |
 | D43 | Prijava z magic linkom uporablja Joomlin mehanizem **"Zapomni si me"** (seja strani traja 15 min). Vtičnik *System – Remember Me* mora biti vklopljen. |
+| D44 | **Član** = zapis v AcyMailingu z `active = 1` in naročnina na listo članov s `status = 1`. Potrditev naročnine (`confirmed`) se ne zahteva. |
+| D45 | Dostop do AcyMailinga: adapter **bere tabele neposredno, samo za branje** (shema preverjena na 11.1.1), brez PHP API-ja AcyMailinga. Diagnostika "Preveri člana" v administraciji za preverjanje po posodobitvah AcyMailinga. |
+| D46 | Lista članov in lista "Runde" se izbereta v Možnostih iz **spustnega seznama list AcyMailinga**; ID-ja sta različna po okoljih (DDEV: 6 in 9). |
+| D47 | Uporabnikov v skupini "Člani" se **nikoli ne briše**, samo blokira: AcyMailing ima vklopljeno "Delete the subscriber on site account deletion", zato bi izbris Joomla uporabnika izbrisal tudi naročnika iz AcyMailinga (in s tem iz liste članov). |
 
 **Označeno kot *predlog*:** izhodišča, ki jih arhitekt lahko spremeni po dogovoru z Matijo.
 
@@ -125,7 +129,9 @@ Vse tabele: `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci` (
 | Veljavnost povezave | 10, 15, 30 min | 15 |
 
 ### 6.2 Dostop do AcyMailing
-Ves dostop do AcyMailinga gre prek **enega razreda (adapter)**. Če ima AcyMailing uradni PHP API, ga adapter uporabi; sicer bere tabele AcyMailinga samo za branje. Adapter ima ročni testni scenarij. Gostov se v AcyMailing nikoli ne dodaja.
+Ves dostop do AcyMailinga gre prek **enega razreda** (`AcymailingAdapter`), ki tabele AcyMailinga samo bere (D45). Diagnostika "Preveri člana" v administraciji je ročni test adapterja. Gostov se v AcyMailing nikoli ne dodaja.
+
+**Nastavitve AcyMailinga na strani (preverjeno na DDEV):** "Create a subscriber on site account creation" = vklopljeno (nov Joomla uporabnik se poveže z obstoječim naročnikom prek `cms_id`), "Automatically subscribe to" = prazno (pravilno, ne sme vpisovati na nobeno listo), "Delete the subscriber on site account deletion" = vklopljeno (zato D47).
 
 ## 7. Vloge in pravice
 | Akcija | Neprijavljen | Član | Vodja (svoje runde) | Admin (backend) |

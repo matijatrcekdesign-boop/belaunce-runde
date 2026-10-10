@@ -120,7 +120,7 @@ class RundeModel extends ListModel
             ->from($db->quoteName('#__belaunce_runde', 'a'))
             ->join('INNER', $db->quoteName('#__belaunce_tipi', 't') . ' ON ' . $db->quoteName('t.id') . ' = ' . $db->quoteName('a.tip_id'))
             ->join('INNER', $db->quoteName('#__belaunce_tezavnosti', 'tz') . ' ON ' . $db->quoteName('tz.id') . ' = ' . $db->quoteName('a.tezavnost_id'))
-            ->join('INNER', $db->quoteName('#__users', 'u') . ' ON ' . $db->quoteName('u.id') . ' = ' . $db->quoteName('a.vodja_id'))
+            ->join('LEFT', $db->quoteName('#__users', 'u') . ' ON ' . $db->quoteName('u.id') . ' = ' . $db->quoteName('a.vodja_id'))
             ->join('LEFT', $db->quoteName('#__users', 'uc') . ' ON ' . $db->quoteName('uc.id') . ' = ' . $db->quoteName('a.checked_out'));
 
         $this->dodajFiltre($query);
@@ -163,13 +163,16 @@ class RundeModel extends ListModel
             }
         }
 
+        $vrednosti = [];
+
         foreach (['tip_id', 'tezavnost_id', 'stanje', 'vodja_id'] as $filter) {
             $value = (string) $this->getState('filter.' . $filter);
 
             if ($value !== '' && is_numeric($value)) {
                 $placeholder = ':' . $filter;
+                $vrednosti[$filter] = (int) $value;
                 $query->where($db->quoteName('a.' . $filter) . ' = ' . $placeholder)
-                    ->bind($placeholder, (int) $value, ParameterType::INTEGER);
+                    ->bind($placeholder, $vrednosti[$filter], ParameterType::INTEGER);
             }
         }
 

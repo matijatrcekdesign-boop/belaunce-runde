@@ -122,7 +122,7 @@ $zdajUtc = new DateTimeImmutable(CasHelper::zdajUtc(), new DateTimeZone('UTC'));
                                     <?php echo number_format((float) $item->dolzina_km, 1, ',', '.'); ?>
                                 </td>
                                 <td class="d-none d-lg-table-cell">
-                                    <?php echo $this->escape($item->vodja_ime); ?>
+                                    <?php echo $item->vodja_ime === null ? Text::_('COM_BELAUNCERUNDE_VODJA_NI_UPORABNIKA') : $this->escape($item->vodja_ime); ?>
                                 </td>
                                 <td>
                                     <?php if ((int) $item->stanje === 2) : ?>

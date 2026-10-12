@@ -41,15 +41,16 @@ class AcymlistaField extends ListField
     protected function getOptions(): array
     {
         $adapter = new AcymailingAdapter();
+
+        if (!$adapter->jeNamescen()) {
+            return array_merge(parent::getOptions(), [
+                HTMLHelper::_('select.option', 0, Text::_('COM_BELAUNCERUNDE_ACYM_LISTA_NI_NAMESCEN')),
+            ]);
+        }
+
         $options = [
             HTMLHelper::_('select.option', 0, Text::_('COM_BELAUNCERUNDE_ACYM_LISTA_IZBERI')),
         ];
-
-        if (!$adapter->jeNamescen()) {
-            $this->description = Text::_('COM_BELAUNCERUNDE_ACYM_LISTA_NI_NAMESCEN_DESC');
-
-            return array_merge(parent::getOptions(), $options);
-        }
 
         foreach ($adapter->seznamList() as $id => $ime) {
             $options[] = HTMLHelper::_('select.option', $id, Text::sprintf('COM_BELAUNCERUNDE_ACYM_LISTA_OPTION', $ime, $id));

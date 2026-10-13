@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="component" method="upgrade">
 	<name>COM_BELAUNCERUNDE</name>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<creationDate>2026-10</creationDate>
 	<author>Belaunce</author>
 	<authorEmail>info@belaunce.cc</authorEmail>
@@ -27,6 +27,7 @@
 			<menu link="option=com_belauncerunde&amp;view=runde" view="runde" img="class:calendar" alt="Runde Belaunce/Runde">COM_BELAUNCERUNDE_SUBMENU_RUNDE</menu>
 			<menu link="option=com_belauncerunde&amp;view=tipi" view="tipi" img="class:list" alt="Runde Belaunce/Tipi">COM_BELAUNCERUNDE_SUBMENU_TIPI</menu>
 			<menu link="option=com_belauncerunde&amp;view=tezavnosti" view="tezavnosti" img="class:list" alt="Runde Belaunce/Težavnosti">COM_BELAUNCERUNDE_SUBMENU_TEZAVNOSTI</menu>
+			<menu link="option=com_belauncerunde&amp;view=preverjanje" view="preverjanje" img="class:search" alt="Runde Belaunce/Preveri člana">COM_BELAUNCERUNDE_SUBMENU_PREVERJANJE</menu>
 		</submenu>
 		<files folder="administrator">
 			<filename>access.xml</filename>

@@ -1,0 +1,1 @@
+-- NALOGA-03 ne spreminja sheme komponentnih tabel.

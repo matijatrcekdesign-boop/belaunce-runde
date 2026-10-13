@@ -56,6 +56,10 @@ class DisplayController extends BaseController
             return false;
         }
 
+        if ($view === 'preverjanje' && !$this->app->getIdentity()->authorise('core.admin', 'com_belauncerunde')) {
+            throw new \RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         if ($view === 'tip' && $layout === 'edit' && !$this->checkEditId('com_belauncerunde.edit.tip', $id)) {
             if (!\count($this->app->getMessageQueue())) {
                 $this->setMessage(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id), 'error');

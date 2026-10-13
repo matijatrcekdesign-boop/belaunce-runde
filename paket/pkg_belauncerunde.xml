@@ -2,7 +2,7 @@
 <extension type="package" method="upgrade">
 	<name>PKG_BELAUNCERUNDE</name>
 	<packagename>belauncerunde</packagename>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<creationDate>2026-10</creationDate>
 	<author>Belaunce</author>
 	<authorEmail>info@belaunce.cc</authorEmail>

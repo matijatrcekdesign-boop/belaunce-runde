@@ -97,7 +97,7 @@ class TezavnostModel extends AdminModel
             $uporabe = $this->prestejRunde($pk);
 
             if ($uporabe > 0) {
-                $app->enqueueMessage(Text::sprintf('COM_BELAUNCERUNDE_ERROR_TEZAVNOST_IN_USE', $uporabe), 'warning');
+                $app->enqueueMessage(Text::plural('COM_BELAUNCERUNDE_ERROR_TEZAVNOST_IN_USE', $uporabe), 'warning');
                 continue;
             }
 

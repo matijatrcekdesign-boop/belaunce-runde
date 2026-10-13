@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset name="details" label="COM_BELAUNCERUNDE_PREVERJANJE">
+		<field
+			name="email"
+			type="email"
+			label="COM_BELAUNCERUNDE_FIELD_EMAIL_LABEL"
+			description="COM_BELAUNCERUNDE_FIELD_EMAIL_DESC"
+			required="true"
+			filter="email"
+			validate="email"
+			size="40"
+		/>
+	</fieldset>
+</form>

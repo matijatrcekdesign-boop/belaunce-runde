@@ -53,6 +53,8 @@ class HtmlView extends BaseHtmlView
             throw new GenericDataException(implode("\n", $errors), 500);
         }
 
+        $this->form->addControlField('task');
+
         $this->addToolbar();
 
         parent::display($tpl);

@@ -71,9 +71,10 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 11. **Relativne poti** (slike, AJAX) se pred izpisom absolutizirajo z `Uri::root()`, ker se na SEF poteh relativne poti razrešijo napačno.
 12. **Namestitev samo prek paketa** (D39). Ročna namestitev je pri kisegonmi skrila 6 napak (manjkajoči `<menu>`, `<submenu>`, `.sys.ini`, metadata XML, nizi v napačni `.sys.ini`, napačen gumb Možnosti).
 13. Če `provider.php` kliče `setRegistry()`, mora razred komponente uporabljati `HTMLRegistryAwareTrait` (sicer fatalna napaka ob vsakem pogledu).
-14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj.
+14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj. Enako velja za obrazce urejanja: pogled doda `addControlField('task')`, predloga izpiše `renderControlFields()`.
 15. Polja s `layout="joomla.form.field.radio.switcher"` imajo možnosti vedno v vrstnem redu `0` (`JNO`), `1` (`JYES`), kot v jedru.
 16. `bind()` sprejme vrednost po referenci: nikoli ne podajaj izraza (npr. `(int) $x`) in v zanki ne uporabljaj iste spremenljivke za več vezav.
+17. Obvezno polje `type=number` z atributom `min` ob prazni vrednosti prikaže `min` (jedro, `layouts/joomla/form/field/number.php`). Če mora biti polje prazno, `min` in `max` izpusti in meje preveri v `Table::check()`.
 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 
@@ -97,3 +98,23 @@ Namestitveni skript `paket/com_belauncerunde/skript.php` ob namestitvi in posodo
 Polji `Administrator\Field\TipField` in `Administrator\Field\TezavnostField` bereta objavljene šifrante po `ordering`; če obstoječa runda uporablja skrit šifrant, ga polje še vedno pokaže z oznako "(skrito)", da ga shranjevanje ne izgubi. `TipModel::delete()` in `TezavnostModel::delete()` zavrneta brisanje šifranta, ki ga uporablja vsaj ena runda.
 
 `RundaTable` ne uporablja `setColumnAlias('published', 'stanje')`, ker stanje runde ni Joomlino objavljeno/skrito stanje: `1 = objavljena`, `2 = odpovedana`. Prehod v stanje 2 nastavi `odpovedano` v UTC, prehod nazaj v stanje 1 pa ga počisti.
+
+**AcyMailing (naloga 03):**
+Ves dostop do AcyMailinga gre prek `Administrator\Service\AcymailingAdapter`. Adapter uporablja samo neposredne `SELECT` poizvedbe nad preverjeno shemo AcyMailing Enterprise 11.1.1:
+
+- `#__acym_user`: `id`, `name`, `email`, `active`, `cms_id`
+- `#__acym_user_has_list`: `user_id`, `list_id`, `status`
+- `#__acym_list`: `id`, `name`, `active`
+
+Pravilo člana je D44: naročnik je član, če ima `active = 1` in zapis v `#__acym_user_has_list` za nastavljeno listo članov s `status = 1`. Stolpec `confirmed` se ne bere in ne vpliva na dostop. Adapter nikoli ne zapisuje v tabele `acym_*`.
+
+Metode adapterja:
+- `jeNamescen()` preveri obstoj treh AcyMailing tabel.
+- `seznamList()` vrne seznam list za možnosti komponente.
+- `poisciClana($email, $listaId)` vrne aktivnega člana liste ali `null`.
+- `preveriEmail($email, $listaId)` vrne diagnostično kodo (`CLAN`, `NEVELJAVEN_EMAIL`, `NI_NAROCNIK`, `NEAKTIVEN`, `NI_NA_LISTI`, `ODJAVLJEN`, `LISTA_NI_NASTAVLJENA`, `ACYM_NI_NAMESCEN`).
+- `jeClan($acymId, $listaId)` preveri znanega AcyMailing uporabnika.
+- `poisciPoId($acymId)` vrne naročnika brez preverjanja liste.
+- `idjiClanov($listaId)` vrne trenutne člane liste za poznejšo sinhronizacijo.
+
+Možnosti komponente imajo zavihek **AcyMailing**, kjer admin izbere `lista_clanov` in `lista_runde` prek polja `Administrator\Field\AcymlistaField`. Pogled `preverjanje` je ročni test adapterja po posodobitvah AcyMailinga: admin vnese email, rezultat pa se prenese prek seje po preusmeritvi. Dostop do pogleda in akcije `preverjanje.preveri` zahteva `core.admin` na `com_belauncerunde`.

@@ -12,8 +12,8 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 |---|---|---|---|---|
 | 01 | Okostje paketa, gradnja ZIP, update server, skupina "Člani", šifranti tipi in težavnosti (backend CRUD) | 0.1.0 | — | ✅ |
 | 02 | Backend runde: tabela, seznam s filtri, urejanje, brisanje, zamenjava vodje, `CasHelper` (UTC ↔ `casovni_pas`) | 0.2.0 | 01 | ✅ |
-| 03 | Adapter AcyMailing (samo branje, D45), izbira list v Možnostih (D46), diagnostika "Preveri člana" | 0.3.0 | 01 | 🟡 |
-| 04 | Prijava z magic linkom: obrazec za email, žetoni, omejitve poskusov, vtičnik za avtentikacijo, ustvarjanje uporabnika v skupini "Člani", "Zapomni si me" | 0.4.0 | 03 | ⬜ |
+| 03 | Adapter AcyMailing (samo branje, D45), izbira list v Možnostih (D46), diagnostika "Preveri člana" | 0.3.0 | 01 | ✅ |
+| 04 | Prijava z magic linkom: obrazec za email, žetoni, omejitve poskusov, vtičnik za avtentikacijo, ustvarjanje uporabnika v skupini "Člani", "Zapomni si me" | 0.4.0 | 03 | 🟡 |
 | 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | ⬜ |
 | 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | ⬜ |
 | 07 | Frontend obrazec runde: ustvari, uredi, odpovej (pravila 4.1), trasa + vdelave | 0.7.0 | 06 | ⬜ |
@@ -36,7 +36,7 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 - [ ] **Predloga j4starter:** `<jdoc:include type="message" />` tudi v veji brez modula `sidebar` (sicer uporabniki ne vidijo sporočil o prijavi) — D41
 - [ ] AcyMailing: javni obrazec vpisuje samo na listo "Runde"; ID liste članov in liste "Runde" vpisana v možnosti
-- [ ] Vtičnik *System – Remember Me* vklopljen (D43)
+- [ ] Vtičnika *Authentication – Cookie* in *System – Remember Me* vklopljena (D43); `cookie_lifetime` v vtičniku Cookie nastavljen po dogovoru
 - [ ] SMTP: testni mail z info@belaunce.cc; SPF/DKIM preverjena (npr. mail-tester.com)
 - [ ] Scheduler: pravi strežniški cron za Joomlina opravila
 - [ ] Test namestitve paketa na **kopiji produkcije** (MariaDB 10.11, utf8mb3 privzeto) — preveri, da so tabele utf8mb4
@@ -50,5 +50,6 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
+- **03** — PR #3, združen 2026-10-13 (`6fdf9ff`). Vseh 12 meril ✅ na DDEV; AcyMailing ostal nespremenjen (124/124). Med testom najdeni napaki prednastavljene dolžine in manjkajočega odmika na obrazcih → pravili 17 in dopolnjeno 14 v `ARCHITECTURE.md`.
 - **02** — PR #2, združen 2026-10-10 (`918c64c`). Vseh 16 meril ✅ na DDEV (posodobitev 0.1.0 → 0.2.0, čas poleti/pozimi, brez dvojne pretvorbe). Med pregledom najdena napaka `bind()` po referenci → pravilo 16.
 - **01** — PR #1, združen 2026-10-09 (`f3e74ec`). Vseh 13 meril ✅ na DDEV. Med testom najdene in odpravljene napake → pravila 13–15 v `ARCHITECTURE.md`.

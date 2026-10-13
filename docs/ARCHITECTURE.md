@@ -13,7 +13,7 @@
 | Razširitev | Tip | Naloga | Odgovornost |
 |---|---|---|---|
 | `com_belauncerunde` | komponenta | 01+ | šifranti, runde, prijave, gostje, frontend pogledi, maili, CSV |
-| `plg_authentication_belauncerunde` | vtičnik (authentication) | 04 *(načrtovano)* | potrdi prijavo z magic link žetonom |
+| `plg_authentication_belauncerunde` | vtičnik (authentication) | 04 | porabi magic link žeton, zagotovi uporabnika in potrdi prijavo |
 | `plg_task_belauncerunde` | vtičnik (task) | 12 *(načrtovano)* | sinhronizacija članov, izbris gostov, čiščenje žetonov in poskusov |
 
 ## Tehnologija
@@ -54,6 +54,8 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 - `Administrator\Service\AcymailingAdapter` — edini dostop do AcyMailinga, samo branje (naloga 03, D45)
 - `Administrator\Helper\CasHelper` — pretvorba UTC ↔ `casovni_pas`
 - `Administrator\Helper\OmejitevHelper` — omejevanje poskusov prek `#__belaunce_poskusi` (naloga 04)
+- `Administrator\Service\ZetonService` — izdaja in poraba žetonov za magic link (naloga 04)
+- `Administrator\Service\ClanService` — Joomla uporabnik člana: ustvari, poveži, odblokiraj (naloga 04)
 - `Site\Service\Router` — SEF `/runde`, `/runde/{id}-{alias}` (naloga 05)
 
 ## Pravila za Joomlo 6 (obvezna, iz izkušenj s com_kisegonma)
@@ -75,6 +77,10 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 15. Polja s `layout="joomla.form.field.radio.switcher"` imajo možnosti vedno v vrstnem redu `0` (`JNO`), `1` (`JYES`), kot v jedru.
 16. `bind()` sprejme vrednost po referenci: nikoli ne podajaj izraza (npr. `(int) $x`) in v zanki ne uporabljaj iste spremenljivke za več vezav.
 17. Obvezno polje `type=number` z atributom `min` ob prazni vrednosti prikaže `min` (jedro, `layouts/joomla/form/field/number.php`). Če mora biti polje prazno, `min` in `max` izpusti in meje preveri v `Table::check()`.
+18. **Vtičniki se namestijo izklopljeni** (razen urejevalnikov; jedro `Installer/Adapter/PluginAdapter.php:489`). Namestitveni skript komponente jih mora vklopiti, v manifestu paketa pa so navedeni **pred** komponento (`Installer/Adapter/PackageAdapter.php:147` namešča otroke po vrsti iz manifesta).
+19. **`Authentication::authenticate()` vedno bere `$credentials['username']`** (jedro `libraries/src/Authentication/Authentication.php:169`), zato mora ta ključ obstajati, tudi če je prazen niz.
+20. **Vtičnik za avtentikacijo ne sme računati na vrstni red.** `plg_authentication_joomla` ob praznem geslu nastavi `STATUS_FAILURE` in `error_message`, zato lasten vtičnik ob uspehu nastavi **vsa** polja odgovora (`status`, `type`, `username`, `email`, `fullname`, `error_message = ''`) in pokliče `$event->stopPropagation()`. Ob tujih prijavah (brez lastnega ključa v `$credentials`) se vtičnik ne odzove.
+21. **`plg_user_joomla::onUserLogin` poišče uporabnika z `loadUserByUsername($response->username)`** (jedro `plugins/user/joomla/src/Extension/Joomla.php:516`). Uporabnik mora torej obstajati **pred** klicem `login()`, `username` v odgovoru pa se mora ujemati na znak. Samodejno registracijo jedra izklopi z `$options['autoregister'] = false`, sicer bi bil uporabnik ustvarjen v skupini iz `com_users`, ne v "Člani".
 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 

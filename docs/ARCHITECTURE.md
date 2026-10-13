@@ -71,9 +71,10 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 11. **Relativne poti** (slike, AJAX) se pred izpisom absolutizirajo z `Uri::root()`, ker se na SEF poteh relativne poti razrešijo napačno.
 12. **Namestitev samo prek paketa** (D39). Ročna namestitev je pri kisegonmi skrila 6 napak (manjkajoči `<menu>`, `<submenu>`, `.sys.ini`, metadata XML, nizi v napačni `.sys.ini`, napačen gumb Možnosti).
 13. Če `provider.php` kliče `setRegistry()`, mora razred komponente uporabljati `HTMLRegistryAwareTrait` (sicer fatalna napaka ob vsakem pogledu).
-14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj.
+14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj. Enako velja za obrazce urejanja: pogled doda `addControlField('task')`, predloga izpiše `renderControlFields()`.
 15. Polja s `layout="joomla.form.field.radio.switcher"` imajo možnosti vedno v vrstnem redu `0` (`JNO`), `1` (`JYES`), kot v jedru.
 16. `bind()` sprejme vrednost po referenci: nikoli ne podajaj izraza (npr. `(int) $x`) in v zanki ne uporabljaj iste spremenljivke za več vezav.
+17. Obvezno polje `type=number` z atributom `min` ob prazni vrednosti prikaže `min` (jedro, `layouts/joomla/form/field/number.php`). Če mora biti polje prazno, `min` in `max` izpusti in meje preveri v `Table::check()`.
 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 

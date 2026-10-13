@@ -87,6 +87,12 @@ class RundaTable extends Table
             return false;
         }
 
+        if ((float) $this->dolzina_km > 999.9) {
+            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_DOLZINA_MAX'));
+
+            return false;
+        }
+
         if (!\in_array((int) $this->stanje, [1, 2], true)) {
             $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_STANJE_INVALID'));
 

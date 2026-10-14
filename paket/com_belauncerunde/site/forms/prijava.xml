@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset name="prijava">
+        <field name="email" type="email" label="COM_BELAUNCERUNDE_PRIJAVA_EMAIL" filter="email" validate="email" required="true" autocomplete="email" />
+        <field name="runda_id" type="hidden" filter="uint" default="0" />
+    </fieldset>
+</form>

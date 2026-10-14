@@ -1,0 +1,67 @@
+<?php
+
+namespace Belaunce\Component\Belauncerunde\Site\Controller;
+
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Router\Route;
+
+\defined('_JEXEC') or die;
+
+/** Prijavo z žetonom v celoti prepusti Joomli in avtentikacijskemu vtičniku. */
+class PovezavaController extends BaseController
+{
+    /** Preveri POST in pokliče Joomlino prijavo z možnostjo daljše seje. */
+    public function prijavi(): void
+    {
+        // 1. Žeton se lahko porabi samo prek POST z veljavnim CSRF žetonom.
+        if (!$this->checkToken('post', false) || $this->input->server->getString('REQUEST_METHOD') !== 'POST') {
+            throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+        }
+
+        $url = Route::_('index.php?option=com_belauncerunde&view=prijava', false);
+
+        // 2. Pri že prijavljenem uporabniku se žeton ne porabi.
+        if (!$this->app->getIdentity()->guest) {
+            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN'));
+
+            return;
+        }
+
+        // 3. Žeton preberemo samo iz POST in preverimo celotno obliko.
+        $surovZeton = $this->input->post->getString('zeton', '');
+
+        if (!preg_match('/^[0-9a-f]{64}$/D', $surovZeton)) {
+            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_POVEZAVA_NEVELJAVNA'), 'warning');
+
+            return;
+        }
+
+        // 4. username mora obstajati; autoregister=false ohrani skupino, ki jo določi vtičnik.
+        $params = ComponentHelper::getParams('com_belauncerunde');
+
+        try {
+            $uspeh = $this->app->login(
+                ['username' => '', 'zeton' => $surovZeton],
+                ['remember' => (bool) $params->get('zapomni_si_me', 1), 'autoregister' => false]
+            );
+        } catch (\Throwable $napaka) {
+            Log::add('JOOMLA_PRIJAVA_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_PRIJAVA_NAPAKA'), 'warning');
+
+            return;
+        }
+
+        // 5. Po uspehu ni žetona v URL-ju; prikaz prijave pove, da je uporabnik prijavljen.
+        if ($uspeh === true) {
+            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_PRIJAVA_USPEH'));
+
+            return;
+        }
+
+        // 6. Jedro že doda sporočilo vtičnika; preusmeritev nikoli ne prenaša surovega žetona.
+        $this->setRedirect($url);
+    }
+}

@@ -21,6 +21,17 @@
 			<schemapath type="mysql">sql/updates/mysql</schemapath>
 		</schemas>
 	</update>
+	<files folder="site">
+		<folder>forms</folder>
+		<folder>src</folder>
+		<folder>tmpl</folder>
+	</files>
+	<languages folder="site/language">
+		<language tag="sl-SI">sl-SI/com_belauncerunde.ini</language>
+		<language tag="sl-SI">sl-SI/com_belauncerunde.sys.ini</language>
+		<language tag="en-GB">en-GB/com_belauncerunde.ini</language>
+		<language tag="en-GB">en-GB/com_belauncerunde.sys.ini</language>
+	</languages>
 	<administration>
 		<menu img="class:calendar">COM_BELAUNCERUNDE</menu>
 		<submenu>

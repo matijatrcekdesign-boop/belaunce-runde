@@ -97,4 +97,3 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_poskusi` (
   PRIMARY KEY (`id`),
   KEY `idx_poskus` (`tip`, `kljuc`, `ustvarjeno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-

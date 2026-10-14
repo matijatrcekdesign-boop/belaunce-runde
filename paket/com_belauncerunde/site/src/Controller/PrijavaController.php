@@ -32,15 +32,12 @@ class PrijavaController extends BaseController
             return;
         }
 
-        // 8. Privzeti izhod ostane enak tudi ob zgodnjem zaključku ali tehnični napaki.
-        $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=prijava', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_POSLANO'));
-
         try {
             // 3. Filter obrazca in validacija modela dopolnjujeta normalizacijo emaila.
             $model = $this->factory->createModel('Prijava', 'Site', []);
             $podatki = (array) $this->input->post->get('jform', [], 'array');
             $podatki = $model->getForm([], false)->filter($podatki);
-            $email = mb_strtolower(trim((string) ($podatki['email'] ?? '')));
+            $email = mb_strtolower(trim(\is_string($podatki['email'] ?? null) ? $podatki['email'] : ''));
             $podatki['email'] = $email;
             $veljaven = MailHelper::isEmailAddress($email) && $model->preveriVnos($podatki);
             $params = ComponentHelper::getParams('com_belauncerunde');
@@ -86,8 +83,11 @@ class PrijavaController extends BaseController
             $surovi = (new ZetonService())->ustvari((int) $clan->acym_id, $rundaId > 0 ? $rundaId : null, $ip);
             $model->posljiPovezavo($clan, $surovi);
         } catch (\Throwable $napaka) {
-            // 8. Napake ne smejo spremeniti odgovora ali razkriti emaila, SQL-a oziroma žetona.
+            // Napake ne smejo razkriti emaila, SQL-a oziroma žetona.
             Log::add('ZAHTEVA_PRIJAVA_NAPAKA', Log::ERROR, 'com_belauncerunde');
+        } finally {
+            // 8. Tudi zgodnji return ali napaka ohranita enako sporočilo in preusmeritev.
+            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=prijava', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_POSLANO'));
         }
     }
 }

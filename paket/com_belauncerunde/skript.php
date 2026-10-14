@@ -47,11 +47,24 @@ class Com_BelauncerundeInstallerScript
             $db = Factory::getContainer()->get(DatabaseInterface::class);
             $id = $this->pripraviSkupinoClani($db);
             $this->shraniParameter($db, 'skupina_clani', $id);
-            $this->pripraviVticnike($db);
-            $this->pripraviPostnoPredlogo();
         } catch (\Throwable $exception) {
-            Log::add($exception->getMessage(), Log::ERROR, 'com_belauncerunde');
+            Log::add('NAMESTITEV_SKUPINA_NAPAKA', Log::ERROR, 'com_belauncerunde');
             Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_GROUP_FAILED'), 'warning');
+        }
+
+        // Vsak korak je neodvisen: napaka skupine ne sme preskočiti priprave vtičnika ali pošte.
+        try {
+            $this->pripraviVticnike(Factory::getContainer()->get(DatabaseInterface::class));
+        } catch (\Throwable $napaka) {
+            Log::add('NAMESTITEV_VTICNIK_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_VTICNIK_NAPAKA'), 'warning');
+        }
+
+        try {
+            $this->pripraviPostnoPredlogo();
+        } catch (\Throwable $napaka) {
+            Log::add('NAMESTITEV_MAIL_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA'), 'warning');
         }
 
         return true;
@@ -92,7 +105,7 @@ class Com_BelauncerundeInstallerScript
                 $db->execute();
             }
         } catch (\Throwable $exception) {
-            Log::add($exception->getMessage(), Log::ERROR, 'com_belauncerunde');
+            Log::add('ODSTRANITEV_PODATKI_NAPAKA', Log::ERROR, 'com_belauncerunde');
         }
 
         return true;

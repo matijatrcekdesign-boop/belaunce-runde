@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\Table\Usergroup;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
@@ -47,6 +48,7 @@ class Com_BelauncerundeInstallerScript
             $id = $this->pripraviSkupinoClani($db);
             $this->shraniParameter($db, 'skupina_clani', $id);
             $this->pripraviVticnike($db);
+            $this->pripraviPostnoPredlogo();
         } catch (\Throwable $exception) {
             Log::add($exception->getMessage(), Log::ERROR, 'com_belauncerunde');
             Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_GROUP_FAILED'), 'warning');
@@ -74,6 +76,7 @@ class Com_BelauncerundeInstallerScript
 
         try {
             $db      = Factory::getContainer()->get(DatabaseInterface::class);
+            MailTemplate::deleteTemplate('com_belauncerunde.prijava');
             $sqlPath = __DIR__ . '/sql/uninstall.mysql.utf8.sql';
 
             if (!is_file($sqlPath)) {
@@ -248,6 +251,21 @@ class Com_BelauncerundeInstallerScript
             ->bind(':extension_id', $extensionId, ParameterType::INTEGER);
         $db->setQuery($query);
         $db->execute();
+    }
+
+    /** Registrira privzeto predlogo enkrat; adminovih popravkov ne prepisuje. */
+    private function pripraviPostnoPredlogo(): void
+    {
+        if (MailTemplate::getTemplate('com_belauncerunde.prijava', '') === null) {
+            if (!MailTemplate::createTemplate(
+                'com_belauncerunde.prijava',
+                'COM_BELAUNCERUNDE_MAIL_PRIJAVA_SUBJECT',
+                'COM_BELAUNCERUNDE_MAIL_PRIJAVA_BODY',
+                ['IME', 'POVEZAVA', 'VELJAVNOST', 'SITENAME']
+            )) {
+                throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+            }
+        }
     }
 
     /** Vklopi naš vtičnik in opozori na manjkajoča vtičnika za daljšo prijavo. */

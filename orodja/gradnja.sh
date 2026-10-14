@@ -90,6 +90,14 @@ mkdir -p "$PKG_TMP/packages"
 mkdir -p "$DIST"
 
 (cd paket/com_belauncerunde && zip -qr "$PKG_TMP/packages/com_belauncerunde.zip" .)
+
+# Vsak vtičnik dobi svoj ZIP, zato nove mape plg_* ne zahtevajo spremembe gradnje.
+for plugin_dir in paket/plg_*; do
+    [[ -d "$plugin_dir" ]] || continue
+    plugin_name="$(basename "$plugin_dir")"
+    (cd "$plugin_dir" && zip -qr "$PKG_TMP/packages/$plugin_name.zip" .)
+done
+
 cp "$PACKAGE_MANIFEST" "$PKG_TMP/pkg_belauncerunde.xml"
 cp -R paket/language "$PKG_TMP/language"
 

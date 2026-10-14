@@ -99,11 +99,16 @@ final class Belauncerunde extends CMSPlugin implements SubscriberInterface
                 $app->getSession()->set('com_belauncerunde.runda_po_prijavi', (int) $zapis->runda_id);
             }
         } catch (\Throwable $napaka) {
-            // 10. Podrobnosti izjem lahko vsebujejo osebne podatke ali SQL, zato beležimo kodo.
+            // 10. Razred in mesto napake omogočata diagnostiko; sporočilo lahko razkrije email ali SQL.
             $response = $event->getAuthenticationResponse();
             $response->status = Authentication::STATUS_FAILURE;
             $response->error_message = Text::_('PLG_AUTHENTICATION_BELAUNCERUNDE_PRIJAVA_NI_USPELA');
-            Log::add('PRIJAVA_NI_USPELA', Log::ERROR, 'com_belauncerunde');
+            Log::add(
+                'PRIJAVA_NI_USPELA razred=' . \get_class($napaka)
+                . ' datoteka=' . $napaka->getFile() . ' vrstica=' . $napaka->getLine(),
+                Log::ERROR,
+                'com_belauncerunde'
+            );
         } finally {
             $event->stopPropagation();
         }

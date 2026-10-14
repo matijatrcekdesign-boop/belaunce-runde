@@ -107,11 +107,14 @@ class ClanService
         $ime = $ime !== '' ? $ime : explode('@', $email, 2)[0];
         $uporabnik = $this->tovarna->loadUserById(0);
 
-        if (!$uporabnik->bind([
+        // bind() sprejme polje po referenci, zato mora biti vhod poimenovana spremenljivka.
+        $podatkiUporabnika = [
             'name' => $ime, 'username' => $email, 'email' => $email,
             'password' => '', 'password2' => '', 'groups' => [$skupinaClani],
             'block' => 0, 'activation' => '', 'sendEmail' => 0, 'requireReset' => 0,
-        ]) || !$uporabnik->save()) {
+        ];
+
+        if (!$uporabnik->bind($podatkiUporabnika) || !$uporabnik->save()) {
             // getError() lahko vsebuje email ali SQL; surovega besedila zato ne beležimo.
             $koda = $uporabnik->getError() ? 'COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE' : 'COM_BELAUNCERUNDE_NAPAKA_UPORABNIK';
             $this->napaka($koda, $acymId);

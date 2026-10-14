@@ -11,7 +11,7 @@ use Joomla\CMS\Uri\Uri;
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_NASLOV')); ?></h1>
     <?php if ($this->prijavljen) : ?>
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN')); ?></p>
-        <a href="<?php echo $this->escape(Route::_(Uri::root())); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOMOV')); ?></a>
+        <a href="<?php echo $this->escape(Uri::root()); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOMOV')); ?></a>
     <?php elseif (!$this->podatki) : ?>
         <p class="alert alert-warning"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POVEZAVA_NEVELJAVNA')); ?></p>
         <a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava')); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POVEZAVA_NOVA')); ?></a>

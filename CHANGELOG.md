@@ -20,6 +20,12 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Paket namesti avtentikacijski vtičnik pred komponento, gradnja pa zapakira vse mape `paket/plg_*`.
 - Namestitev in odstranitev upoštevata novo poštno predlogo ter možnost ohranitve podatkov.
 
+### Popravljeno
+- Ustvarjanje članskega računa poda `User::bind()` spremenljivko namesto literala, kot zahteva podajanje po referenci.
+- Komponenta ob zagonu enkrat na zahtevo registrira lasten dnevnik `com_belauncerunde.php` za oba odjemalca.
+- Diagnostika neuspešne avtentikacije vsebuje razred izjeme, datoteko in vrstico brez sporočila izjeme.
+- Prijavni obrazec uporablja filter `string` z validacijo emaila, povezavi na domačo stran pa neposredni `Uri::root()`.
+
 ## [0.3.0] - 2026-10-10
 ### Dodano
 - Bralni `AcymailingAdapter` za preverjanje članstva po AcyMailing listi.

@@ -32,7 +32,7 @@
 |---|---|
 | Komponenta, admin | `Belaunce\Component\Belauncerunde\Administrator` |
 | Komponenta, site | `Belaunce\Component\Belauncerunde\Site` |
-| Vtičnik za prijavo | `Belaunce\Plugin\Authentication\Belauncerunde` *(načrtovano)* |
+| Vtičnik za prijavo | `Belaunce\Plugin\Authentication\Belauncerunde` |
 | Vtičnik za opravila | `Belaunce\Plugin\Task\Belauncerunde` *(načrtovano)* |
 
 ## Podatkovni model
@@ -43,13 +43,13 @@ Shema je v `osnova-projekta.md` razdelek 5. Tabele se dodajajo postopoma po nalo
 |---|---|
 | `#__belaunce_tipi`, `#__belaunce_tezavnosti` | 01 |
 | `#__belaunce_runde` | 02 |
-| `#__belaunce_zetoni`, `#__belaunce_clani`, `#__belaunce_poskusi` | 04 |
+| `#__belaunce_zetoni`, `#__belaunce_clani`, `#__belaunce_poskusi` | 04 (0.4.0) |
 | `#__belaunce_prijave` | 06 |
 | `#__belaunce_gostje` | 08 |
 
 Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, `checked_out_time`). Stolpec za objavo se imenuje `stanje`; v razredu `Table` se poveže z `setColumnAlias('published', 'stanje')`, da delujejo Joomlini gumbi za objavo.
 
-## Ključne komponente *(načrtovano, dopolnjuje se po nalogah)*
+## Ključne komponente *(dopolnjuje se po nalogah)*
 
 - `Administrator\Service\AcymailingAdapter` — edini dostop do AcyMailinga, samo branje (naloga 03, D45)
 - `Administrator\Helper\CasHelper` — pretvorba UTC ↔ `casovni_pas`
@@ -57,6 +57,24 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 - `Administrator\Service\ZetonService` — izdaja in poraba žetonov za magic link (naloga 04)
 - `Administrator\Service\ClanService` — Joomla uporabnik člana: ustvari, poveži, odblokiraj (naloga 04)
 - `Site\Service\Router` — SEF `/runde`, `/runde/{id}-{alias}` (naloga 05)
+
+## Prijava z magic linkom
+
+`GET view=prijava` → `POST prijava.poslji` → mail s povezavo → `GET view=povezava` → potrditveni `POST povezava.prijavi` → Joomlin `login()` → `plg_authentication_belauncerunde` → Joomlin `onUserLogin` in seja. Site del uporablja isti `administrator/services/provider.php` kot administracija. Privzeti site pogled je do naloge 05 `prijava`; `tmpl/prijava/default.xml` omogoča tudi menijsko postavko.
+
+Kontroler `PrijavaController` najprej preveri POST in CSRF, nato stanje gosta, filtrira in normalizira email ter pred vsakim dostopom do AcyMailinga zabeleži poskuse. `OmejitevHelper` hrani SHA-256 emaila oziroma IP-ja in šteje poskuse v zadnjih 60 minutah. Vhodni IP je samo `REMOTE_ADDR`. Neveljaven email, nečlan, presežena omejitev in napaka pošte dobijo isto sporočilo in preusmeritev kot uspešna zahteva.
+
+`ZetonService` razveljavi prejšnje neporabljene povezave člana in izda 32 naključnih bajtov, v bazi pa shrani samo SHA-256. `preveri()` je namenjen GET prikazu in ne piše v bazo. `porabi()` najprej izvede pogojni `UPDATE` in zahteva natanko eno spremenjeno vrstico; šele potem prebere zapis. Ponoven POST istega žetona zato ne uspe. Metodi `pociscenje()` za žetone in poskuse sta pripravljeni, klic iz Schedulerja pride v nalogi 12.
+
+Avtentikacijo opravi vtičnik (D48), ker samo standardni Joomlin tok sproži uporabniške dogodke in piškotek za daljšo prijavo. Kontroler posreduje `username = ''`, surovi `zeton`, `remember` iz možnosti in `autoregister = false`. Vtičnik na odjemalcu `site` ob lastnem žetonu prevzame odgovor in v `finally` ustavi propagacijo tudi ob napaki. Žeton porabi pred ponovnim preverjanjem AcyMailing članstva in pripravo uporabnika; neuspeh po porabi zahteva novo povezavo. Ob prijavah brez žetona in v administraciji se ne odzove.
+
+`ClanService` najprej išče povezavo po AcyMailing ID, nato članski račun po emailu. Zastarelo povezavo odstrani, ob spremenjenem AcyMailing ID posodobi povezavo obstoječega člana. Računa zunaj nastavljene skupine Člani nikoli ne prijavi. Novega uporabnika ustvari samo v skupini Člani z emailom kot uporabniškim imenom in praznim vhodnim geslom; naključno geslo določi `User::bind()` (D49). Ponovno potrjenega člana lahko odblokira prek `User::save()`. `zadnja_prijava` se hrani v UTC. Naša koda ne piše v AcyMailing; povezavo `cms_id` lahko nastavi njegov uporabniški vtičnik.
+
+Za **Zapomni si me** morata biti vklopljena **Authentication – Cookie** in **System – Remember Me** (D43). Življenjsko dobo določa `cookie_lifetime` v vtičniku Cookie. Namestitveni skript naš vtičnik vklopi idempotentno (D51) in opozori na izklopljena jedrna vtičnika. Paket zato namešča vtičnik pred komponento, gradnja pa v zanki zapakira vse mape `paket/plg_*`.
+
+Mail uporablja Joomlino predlogo `com_belauncerunde.prijava` z oznakami `{IME}`, `{POVEZAVA}`, `{VELJAVNOST}`, `{SITENAME}` (D50). `postflight` jo ustvari samo, če še ne obstaja; adminove spremembe ostanejo. Privzeta besedila so v site jezikovnih datotekah, absolutna povezava se sestavi z `Uri::root()` brez odvisnosti od menija. Pri odstranitvi se predloga in tri tabele izbrišejo samo pri `ohrani_podatke = 0`. Dnevnik prijave vsebuje samo kode in ID-je.
+
+ID runde je v žetonu in po uspešni avtentikaciji v seji `com_belauncerunde.runda_po_prijavi`. **V nalogi 04 ga nihče ne bere in udeležbe ne vpisuje**; to prevzame naloga 06. Naslov runde na potrditvenem gumbu je trenutno informativen.
 
 ## Pravila za Joomlo 6 (obvezna, iz izkušenj s com_kisegonma)
 

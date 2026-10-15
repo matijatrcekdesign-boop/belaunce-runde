@@ -25,7 +25,7 @@ class ClanService
     /** @var UserFactoryInterface Tovarna Joomlinih uporabnikov. */
     private UserFactoryInterface $tovarna;
 
-    /** Pripravi odvisnosti za povezavo, ustvarjanje in odblokiranje člana. */
+    /** Pripravi odvisnosti za povezavo, ustvarjanje in zagotavljanje skupine člana. */
     public function __construct(?DatabaseInterface $db = null, ?Registry $params = null, ?UserFactoryInterface $tovarna = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
@@ -48,7 +48,7 @@ class ClanService
             $this->napaka('COM_BELAUNCERUNDE_NAPAKA_SKUPINA', $acymId);
         }
 
-        // 1. Povezava po AcyMailing ID ima prednost; tuji račun se vedno zavrne.
+        // 1. Naši povezavi po AcyMailing ID zaupamo tudi po odvzemu skupine Člani.
         $poizvedba = $db->createQuery()->select('*')->from($db->quoteName('#__belaunce_clani'))
             ->where($db->quoteName('acym_uporabnik_id') . ' = :acym')
             ->bind(':acym', $acymId, ParameterType::INTEGER);
@@ -59,7 +59,7 @@ class ClanService
             $uporabnik = $this->tovarna->loadUserById($uporabnikId);
 
             if ((int) $uporabnik->id > 0) {
-                return $this->preveriUporabnika($uporabnik, $skupinaClani, $acymId);
+                return $this->preveriUporabnika($uporabnik, $skupinaClani, $acymId, true);
             }
 
             $poizvedba = $db->createQuery()->delete($db->quoteName('#__belaunce_clani'))
@@ -111,7 +111,7 @@ class ClanService
         $podatkiUporabnika = [
             'name' => $ime, 'username' => $email, 'email' => $email,
             'password' => '', 'password2' => '', 'groups' => [$skupinaClani],
-            'block' => 0, 'activation' => '', 'sendEmail' => 0, 'requireReset' => 0,
+            'activation' => '', 'sendEmail' => 0, 'requireReset' => 0,
         ];
 
         if (!$uporabnik->bind($podatkiUporabnika) || !$uporabnik->save()) {
@@ -128,23 +128,39 @@ class ClanService
         return $this->preveriUporabnika($uporabnik, $skupinaClani, $acymId);
     }
 
-    /** Zavrne tujo skupino, odblokira člana in zabeleži čas zadnje prijave. */
-    private function preveriUporabnika(User $uporabnik, int $skupinaClani, int $acymId): int
+    /**
+     * Zavrne blokado in zagotovi skupino samo na podlagi naše obstoječe povezave.
+     *
+     * @param   User  $uporabnik        Joomla uporabnik.
+     * @param   int   $skupinaClani     ID skupine Člani.
+     * @param   int   $acymId           ID potrjenega AcyMailing člana.
+     * @param   bool  $zaupanaPovezava  Ali je račun najden prek naše povezovalne tabele.
+     *
+     * @return  int  ID uporabnika po posodobitvi časa prijave.
+     */
+    private function preveriUporabnika(User $uporabnik, int $skupinaClani, int $acymId, bool $zaupanaPovezava = false): int
     {
         $uporabnikId = (int) $uporabnik->id;
 
-        if (!\in_array($skupinaClani, array_map('intval', $uporabnik->groups), true)) {
-            $this->napaka('COM_BELAUNCERUNDE_NAPAKA_NI_CLANSKI_RACUN', $acymId, $uporabnikId);
+        // Adminove namerne blokade ne spreminjamo in pred zavrnitvijo ne vračamo skupine.
+        if ((int) $uporabnik->block === 1) {
+            $this->napaka('COM_BELAUNCERUNDE_NAPAKA_BLOKIRAN', $acymId, $uporabnikId);
         }
 
-        if ((int) $uporabnik->block === 1) {
-            $uporabnik->block = 0;
+        if (!\in_array($skupinaClani, array_map('intval', $uporabnik->groups), true)) {
+            // Iskanje po emailu samo po sebi nikoli ne sme podeliti članstva tujemu računu.
+            if (!$zaupanaPovezava) {
+                $this->napaka('COM_BELAUNCERUNDE_NAPAKA_EMAIL_ZASEDEN', $acymId, $uporabnikId);
+            }
+
+            // Dodamo samo manjkajočo skupino; vse obstoječe skupine in block ostanejo nedotaknjeni.
+            $uporabnik->groups[] = $skupinaClani;
 
             if (!$uporabnik->save()) {
                 $this->napaka('COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE', $acymId, $uporabnikId);
             }
 
-            Log::add('UPORABNIK_ODBLOKIRAN acym_id=' . $acymId . ' uporabnik_id=' . $uporabnikId, Log::INFO, 'com_belauncerunde');
+            Log::add('SKUPINA_VRNJENA acym_id=' . $acymId . ' uporabnik_id=' . $uporabnikId, Log::INFO, 'com_belauncerunde');
         }
 
         $zdaj = gmdate('Y-m-d H:i:s');

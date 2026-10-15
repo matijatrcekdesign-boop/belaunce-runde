@@ -55,7 +55,7 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 - `Administrator\Helper\CasHelper` — pretvorba UTC ↔ `casovni_pas`
 - `Administrator\Helper\OmejitevHelper` — omejevanje poskusov prek `#__belaunce_poskusi` (naloga 04)
 - `Administrator\Service\ZetonService` — izdaja in poraba žetonov za magic link (naloga 04)
-- `Administrator\Service\ClanService` — Joomla uporabnik člana: ustvari, poveži, odblokiraj (naloga 04)
+- `Administrator\Service\ClanService` — Joomla uporabnik člana: ustvari, poveži, zagotovi skupino Člani (naloga 04)
 - `Site\Service\Router` — SEF `/runde`, `/runde/{id}-{alias}` (naloga 05)
 
 ## Prijava z magic linkom
@@ -68,7 +68,11 @@ Kontroler `PrijavaController` najprej preveri POST in CSRF, nato stanje gosta, f
 
 Avtentikacijo opravi vtičnik (D48), ker samo standardni Joomlin tok sproži uporabniške dogodke in piškotek za daljšo prijavo. Kontroler posreduje `username = ''`, surovi `zeton`, `remember` iz možnosti in `autoregister = false`. Vtičnik na odjemalcu `site` ob lastnem žetonu prevzame odgovor in v `finally` ustavi propagacijo tudi ob napaki. Žeton porabi pred ponovnim preverjanjem AcyMailing članstva in pripravo uporabnika; neuspeh po porabi zahteva novo povezavo. Ob prijavah brez žetona in v administraciji se ne odzove.
 
-`ClanService` najprej išče povezavo po AcyMailing ID, nato članski račun po emailu. Zastarelo povezavo odstrani, ob spremenjenem AcyMailing ID posodobi povezavo obstoječega člana. Računa zunaj nastavljene skupine Člani nikoli ne prijavi. Novega uporabnika ustvari samo v skupini Člani z emailom kot uporabniškim imenom in praznim vhodnim geslom; naključno geslo določi `User::bind()` (D49). Ponovno potrjenega člana lahko odblokira prek `User::save()`. `zadnja_prijava` se hrani v UTC. Naša koda ne piše v AcyMailing; povezavo `cms_id` lahko nastavi njegov uporabniški vtičnik.
+`ClanService` najprej išče povezavo po AcyMailing ID, nato članski račun po emailu. Zastarelo povezavo odstrani, ob spremenjenem AcyMailing ID posodobi povezavo obstoječega člana. **Članstvo se uveljavlja prek skupine Člani, komponenta polja `block` nikoli ne spreminja** (odločitev A po testu na DDEV). Blokiran račun zavrne s kodo `COM_BELAUNCERUNDE_NAPAKA_BLOKIRAN`; adminove namerne blokade ne razveljavi.
+
+Obstoječi povezavi v `#__belaunce_clani` zaupamo: po ponovni potrditvi AcyMailing članstva neblokiranemu povezanemu uporabniku vrnemo manjkajočo skupino Člani prek `User::save()`, brez odvzema drugih skupin, in zabeležimo `SKUPINA_VRNJENA` z ID-jema. Iskanje po emailu ostane omejeno na račune, ki skupino že imajo. Email ali uporabniško ime računa brez naše povezave in brez skupine Člani ostane zavrnjeno s `COM_BELAUNCERUNDE_NAPAKA_EMAIL_ZASEDEN`. Samo email torej ni podlaga za dodelitev skupine.
+
+Novega uporabnika ustvari samo v skupini Člani z emailom kot uporabniškim imenom in praznim vhodnim geslom; naključno geslo določi `User::bind()` (D49), `block` pa ni del vhodnega polja. `zadnja_prijava` se hrani v UTC. Naša koda ne piše v AcyMailing; povezavo `cms_id` lahko nastavi njegov uporabniški vtičnik. Razlog za odločitev A je na DDEV potrjena sinhronizacija blokade v `acym_user.active`, ki bi bivšemu članu ustavila tudi pošto z drugih klubskih list.
 
 Za **Zapomni si me** morata biti vklopljena **Authentication – Cookie** in **System – Remember Me** (D43). Življenjsko dobo določa `cookie_lifetime` v vtičniku Cookie. Namestitveni skript naš vtičnik vklopi idempotentno (D51) in opozori na izklopljena jedrna vtičnika. Paket zato namešča vtičnik pred komponento, gradnja pa v zanki zapakira vse mape `paket/plg_*`.
 

@@ -21,11 +21,11 @@ class PovezavaController extends BaseController
             throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
         }
 
-        $url = Route::_('index.php?option=com_belauncerunde&view=prijava', false);
+        $url = 'index.php?option=com_belauncerunde&view=prijava';
 
         // 2. Pri že prijavljenem uporabniku se žeton ne porabi.
         if (!$this->app->getIdentity()->guest) {
-            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN'));
+            $this->setRedirect(Route::_($url . '&stanje=ze_prijavljen', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN'));
 
             return;
         }
@@ -34,7 +34,7 @@ class PovezavaController extends BaseController
         $surovZeton = $this->input->post->getString('zeton', '');
 
         if (!preg_match('/^[0-9a-f]{64}$/D', $surovZeton)) {
-            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_POVEZAVA_NEVELJAVNA'), 'warning');
+            $this->setRedirect(Route::_($url . '&stanje=povezava_neveljavna', false), Text::_('COM_BELAUNCERUNDE_POVEZAVA_NEVELJAVNA'), 'warning');
 
             return;
         }
@@ -49,19 +49,19 @@ class PovezavaController extends BaseController
             );
         } catch (\Throwable $napaka) {
             Log::add('JOOMLA_PRIJAVA_NAPAKA', Log::ERROR, 'com_belauncerunde');
-            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_PRIJAVA_NAPAKA'), 'warning');
+            $this->setRedirect(Route::_($url . '&stanje=napaka', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_NAPAKA'), 'warning');
 
             return;
         }
 
         // 5. Po uspehu ni žetona v URL-ju; prikaz prijave pove, da je uporabnik prijavljen.
         if ($uspeh === true) {
-            $this->setRedirect($url, Text::_('COM_BELAUNCERUNDE_PRIJAVA_USPEH'));
+            $this->setRedirect(Route::_($url . '&stanje=uspeh', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_USPEH'));
 
             return;
         }
 
         // 6. Jedro že doda sporočilo vtičnika; preusmeritev nikoli ne prenaša surovega žetona.
-        $this->setRedirect($url);
+        $this->setRedirect(Route::_($url . '&stanje=napaka', false));
     }
 }

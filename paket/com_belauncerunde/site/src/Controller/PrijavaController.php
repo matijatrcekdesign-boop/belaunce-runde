@@ -27,7 +27,7 @@ class PrijavaController extends BaseController
 
         // 2. Že prijavljenega uporabnika ne pošiljamo skozi tok za goste.
         if (!$this->app->getIdentity()->guest) {
-            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=prijava', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN'));
+            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=prijava&stanje=ze_prijavljen', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN'));
 
             return;
         }
@@ -87,7 +87,7 @@ class PrijavaController extends BaseController
             Log::add('ZAHTEVA_PRIJAVA_NAPAKA', Log::ERROR, 'com_belauncerunde');
         } finally {
             // 8. Tudi zgodnji return ali napaka ohranita enako sporočilo in preusmeritev.
-            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=prijava', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_POSLANO'));
+            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=prijava&stanje=poslano', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_POSLANO'));
         }
     }
 }

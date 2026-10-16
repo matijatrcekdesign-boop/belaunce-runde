@@ -97,12 +97,14 @@ ID runde je v žetonu in po uspešni avtentikaciji v seji `com_belauncerunde.run
 13. Če `provider.php` kliče `setRegistry()`, mora razred komponente uporabljati `HTMLRegistryAwareTrait` (sicer fatalna napaka ob vsakem pogledu).
 14. Seznami v administraciji: pogled doda `addControlField('task')` in `addControlField('boxchecked','0')`, predloga jih izpiše z `renderControlFields()`; ročnih skritih polj `task` in žetona ne dodajaj. Enako velja za obrazce urejanja: pogled doda `addControlField('task')`, predloga izpiše `renderControlFields()`.
 15. Polja s `layout="joomla.form.field.radio.switcher"` imajo možnosti vedno v vrstnem redu `0` (`JNO`), `1` (`JYES`), kot v jedru.
-16. `bind()` sprejme vrednost po referenci: nikoli ne podajaj izraza (npr. `(int) $x`) in v zanki ne uporabljaj iste spremenljivke za več vezav.
+16. **Joomline metode `bind()` sprejmejo argument po referenci** — velja za `DatabaseQuery::bind()` in tudi za `User::bind(&$array)` (jedro `libraries/src/User/User.php:607`). Nikoli ne podajaj izraza ali literala (npr. `(int) $x`, `['a' => 1]`) in v zanki ne uporabljaj iste spremenljivke za več vezav. Napaka se pokaže kot `Error: Argument #1 could not be passed by reference` in jo `php -l` ne ujame.
 17. Obvezno polje `type=number` z atributom `min` ob prazni vrednosti prikaže `min` (jedro, `layouts/joomla/form/field/number.php`). Če mora biti polje prazno, `min` in `max` izpusti in meje preveri v `Table::check()`.
 18. **Vtičniki se namestijo izklopljeni** (razen urejevalnikov; jedro `Installer/Adapter/PluginAdapter.php:489`). Namestitveni skript komponente jih mora vklopiti, v manifestu paketa pa so navedeni **pred** komponento (`Installer/Adapter/PackageAdapter.php:147` namešča otroke po vrsti iz manifesta).
 19. **`Authentication::authenticate()` vedno bere `$credentials['username']`** (jedro `libraries/src/Authentication/Authentication.php:169`), zato mora ta ključ obstajati, tudi če je prazen niz.
 20. **Vtičnik za avtentikacijo ne sme računati na vrstni red.** `plg_authentication_joomla` ob praznem geslu nastavi `STATUS_FAILURE` in `error_message`, zato lasten vtičnik ob uspehu nastavi **vsa** polja odgovora (`status`, `type`, `username`, `email`, `fullname`, `error_message = ''`) in pokliče `$event->stopPropagation()`. Ob tujih prijavah (brez lastnega ključa v `$credentials`) se vtičnik ne odzove.
 21. **`plg_user_joomla::onUserLogin` poišče uporabnika z `loadUserByUsername($response->username)`** (jedro `plugins/user/joomla/src/Extension/Joomla.php:516`). Uporabnik mora torej obstajati **pred** klicem `login()`, `username` v odgovoru pa se mora ujemati na znak. Samodejno registracijo jedra izklopi z `$options['autoregister'] = false`, sicer bi bil uporabnik ustvarjen v skupini iz `com_users`, ne v "Člani".
+22. **Lastna kategorija dnevnika brez zapisovalnika ne piše nikamor.** `Log::add(..., 'com_belauncerunde')` je viden šele, ko je zanj registriran zapisovalnik (`Log::addLogger`) ali ko admin vklopi *Log Almost Everything* (jedro `Application/CMSApplication.php:1368`). Komponenta si zapisovalnik registrira sama v `BelauncerundeComponent::boot()`; vsaka koda, ki teče **izven** konteksta komponente (npr. opravila iz naloge 12), si ga mora zagotoviti posebej.
+23. **`DatabaseDriver::insertObject()` preskoči lastnosti z vrednostjo `null`**, zato stolpec dobi privzeto vrednost iz baze. Zato `User` brez nastavljenega `block` dobi 0 iz sheme — in zato nastavljanje privzetkov ni nujno, je pa treba vedeti, da se `null` ne zapiše.
 
 ## Pretok podatkov *(dopolnjuje se po nalogah)*
 
@@ -144,5 +146,7 @@ Metode adapterja:
 - `jeClan($acymId, $listaId)` preveri znanega AcyMailing uporabnika.
 - `poisciPoId($acymId)` vrne naročnika brez preverjanja liste.
 - `idjiClanov($listaId)` vrne trenutne člane liste za poznejšo sinhronizacijo.
+
+**Sinhronizacija stanja računa (D52, preverjeno na DDEV):** AcyMailingov uporabniški vtičnik zrcali Joomlino polje `block` v `acym_user.active` — blokada postavi 0, odblokada 1. Nastavitve za izklop ni. Posledica: blokiran Joomla uporabnik po pravilu D44 ni več član in izgubi tudi pošto z vseh drugih klubskih list. Zato komponenta polja `block` nikoli ne spreminja in se članstvo uveljavlja prek skupine "Člani" (D53). Isto velja za opravila iz naloge 12.
 
 Možnosti komponente imajo zavihek **AcyMailing**, kjer admin izbere `lista_clanov` in `lista_runde` prek polja `Administrator\Field\AcymlistaField`. Pogled `preverjanje` je ročni test adapterja po posodobitvah AcyMailinga: admin vnese email, rezultat pa se prenese prek seje po preusmeritvi. Dostop do pogleda in akcije `preverjanje.preveri` zahteva `core.admin` na `com_belauncerunde`.

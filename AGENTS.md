@@ -14,7 +14,7 @@ Nimaš dostopa do Joomle, baze ali DDEV. Kode ne moreš zagnati v Joomli. Zato p
 ## 1. Preden začneš
 
 Preberi v tem vrstnem redu:
-1. `docs/osnova-projekta.md` — **edini vir resnice** (odločitve D1–D51, podatkovni model, pravila).
+1. `docs/osnova-projekta.md` — **edini vir resnice** (odločitve D1–D53, podatkovni model, pravila).
 2. `docs/ARCHITECTURE.md` — struktura in **obvezna pravila za Joomlo 6** (izkušnje iz prejšnjega projekta).
 3. `docs/naloge/NALOGA-xx.md` — naloga, ki jo izvajaš.
 4. `docs/TASKS.md` — kje smo.

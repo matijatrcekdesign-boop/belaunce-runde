@@ -335,14 +335,16 @@ Matija preveri na DDEV. **Pred testom:** Joomla mail na Mailpit (SMTP `localhost
 10. **AcyMailing ostane nedotaknjen:** `SELECT COUNT(*) FROM dipxn_acym_user; SELECT COUNT(*), status FROM dipxn_acym_user_has_list WHERE list_id = 6 GROUP BY status;` pred in po testu — enako kot prej. Pri tvojem naročniku se je (po AcyMailingovi nastavitvi) smela spremeniti samo `cms_id` na ID novega uporabnika.
 11. **"Zapomni si me":** zapri brskalnik (ali pobriši sejni piškotek, piškotek `joomla_remember_me_*` pa pusti) in znova odpri stran → še vedno si prijavljen. Odjava prek `index.php?option=com_users&task=user.logout&…` deluje.
 12. **Druga prijava:** znova zahtevaj povezavo in se prijavi → **ne** nastane nov Joomla uporabnik (isti ID), `zadnja_prijava` se posodobi.
-13. **Blokiran član:** v *Users* blokiraj svojega člana, zahtevaj novo povezavo in se prijavi → uporabnik se **odblokira** in prijava uspe.
-14. **Tuj račun:** Super Userju (ali drugemu uporabniku, ki ni v skupini "Člani") začasno nastavi email, ki je na listi članov; zahtevaj povezavo in jo porabi → prijava **ne** uspe, Super User ostane nedotaknjen, dogodek je v dnevniku. (Nato email vrni.)
+13. **Članstvo prek skupine** (prepisano po odločitvi A, glej D52/D53):
+    a. Uporabniku odvzemi skupino "Člani" (`DELETE FROM #__belaunce_user_usergroup_map` oz. v *Users*), nato zahtevaj povezavo in se prijavi → prijava uspe, **skupina se vrne**, v dnevniku `SKUPINA_VRNJENA`.
+    b. Blokado nastavi **neposredno v bazi** (`UPDATE #__users SET block=1`, da AcyMailing ne postavi `active = 0`), nato zahtevaj povezavo in jo porabi → prijava **ne** uspe, `block` ostane **1**, v dnevniku `COM_BELAUNCERUNDE_NAPAKA_BLOKIRAN`.
+14. **Tuj račun:** ustvari ločen Joomla račun v skupini Registered (ne Člani) z novim emailom, **nato** tega naročnika v AcyMailingu dodaj na listo članov. Zahtevaj povezavo zanj in jo porabi → prijava **ne** uspe, račun ostane samo v svoji skupini in neblokiran, nova vrstica v `#__belaunce_clani` ne nastane, v dnevniku pa `COM_BELAUNCERUNDE_NAPAKA_EMAIL_ZASEDEN`. Vrstni red je pomemben: najprej Joomla račun, šele nato lista.
 15. **Omejitev:** štirikrat zapored zahtevaj povezavo za isti email (privzeto 3/uro) → četrtič sporočilo ostane enako, novega maila ni, v `dipxn_belaunce_poskusi` so vrstice s hashiranim ključem (nikjer surovega emaila).
 16. **Potek:** v bazi ročno nastavi `potece` v preteklost in porabi povezavo → prijava ne uspe z razumljivim sporočilom.
 17. **ID runde:** odpri `view=prijava&runda_id=1`, zahtevaj povezavo → v `dipxn_belaunce_zetoni.runda_id` je `1`, stran povezave omenja naslov runde; prijava deluje (vpisa na rundo še ni).
 18. **Navadna prijava ni pokvarjena:** prijava v administracijo z geslom in prijava člana z geslom (če obstaja) delujeta kot prej.
 19. Brez PHP opozoril; administracija in frontend delujeta z **izklopljenim** vtičnikom za združljivost za nazaj.
-20. Odstranitev z `ohrani_podatke = 0` pobriše tri nove tabele in predlogo maila; z `ohrani_podatke = 1` jih pusti.
+20. Odstranitev z `ohrani_podatke = 0` pobriše tri nove tabele in predlogo maila; z `ohrani_podatke = 1` jih pusti. **Preloženo na nalogo 14**, ker test pobriše vse tabele, ki jih potrebujeta nalogi 05 in 06.
 
 ## 12. Dokumentacija
 - `ARCHITECTURE.md`: razdelek **Prijava z magic linkom** — tok od obrazca do seje, vloge `ZetonService`, `ClanService`, `OmejitevHelper` in vtičnika, zakaj avtentikacijo opravi vtičnik (D48), zahteva po obeh piškotkovnih vtičnikih (D43). Dopolni tabelo razširitev in seznam tabel po nalogah.

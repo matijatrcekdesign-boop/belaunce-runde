@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\Table\Usergroup;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
@@ -47,8 +48,23 @@ class Com_BelauncerundeInstallerScript
             $id = $this->pripraviSkupinoClani($db);
             $this->shraniParameter($db, 'skupina_clani', $id);
         } catch (\Throwable $exception) {
-            Log::add($exception->getMessage(), Log::ERROR, 'com_belauncerunde');
+            Log::add('NAMESTITEV_SKUPINA_NAPAKA', Log::ERROR, 'com_belauncerunde');
             Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_GROUP_FAILED'), 'warning');
+        }
+
+        // Vsak korak je neodvisen: napaka skupine ne sme preskočiti priprave vtičnika ali pošte.
+        try {
+            $this->pripraviVticnike(Factory::getContainer()->get(DatabaseInterface::class));
+        } catch (\Throwable $napaka) {
+            Log::add('NAMESTITEV_VTICNIK_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_VTICNIK_NAPAKA'), 'warning');
+        }
+
+        try {
+            $this->pripraviPostnoPredlogo();
+        } catch (\Throwable $napaka) {
+            Log::add('NAMESTITEV_MAIL_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA'), 'warning');
         }
 
         return true;
@@ -73,6 +89,7 @@ class Com_BelauncerundeInstallerScript
 
         try {
             $db      = Factory::getContainer()->get(DatabaseInterface::class);
+            MailTemplate::deleteTemplate('com_belauncerunde.prijava');
             $sqlPath = __DIR__ . '/sql/uninstall.mysql.utf8.sql';
 
             if (!is_file($sqlPath)) {
@@ -88,7 +105,7 @@ class Com_BelauncerundeInstallerScript
                 $db->execute();
             }
         } catch (\Throwable $exception) {
-            Log::add($exception->getMessage(), Log::ERROR, 'com_belauncerunde');
+            Log::add('ODSTRANITEV_PODATKI_NAPAKA', Log::ERROR, 'com_belauncerunde');
         }
 
         return true;
@@ -247,6 +264,61 @@ class Com_BelauncerundeInstallerScript
             ->bind(':extension_id', $extensionId, ParameterType::INTEGER);
         $db->setQuery($query);
         $db->execute();
+    }
+
+    /** Registrira privzeto predlogo enkrat; adminovih popravkov ne prepisuje. */
+    private function pripraviPostnoPredlogo(): void
+    {
+        if (MailTemplate::getTemplate('com_belauncerunde.prijava', '') === null) {
+            if (!MailTemplate::createTemplate(
+                'com_belauncerunde.prijava',
+                'COM_BELAUNCERUNDE_MAIL_PRIJAVA_SUBJECT',
+                'COM_BELAUNCERUNDE_MAIL_PRIJAVA_BODY',
+                ['IME', 'POVEZAVA', 'VELJAVNOST', 'SITENAME']
+            )) {
+                throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+            }
+        }
+    }
+
+    /** Vklopi naš vtičnik in opozori na manjkajoča vtičnika za daljšo prijavo. */
+    private function pripraviVticnike(DatabaseInterface $db): void
+    {
+        $tip = 'plugin';
+        $mapa = 'authentication';
+        $element = 'belauncerunde';
+        $izklopljen = 0;
+        $vklopljen = 1;
+        $poizvedba = $db->createQuery()->update($db->quoteName('#__extensions'))
+            ->set($db->quoteName('enabled') . ' = :vklopljen')
+            ->where($db->quoteName('type') . ' = :tip')
+            ->where($db->quoteName('folder') . ' = :mapa')
+            ->where($db->quoteName('element') . ' = :element')
+            ->where($db->quoteName('enabled') . ' = :izklopljen')
+            ->bind(':vklopljen', $vklopljen, ParameterType::INTEGER)
+            ->bind(':tip', $tip, ParameterType::STRING)
+            ->bind(':mapa', $mapa, ParameterType::STRING)
+            ->bind(':element', $element, ParameterType::STRING)
+            ->bind(':izklopljen', $izklopljen, ParameterType::INTEGER);
+        $db->setQuery($poizvedba)->execute();
+        Log::add('VTICNIK_VKLOP spremenjeno=' . $db->getAffectedRows(), Log::INFO, 'com_belauncerunde');
+
+        // Jedrnih vtičnikov ne vklapljamo samodejno, ampak admina opozorimo na oba pogoja D43.
+        foreach ([['authentication', 'cookie'], ['system', 'remember']] as [$mapaJedra, $elementJedra]) {
+            $poizvedba = $db->createQuery()->select($db->quoteName('enabled'))
+                ->from($db->quoteName('#__extensions'))
+                ->where($db->quoteName('type') . ' = :tip')
+                ->where($db->quoteName('folder') . ' = :mapa')
+                ->where($db->quoteName('element') . ' = :element')
+                ->bind(':tip', $tip, ParameterType::STRING)
+                ->bind(':mapa', $mapaJedra, ParameterType::STRING)
+                ->bind(':element', $elementJedra, ParameterType::STRING);
+
+            if ((int) $db->setQuery($poizvedba)->loadResult() !== 1) {
+                Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_ZAPOMNI_OPOZORILO'), 'warning');
+                break;
+            }
+        }
     }
 
     /**

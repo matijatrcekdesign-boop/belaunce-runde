@@ -6,6 +6,28 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.4.0] - 2026-10-14
+### Dodano
+- Site obrazec za prijavo člana z emailom in potrditev enkratne povezave prek POST.
+- Tabele za SHA-256 žetone, povezave članov in hashirane ključe omejitev poskusov.
+- `OmejitevHelper`, `ZetonService` in `ClanService` za omejitve, atomarno porabo in članske Joomla račune.
+- Avtentikacijski vtičnik s ponovnim preverjanjem AcyMailing članstva in zavrnitvijo tujega računa; povezanemu članu se po vrnitvi na listo zagotovi skupina Člani.
+- Nastavitve omejitev, veljavnosti povezave in Joomlinega »Zapomni si me«.
+- Uredljiva Joomlina predloga maila `com_belauncerunde.prijava` v slovenščini in angleščini.
+- Samodejni vklop našega vtičnika in opozorilo na potrebna jedrna piškotkovna vtičnika.
+
+### Spremenjeno
+- Paket namesti avtentikacijski vtičnik pred komponento, gradnja pa zapakira vse mape `paket/plg_*`.
+- Namestitev in odstranitev upoštevata novo poštno predlogo ter možnost ohranitve podatkov.
+
+### Popravljeno
+- Ustvarjanje članskega računa poda `User::bind()` spremenljivko namesto literala, kot zahteva podajanje po referenci.
+- Komponenta ob zagonu enkrat na zahtevo registrira lasten dnevnik `com_belauncerunde.php` za oba odjemalca.
+- Diagnostika neuspešne avtentikacije vsebuje razred izjeme, datoteko in vrstico brez sporočila izjeme.
+- Prijavni obrazec uporablja filter `string` z validacijo emaila, povezavi na domačo stran pa neposredni `Uri::root()`.
+- Prijavni pogled sam izriše povratno informacijo iz zaprtega seznama kod stanja v URL-ju; vse zahteve za pošto ohranijo enoten odgovor, sistemska sporočila pa ostanejo.
+- Članstvo se uveljavlja prek skupine Člani brez spreminjanja `block`: blokiran račun je zavrnjen, manjkajoča skupina se vrne samo uporabniku z našo povezavo, druge skupine pa ostanejo.
+
 ## [0.3.0] - 2026-10-10
 ### Dodano
 - Bralni `AcymailingAdapter` za preverjanje članstva po AcyMailing listi.

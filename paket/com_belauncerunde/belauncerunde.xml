@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="component" method="upgrade">
 	<name>COM_BELAUNCERUNDE</name>
-	<version>0.3.0</version>
+	<version>0.4.0</version>
 	<creationDate>2026-10</creationDate>
 	<author>Belaunce</author>
 	<authorEmail>info@belaunce.cc</authorEmail>
@@ -21,6 +21,17 @@
 			<schemapath type="mysql">sql/updates/mysql</schemapath>
 		</schemas>
 	</update>
+	<files folder="site">
+		<folder>forms</folder>
+		<folder>src</folder>
+		<folder>tmpl</folder>
+	</files>
+	<languages folder="site/language">
+		<language tag="sl-SI">sl-SI/com_belauncerunde.ini</language>
+		<language tag="sl-SI">sl-SI/com_belauncerunde.sys.ini</language>
+		<language tag="en-GB">en-GB/com_belauncerunde.ini</language>
+		<language tag="en-GB">en-GB/com_belauncerunde.sys.ini</language>
+	</languages>
 	<administration>
 		<menu img="class:calendar">COM_BELAUNCERUNDE</menu>
 		<submenu>

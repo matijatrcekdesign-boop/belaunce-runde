@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <layout title="COM_BELAUNCERUNDE_RUNDE_MENU_TITLE" option="COM_BELAUNCERUNDE_RUNDE_MENU_OPTION" />
+    <message>COM_BELAUNCERUNDE_RUNDE_MENU_DESC</message>
+    <fields name="params">
+        <fieldset name="basic">
+            <field name="list_limit" type="number" label="COM_BELAUNCERUNDE_RUNDE_OMEJITEV" default="20" min="1" filter="integer" />
+            <field name="prikazi_filtre" type="radio" label="COM_BELAUNCERUNDE_RUNDE_PRIKAZI_FILTRE" default="1" filter="integer" layout="joomla.form.field.radio.switcher">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+        </fieldset>
+    </fields>
+</metadata>

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "com_belauncerunde",
+  "version": "0.5.0",
+  "assets": [
+    {
+      "name": "com_belauncerunde.site",
+      "type": "style",
+      "uri": "com_belauncerunde/site.css"
+    }
+  ]
+}

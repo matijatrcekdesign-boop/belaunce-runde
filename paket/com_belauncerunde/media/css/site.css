@@ -1,0 +1,11 @@
+/* Opombe ostanejo navadno besedilo, vendar ohranijo prelome vrstic. */
+.br-opombe {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Dolgi naslovi in lokacije ne smejo razširiti mobilnega zaslona. */
+.br-runde,
+.br-runda {
+    overflow-wrap: anywhere;
+}

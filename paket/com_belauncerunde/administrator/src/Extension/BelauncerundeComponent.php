@@ -9,6 +9,8 @@
 
 namespace Belaunce\Component\Belauncerunde\Administrator\Extension;
 
+use Joomla\CMS\Component\Router\RouterServiceInterface;
+use Joomla\CMS\Component\Router\RouterServiceTrait;
 use Joomla\CMS\Extension\BootableExtensionInterface;
 use Joomla\CMS\Extension\MVCComponent;
 use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
@@ -22,9 +24,10 @@ use Psr\Container\ContainerInterface;
  *
  * @since  0.1.0
  */
-class BelauncerundeComponent extends MVCComponent implements BootableExtensionInterface
+class BelauncerundeComponent extends MVCComponent implements BootableExtensionInterface, RouterServiceInterface
 {
     use HTMLRegistryAwareTrait;
+    use RouterServiceTrait;
 
     /** @var bool Ali je zapisovalnik v trenutni zahtevi že registriran. */
     private static bool $dnevnikRegistriran = false;

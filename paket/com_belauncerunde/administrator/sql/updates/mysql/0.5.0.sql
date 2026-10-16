@@ -1,0 +1,1 @@
+-- Verzija 0.5.0 dodaja javna pogleda in router; podatkovna shema ostane nespremenjena.

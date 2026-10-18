@@ -6,6 +6,18 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.5.0] - 2026-10-16
+### Dodano
+- Javni seznam prihajajočih in še trajajočih rund s filtri GET po tipu in težavnosti ter Joomlino paginacijo.
+- Javna stran runde s časom prek `CasHelper`, oznako odpovedi, varnimi opombami in preverjeno povezavo na traso.
+- SEF router po vzorcu `com_contact`: `/runde` in `/runde/{id}-{alias}` ob menijski postavki za seznam; stare povezave delujejo po ID-ju, canonical uporablja trenutni alias.
+- Tip menijske postavke **Seznam rund** z nastavitvama števila rund na stran in vidnosti filtrov.
+- Minimalni slog prek WebAssetManagerja in prevodi v slovenščini ter angleščini.
+- Posodobitveni SQL za verzijo 0.5.0 brez sprememb sheme ali podatkov.
+
+### Spremenjeno
+- Privzeti pogled strani je javni seznam rund; prijava članov ostaja dostopna prek svojega pogleda in menijske postavke.
+
 ## [0.4.0] - 2026-10-14
 ### Dodano
 - Site obrazec za prijavo člana z emailom in potrditev enkratne povezave prek POST.

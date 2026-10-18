@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="component" method="upgrade">
 	<name>COM_BELAUNCERUNDE</name>
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 	<creationDate>2026-10</creationDate>
 	<author>Belaunce</author>
 	<authorEmail>info@belaunce.cc</authorEmail>
@@ -32,6 +32,10 @@
 		<language tag="en-GB">en-GB/com_belauncerunde.ini</language>
 		<language tag="en-GB">en-GB/com_belauncerunde.sys.ini</language>
 	</languages>
+	<media destination="com_belauncerunde" folder="media">
+		<folder>css</folder>
+		<filename>joomla.asset.json</filename>
+	</media>
 	<administration>
 		<menu img="class:calendar">COM_BELAUNCERUNDE</menu>
 		<submenu>

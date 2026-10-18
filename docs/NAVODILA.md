@@ -12,6 +12,18 @@ Uporabniška navodila nastajajo postopoma z nalogami. Vsaka naloga dopolni svoj 
 
 Pri odstranitvi paket privzeto ohrani tabele s podatki. Če želiš tabele izbrisati, pred odstranitvijo v možnostih izklopi **Ohrani podatke ob odstranitvi**.
 
+### Menijska postavka za runde
+
+1. V *Meniji → Main Menu → Nov* izberi tip **Runde Belaunce → Seznam rund**.
+2. Nastavi naslov (npr. Runde), alias **runde**, stanje **Objavljeno** in dostop **Public**, da seznam deluje tudi odjavljenim obiskovalcem.
+3. V osnovnih možnostih nastavi **Število rund na stran** (privzeto 20) in **Prikaži filtre** (privzeto Da). Za preverjanje paginacije lahko začasno nastaviš 2 rundi na stran.
+4. V globalnih nastavitvah Joomle vključi **Search Engine Friendly URLs**. Za pot brez `index.php` mora biti pravilno nastavljeno tudi prepisovanje URL-jev na strežniku.
+5. Odpri `/runde` in klikni naslov runde. Povezava mora imeti obliko `/runde/{id}-{alias}`.
+
+Brez te menijske postavke Joomla uporablja `/component/belauncerunde/…`; to je pričakovano. Seznam je dosegljiv tudi neposredno na `index.php?option=com_belauncerunde&view=runde`. Pogleda posamezne runde ni mogoče izbrati kot tip menijske postavke. Prijava za člane ostaja samostojna menijska postavka oziroma pogled `view=prijava`.
+
+Filtra se oddata z gumbom **Filtriraj**, izbira je v URL-ju in povezavo lahko deliš. **Počisti** vrne na seznam brez filtrov. Če filtre v menijski postavki skriješ, se obrazec ne prikaže; filtri v že deljenih povezavah še vedno veljajo.
+
 ### Runde v administraciji
 Runde so privzeti pogled pod *Komponente → Runde Belaunce*. Seznam omogoča iskanje po naslovu ali lokaciji, iskanje po ID z obliko `id:12`, filtre po tipu, težavnosti, stanju, vodji in obdobju ter razvrščanje po začetku, naslovu, stanju in ID.
 
@@ -75,6 +87,14 @@ Odpri povezavo iz maila in klikni **Prijavi me**. Samo odpiranje povezave te še
 Ob prvi prijavi se račun ustvari samodejno, gesla ne izbiraš. Naslednje prijave uporabijo isti račun. Če je vključena daljša prijava, Joomlin piškotek ohrani prijavo tudi po izteku kratke seje; odjaviš se z običajno Joomlino odjavo.
 
 Če povezava omenja rundo, njen naslov v verziji 0.4.0 služi samo kot informacija. Vpis udeležbe po prijavi pride z nalogo 06.
+
+## Kaj vidi obiskovalec
+
+Seznam in posamezne runde so javni, tudi v zasebnem oknu brez prijave. Seznam prikazuje naslov, datum in uro štarta, tip, težavnost, lokacijo, dolžino in polno ime vodje. Ura je v časovnem pasu iz možnosti komponente (privzeto Europe/Ljubljana), ne v časovnem pasu Joomle ali obiskovalca.
+
+Odpovedane runde ostanejo vidne z oznako **Odpovedano**. Runda izgine s seznama šele po začetku in trajanju; če trajanje ni vpisano, se uporabi privzeto trajanje iz možnosti. Njena neposredna povezava ostane dostopna tudi pozneje.
+
+Stran runde prikaže še trajanje, opombe in veljavno povezavo na traso v novem oknu. Če vodja ne obstaja več, je njegovo ime prazno. Sprememba aliasa ne pokvari stare povezave: runda se poišče po ID-ju, kanonična povezava v izvorni kodi pa kaže trenutni URL. Neobstoječa ali nejavna runda vrne 404. V verziji 0.5.0 ni prijavljanja na runde, seznama prijavljenih ali kontaktov gostov; to dodajo naslednje naloge.
 
 ## Za goste
 *(naloga 08)*

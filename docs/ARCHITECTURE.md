@@ -60,7 +60,7 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 
 ## Prijava z magic linkom
 
-`GET view=prijava` → `POST prijava.poslji` → mail s povezavo → `GET view=povezava` → potrditveni `POST povezava.prijavi` → Joomlin `login()` → `plg_authentication_belauncerunde` → Joomlin `onUserLogin` in seja. Site del uporablja isti `administrator/services/provider.php` kot administracija. Privzeti site pogled je do naloge 05 `prijava`; `tmpl/prijava/default.xml` omogoča tudi menijsko postavko.
+`GET view=prijava` → `POST prijava.poslji` → mail s povezavo → `GET view=povezava` → potrditveni `POST povezava.prijavi` → Joomlin `login()` → `plg_authentication_belauncerunde` → Joomlin `onUserLogin` in seja. Site del uporablja isti `administrator/services/provider.php` kot administracija. Privzeti site pogled je od naloge 05 `runde`; `tmpl/prijava/default.xml` še naprej omogoča menijsko postavko za prijavo.
 
 Kontroler `PrijavaController` najprej preveri POST in CSRF, nato stanje gosta, filtrira in normalizira email ter pred vsakim dostopom do AcyMailinga zabeleži poskuse. `OmejitevHelper` hrani SHA-256 emaila oziroma IP-ja in šteje poskuse v zadnjih 60 minutah. Vhodni IP je samo `REMOTE_ADDR`. Neveljaven email, nečlan, presežena omejitev in napaka pošte dobijo isto sporočilo in preusmeritev kot uspešna zahteva.
 
@@ -79,6 +79,18 @@ Za **Zapomni si me** morata biti vklopljena **Authentication – Cookie** in **S
 Mail uporablja Joomlino predlogo `com_belauncerunde.prijava` z oznakami `{IME}`, `{POVEZAVA}`, `{VELJAVNOST}`, `{SITENAME}` (D50). `postflight` jo ustvari samo, če še ne obstaja; adminove spremembe ostanejo. Privzeta besedila so v site jezikovnih datotekah, absolutna povezava se sestavi z `Uri::root()` brez odvisnosti od menija. Pri odstranitvi se predloga in tri tabele izbrišejo samo pri `ohrani_podatke = 0`. Dnevnik prijave vsebuje samo kode in ID-je.
 
 ID runde je v žetonu in po uspešni avtentikaciji v seji `com_belauncerunde.runda_po_prijavi`. **V nalogi 04 ga nihče ne bere in udeležbe ne vpisuje**; to prevzame naloga 06. Naslov runde na potrditvenem gumbu je trenutno informativen.
+
+## Frontend seznam in router
+
+`Site\Model\RundeModel` bere javna polja rund s stanjem 1 ali 2, poveže naziva šifrantov in polno ime vodje prek `LEFT JOIN` ter jih razvrsti po začetku naraščajoče (pri istem času po ID-ju). Seznam vključuje runde do konca: `DATE_ADD(zacetek, INTERVAL COALESCE(trajanje_min, :privzeto_trajanje) MINUTE) >= UTC_TIMESTAMP()`. Filtra `filter_tip` in `filter_tezavnost` se bereta iz GET brez shranjevanja izbire v seji; paginacija ohrani oba filtra. Odmik se bere kot `limitstart` iz glavnega vhoda aplikacije, kjer ga jedrni `SiteRouter::parsePaginationData()` pretvori iz SEF parametra `start`. Menijska parametra sta `list_limit` (20) in `prikazi_filtre` (1).
+
+`Site\Model\RundaModel` poišče objavljeno ali odpovedano rundo izključno po ID-ju, brez časovne omejitve. Zato končane runde izginejo s seznama, njihove strani pa ostanejo dostopne. `Site\View\Runda\HtmlView` pri manjkajočem ali nejavnem zapisu vrže `GenericDataException` s kodo 404. Oba pogleda oblikujeta čas šele po `CasHelper::izUtc()` in naložita `com_belauncerunde.site` prek WebAssetManagerja. Opombe ostanejo escapirano besedilo; trasa se izpiše samo za preverjen HTTP/HTTPS URL. Podatki prijavljenih in kontaktni podatki se ne berejo.
+
+Potrjeni SEF poti sta `/runde` in `/runde/{id}-{alias}`. `Site\Service\Router` razširi `RouterView`, registrira `runde` in podrejeni `runda` s ključem `id` ter pripne `MenuRules`, `StandardRules` in `NomenuRules` v tem vrstnem redu po vzorcu jedra 6.1 `components/com_contact/src/Service/Router.php`. Registrira tudi obstoječa pogleda `prijava` in `povezava`, da ostane tok prijave dosegljiv pri vključenem SEF.
+
+Skupni ponudnik `administrator/services/provider.php` registrira `RouterFactory` in jo preda komponenti prek `RouterFactoryInterface`; razred komponente implementira `RouterServiceInterface` in uporablja `RouterServiceTrait` iz `Joomla\CMS\Component\Router`. Konstruktor routerja sprejme tudi neuporabljeni nullable argument za kategorije, ker ga jedrna `libraries/src/Component/Router/RouterFactory.php` vedno posreduje pred bazo.
+
+Router pri gradnji bere trenutni alias z vezanim ID-jem; pri razčlenjevanju vrne številčni ID in ne zavrne starega aliasa ali manjkajočega zapisa. Pogled doda absolutni `<link rel="canonical">` s trenutnim URL-jem prek `Route::_()`. Sprememba aliasa tako ne pokvari povezav iz Viber zgodovine. Za čisti poti mora obstajati javna menijska postavka tipa **Seznam rund** z aliasom `runde` in vključen SEF; brez postavke Joomla uporabi `/component/belauncerunde/…`.
 
 ## Pravila za Joomlo 6 (obvezna, iz izkušenj s com_kisegonma)
 

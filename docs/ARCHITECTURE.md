@@ -44,7 +44,7 @@ Shema je v `osnova-projekta.md` razdelek 5. Tabele se dodajajo postopoma po nalo
 | `#__belaunce_tipi`, `#__belaunce_tezavnosti` | 01 |
 | `#__belaunce_runde` | 02 |
 | `#__belaunce_zetoni`, `#__belaunce_clani`, `#__belaunce_poskusi` | 04 (0.4.0) |
-| `#__belaunce_prijave` | 06 |
+| `#__belaunce_prijave` | 06 (0.6.0) |
 | `#__belaunce_gostje` | 08 |
 
 Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, `checked_out_time`). Stolpec za objavo se imenuje `stanje`; v razredu `Table` se poveže z `setColumnAlias('published', 'stanje')`, da delujejo Joomlini gumbi za objavo.
@@ -78,19 +78,33 @@ Za **Zapomni si me** morata biti vklopljena **Authentication – Cookie** in **S
 
 Mail uporablja Joomlino predlogo `com_belauncerunde.prijava` z oznakami `{IME}`, `{POVEZAVA}`, `{VELJAVNOST}`, `{SITENAME}` (D50). `postflight` jo ustvari samo, če še ne obstaja; adminove spremembe ostanejo. Privzeta besedila so v site jezikovnih datotekah, absolutna povezava se sestavi z `Uri::root()` brez odvisnosti od menija. Pri odstranitvi se predloga in tri tabele izbrišejo samo pri `ohrani_podatke = 0`. Dnevnik prijave vsebuje samo kode in ID-je.
 
-ID runde je v žetonu in po uspešni avtentikaciji v seji `com_belauncerunde.runda_po_prijavi`. **V nalogi 04 ga nihče ne bere in udeležbe ne vpisuje**; to prevzame naloga 06. Naslov runde na potrditvenem gumbu je trenutno informativen.
+ID runde je v žetonu in po uspešni avtentikaciji v seji `com_belauncerunde.runda_po_prijavi`. Od verzije 0.6.0 ga kontroler `PovezavaController` po uspešni prijavi takoj prebere in odstrani ter potrdi udeležbo po spodnjem toku D40.
 
 ## Frontend seznam in router
 
 `Site\Model\RundeModel` bere javna polja rund s stanjem 1 ali 2, poveže naziva šifrantov in polno ime vodje prek `LEFT JOIN` ter jih razvrsti po začetku naraščajoče (pri istem času po ID-ju). Seznam vključuje runde do konca: `DATE_ADD(zacetek, INTERVAL COALESCE(trajanje_min, :privzeto_trajanje) MINUTE) >= UTC_TIMESTAMP()`. Filtra `filter_tip` in `filter_tezavnost` se bereta iz GET brez shranjevanja izbire v seji; paginacija ohrani oba filtra. Odmik se bere kot `limitstart` iz glavnega vhoda aplikacije, kjer ga jedrni `SiteRouter::parsePaginationData()` pretvori iz SEF parametra `start`. Menijska parametra sta `list_limit` (20) in `prikazi_filtre` (1).
 
-`Site\Model\RundaModel` poišče objavljeno ali odpovedano rundo izključno po ID-ju, brez časovne omejitve. Zato končane runde izginejo s seznama, njihove strani pa ostanejo dostopne. `Site\View\Runda\HtmlView` pri manjkajočem ali nejavnem zapisu vrže `GenericDataException` s kodo 404. Oba pogleda oblikujeta čas šele po `CasHelper::izUtc()` in naložita `com_belauncerunde.site` prek WebAssetManagerja. Opombe ostanejo escapirano besedilo; trasa se izpiše samo za preverjen HTTP/HTTPS URL. Podatki prijavljenih in kontaktni podatki se ne berejo.
+`Site\Model\RundaModel` poišče objavljeno ali odpovedano rundo izključno po ID-ju, brez časovne omejitve. Zato končane runde izginejo s seznama, njihove strani pa ostanejo dostopne. `Site\View\Runda\HtmlView` pri manjkajočem ali nejavnem zapisu vrže `GenericDataException` s kodo 404. Oba pogleda oblikujeta čas šele po `CasHelper::izUtc()` in naložita `com_belauncerunde.site` prek WebAssetManagerja. Opombe ostanejo escapirano besedilo; trasa se izpiše samo za preverjen HTTP/HTTPS URL. Kontaktni podatki se ne berejo. Od verzije 0.6.0 se imena udeležencev berejo samo za člana; javnost vidi število in javno ime vodje.
 
 Potrjeni SEF poti sta `/runde` in `/runde/{id}-{alias}`. `Site\Service\Router` razširi `RouterView`, registrira `runde` in podrejeni `runda` s ključem `id` ter pripne `MenuRules`, `StandardRules` in `NomenuRules` v tem vrstnem redu po vzorcu jedra 6.1 `components/com_contact/src/Service/Router.php`. Registrira tudi obstoječa pogleda `prijava` in `povezava`, da ostane tok prijave dosegljiv pri vključenem SEF.
 
 Skupni ponudnik `administrator/services/provider.php` registrira `RouterFactory` in jo preda komponenti prek `RouterFactoryInterface`; razred komponente implementira `RouterServiceInterface` in uporablja `RouterServiceTrait` iz `Joomla\CMS\Component\Router`. Konstruktor routerja sprejme tudi neuporabljeni nullable argument za kategorije, ker ga jedrna `libraries/src/Component/Router/RouterFactory.php` vedno posreduje pred bazo.
 
 Router pri gradnji bere trenutni alias z vezanim ID-jem; pri razčlenjevanju vrne številčni ID in ne zavrne starega aliasa ali manjkajočega zapisa. Pogled doda absolutni `<link rel="canonical">` s trenutnim URL-jem prek `Route::_()`. Sprememba aliasa tako ne pokvari povezav iz Viber zgodovine. Za čisti poti mora obstajati javna menijska postavka tipa **Seznam rund** z aliasom `runde` in vključen SEF; brez postavke Joomla uporabi `/component/belauncerunde/…`.
+
+## Udeležba na rundi
+
+`#__belaunce_prijave` hrani `runda_id`, `uporabnik_id` in UTC `ustvarjeno`; unikatni par runda/uporabnik preprečuje podvojitev. Obstoj vrstice pomeni udeležbo, odjava jo izbriše. **D54:** vodji se vrstica nikoli ne vstavlja, ne ponudi se mu gumba za prijavo ali odjavo. `PrijaveModel::steviloUdelezencev()` na enem mestu sešteje prijave in obstoječega vodjo; če uporabnika vodje ni več, ga ne šteje. Naloga 08 bo prav v tej metodi prištela goste. `RundaTable::store()` v isti transakciji kot shranjevanje runde odstrani morebitno prijavo trenutnega vodje, zato D54 velja tudi pri administratorski zamenjavi vodje z že prijavljenim članom.
+
+`RundaController` pri obeh akcijah `runda.pridem` in `runda.odjava` preveri POST, CSRF in članstvo. Članstvo preveri tudi `PovezavaController` v toku D40 ter model pred branjem imen in pred zapisom. Enotna metoda `PrijaveModel::jeClan()` zahteva prijavljeno Joomlino identiteto in skupino iz `skupina_clani`. ID uporabnika vedno pride iz identitete, ID runde iz POST oziroma porabljenega žetona, nikoli povratni URL. Pogled ločeno preveri članstvo, predloga pa imena izriše samo članu.
+
+`PrijaveModel::pridem()` je ista metoda za običajni POST in D40. Skupna pravila zavrnejo nejavno, odpovedano ali že štartano rundo in ohranijo samodejno udeležbo vodje brez vrstice. SQL zapis še enkrat preveri stanje, UTC štart in vodjo. `INSERT IGNORE ... SELECT` skupaj z unikatnim ključem prenese sočasne prijave, `DELETE` pa odstrani samo lastno vrstico. Ponovitev prijave ali odjave ni napaka. Dnevnik vsebuje samo kode in ID-je.
+
+Pri D40 kontroler takoj po uspešnem `login()` prebere in **takoj odstrani** `com_belauncerunde.runda_po_prijavi`, nato uporabi `pridem()`. Pred novim poskusom prijave odstrani tudi morebiten ostanek predhodnega neuspeha. Ob odprti rundi preusmeri na njeno stran s `stanje=prijavljen`; ob odpovedi ali štartu s `stanje=runda_zaprta`. Če je bila runda medtem izbrisana ali ni več javna, njena stran ohrani dosedanji odgovor 404; prikaz obvestila za ta robni primer ostaja vprašanje za arhitekta v PR. Brez ID-ja runde ostane dosedanja preusmeritev `view=prijava&stanje=uspeh`.
+
+Javni in članski del kažeta število; seznam imen je vodja z značko, nato prijave po `ustvarjeno, id`, samo prek `#__users.name` in `LEFT JOIN`. Ni emailov, telefonov ali IP-jev. Povratne kode so zaprti seznam `prijavljen`, `odjavljen`, `ni_clan`, `runda_zaprta`, `napaka`; neznana koda nima izpisa. Joomlina sistemska sporočila ostanejo.
+
+Meja za akcije je **štart**, za seznam in oznako končane runde pa **konec** z `COALESCE(trajanje_min, privzeto_trajanje_min)`. Obe meji model preveri z uro baze v UTC. Končana runda ostane dosegljiva, pokaže obvestilo, povezavo na prihajajoče in `robots=noindex, follow`. Open Graph uporablja isti absolutni URL kot canonical; opis sestavljajo samo lokalni datum/ura, tip, težavnost in dolžina iz jezikovnega niza. `Document::setMetaData(..., 'property')` in jedrni `MetasRenderer` poskrbita za izris in escapiranje (Joomla 6.1: `libraries/src/Document/Document.php`, `libraries/src/Document/Renderer/Html/MetasRenderer.php`).
 
 ## Pravila za Joomlo 6 (obvezna, iz izkušenj s com_kisegonma)
 

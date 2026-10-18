@@ -49,8 +49,11 @@ class RundaController extends BaseController
             $stanje = 'napaka';
         }
 
-        $url = 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId . '&stanje=' . $stanje;
-        $this->setRedirect(Route::_($url, false), Text::_('COM_BELAUNCERUNDE_UDELEZBA_' . strtoupper($stanje)),
+        // Star obrazec lahko kaže na medtem izbrisano rundo; obvestilo zato prikaže seznam.
+        $url = $stanje === 'runda_ni_najdena'
+            ? 'index.php?option=com_belauncerunde&view=runde'
+            : 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId;
+        $this->setRedirect(Route::_($url . '&stanje=' . $stanje, false), Text::_('COM_BELAUNCERUNDE_UDELEZBA_' . strtoupper($stanje)),
             \in_array($stanje, ['prijavljen', 'odjavljen'], true) ? 'message' : 'warning');
     }
 }

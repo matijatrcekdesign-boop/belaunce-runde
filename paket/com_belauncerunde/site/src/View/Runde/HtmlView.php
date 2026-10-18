@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\View\Runde;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Router\Route;
@@ -15,6 +16,13 @@ use Joomla\Registry\Registry;
 /** Pripravi javni seznam, filtre in Joomlino paginacijo. */
 class HtmlView extends BaseHtmlView
 {
+    /** Zaprt seznam dovoljenih obvestil; vsebina URL-ja se nikoli ne izpiše neposredno. */
+    private const OBVESTILA = [
+        'runda_ni_najdena' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_UDELEZBA_RUNDA_NI_NAJDENA'],
+    ];
+
+    /** @var array|null Obvestilo iz zaprtega seznama; neznana koda nima izpisa. */
+    public ?array $obvestilo = null;
     /** @var array Javne runde za trenutno stran. */
     public array $runde = [];
     /** @var array Objavljeni tipi. */
@@ -42,6 +50,8 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null): void
     {
+        $stanje = Factory::getApplication()->getInput()->getCmd('stanje', '');
+        $this->obvestilo = self::OBVESTILA[$stanje] ?? null;
         $model = $this->getModel();
         $this->runde = $model->getItems();
         $this->tipi = $model->tipi();

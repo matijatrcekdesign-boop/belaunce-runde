@@ -124,7 +124,11 @@ class PrijaveModel extends BaseDatabaseModel
 
         $runda = $this->rundaZaUdelezbo($rundaId);
 
-        if (!$runda || (int) $runda->stanje !== 1 || !(bool) $runda->pred_startom) {
+        if ($runda === null) {
+            return 'runda_ni_najdena';
+        }
+
+        if ((int) $runda->stanje !== 1 || !(bool) $runda->pred_startom) {
             return 'runda_zaprta';
         }
 
@@ -163,7 +167,11 @@ class PrijaveModel extends BaseDatabaseModel
         if ($spremenjeno === 0) {
             $runda = $this->rundaZaUdelezbo($rundaId);
 
-            if (!$runda || (int) $runda->stanje !== 1 || !(bool) $runda->pred_startom) {
+            if ($runda === null) {
+                return 'runda_ni_najdena';
+            }
+
+            if ((int) $runda->stanje !== 1 || !(bool) $runda->pred_startom) {
                 return 'runda_zaprta';
             }
 
@@ -172,8 +180,11 @@ class PrijaveModel extends BaseDatabaseModel
             }
         }
 
-        Log::add(($prihod ? 'PRIJAVA_DODANA' : 'PRIJAVA_ODSTRANJENA')
-            . ' runda_id=' . $rundaId . ' uporabnik_id=' . $uporabnikId, Log::INFO, 'com_belauncerunde');
+        // Ponovitev iste zahteve je uspešna, vendar brez spremembe ne beležimo dodajanja ali odstranitve.
+        if ($spremenjeno > 0) {
+            Log::add(($prihod ? 'PRIJAVA_DODANA' : 'PRIJAVA_ODSTRANJENA')
+                . ' runda_id=' . $rundaId . ' uporabnik_id=' . $uporabnikId, Log::INFO, 'com_belauncerunde');
+        }
 
         return $prihod ? 'prijavljen' : 'odjavljen';
     }

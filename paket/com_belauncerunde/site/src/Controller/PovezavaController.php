@@ -75,7 +75,10 @@ class PovezavaController extends BaseController
                     $stanje = 'napaka';
                 }
 
-                $cilj = 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId;
+                // Za izbrisano ali nejavno rundo pokažemo obvestilo na seznamu, da uspešni prijavi ne sledi 404.
+                $cilj = $stanje === 'runda_ni_najdena'
+                    ? 'index.php?option=com_belauncerunde&view=runde'
+                    : 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId;
                 $this->setRedirect(Route::_($cilj . '&stanje=' . $stanje, false),
                     Text::_('COM_BELAUNCERUNDE_UDELEZBA_' . strtoupper($stanje)),
                     $stanje === 'prijavljen' ? 'message' : 'warning');

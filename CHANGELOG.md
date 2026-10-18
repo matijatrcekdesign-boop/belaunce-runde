@@ -16,6 +16,11 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Zaprte kode povratnih obvestil, pojasnila ob odpovedi in štartu ter obvestilo in `noindex, follow` za končane runde.
 - Open Graph oznake z javnimi podatki, lokalnim časom in kanoničnim URL-jem brez opomb in imen udeležencev.
 
+### Popravljeno
+
+- Tok D40 in običajni akciji udeležbe za medtem izbrisano ali nejavno rundo vrnejo na seznam z opozorilom namesto na 404; odpovedana ali štartana runda ostane ločeno obravnavana kot zaprta.
+- Dnevnik zabeleži dodajanje oziroma odstranjevanje prijave samo ob dejanski spremembi, ne ob ponovitvi iste zahteve.
+
 ## [0.5.0] - 2026-10-16
 ### Dodano
 - Javni seznam prihajajočih in še trajajočih rund s filtri GET po tipu in težavnosti ter Joomlino paginacijo.

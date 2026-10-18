@@ -14,8 +14,8 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 02 | Backend runde: tabela, seznam s filtri, urejanje, brisanje, zamenjava vodje, `CasHelper` (UTC ↔ `casovni_pas`) | 0.2.0 | 01 | ✅ |
 | 03 | Adapter AcyMailing (samo branje, D45), izbira list v Možnostih (D46), diagnostika "Preveri člana" | 0.3.0 | 01 | ✅ |
 | 04 | Prijava z magic linkom: obrazec za email, žetoni, omejitve poskusov, vtičnik za avtentikacijo, ustvarjanje uporabnika v skupini "Člani", "Zapomni si me" | 0.4.0 | 03 | ✅ |
-| 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | 🟡 |
-| 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | ⬜ |
+| 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | ✅ |
+| 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | 🟡 |
 | 07 | Frontend obrazec runde: ustvari, uredi, odpovej (pravila 4.1), trasa + vdelave | 0.7.0 | 06 | ⬜ |
 | 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | ⬜ |
 | 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | ⬜ |
@@ -43,7 +43,8 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 - [ ] Scheduler: pravi strežniški cron za Joomlina opravila
 - [ ] Test namestitve paketa na **kopiji produkcije** (MariaDB 10.11, utf8mb3 privzeto) — preveri, da so tabele utf8mb4
 - [ ] Akeeba backup pred namestitvijo, načrt povratka
-- [ ] Menijska postavka za seznam rund (čisti SEF URL-ji brez `/component/…`)
+- [ ] Menijska postavka **Seznam rund** z aliasom `runde` (brez nje so URL-ji `/component/…`)
+- [ ] Menijska postavka **Prijava za člane** z aliasom `prijava` (čist naslov za povezavo „Prijava"; dolga pot `index.php?option=…&view=prijava` mora ostati delujoča zaradi starih mailov)
 
 ## Backlog (izven v1)
 
@@ -52,6 +53,7 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
+- **05** — PR #5, združen 2026-10-18 (`92b7ca9`). Vseh 17 meril ✅ na DDEV, brez popravkov po pregledu. Potrjena oblika URL-jev `/runde` in `/runde/{id}-{alias}`; prehod poletni/zimski čas preverjen na treh rundah.
 - **04** — PR #4, združen 2026-10-16 (`8fe6a00`). 19 od 20 meril ✅ na DDEV; merilo 20 (odstranitev) preloženo na nalogo 14, ker pobriše tabele. Med testom najdena blokerska napaka `User::bind()` po referenci (→ razširjeno pravilo 16), nevidnost lastnega dnevnika (→ pravilo 22) in konflikt med Joomlino blokado in AcyMailingom (→ D52, D53, popravljen D47).
 - **03** — PR #3, združen 2026-10-13 (`6fdf9ff`). Vseh 12 meril ✅ na DDEV; AcyMailing ostal nespremenjen (124/124). Med testom najdeni napaki prednastavljene dolžine in manjkajočega odmika na obrazcih → pravili 17 in dopolnjeno 14 v `ARCHITECTURE.md`.
 - **02** — PR #2, združen 2026-10-10 (`918c64c`). Vseh 16 meril ✅ na DDEV (posodobitev 0.1.0 → 0.2.0, čas poleti/pozimi, brez dvojne pretvorbe). Med pregledom najdena napaka `bind()` po referenci → pravilo 16.

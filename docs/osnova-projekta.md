@@ -73,6 +73,7 @@ Priloga: `docs/osnutek-vmesnika.pdf` (5 zaslonov: seznam, stran runde, nova rund
 | D51 | **Vtičniki paketa se po namestitvi vklopijo iz namestitvenega skripta komponente.** Joomla vse vtičnike razen urejevalnikov namesti **izklopljene** (jedro `libraries/src/Installer/Adapter/PluginAdapter.php`, vrstica 489). V manifestu paketa so vtičniki navedeni **pred** komponento, ker se otroci nameščajo po vrsti iz manifesta. |
 | D52 | **AcyMailing zrcali stanje Joomla računa v `acym_user.active`** (preverjeno na DDEV, 11.1.1): blokada postavi `active = 0`, odblokada nazaj na 1. Nastavitve za izklop te sinhronizacije **ni** (pregledana razdelka *Joomla! integration* in *Advanced configuration*), izklop celotnega vtičnika pa bi vzel tudi povezovanje `cms_id`. |
 | D53 | **Članstvo se uveljavlja prek skupine "Člani", nikoli prek polja `block`.** Komponenta polja `block` ne spreminja: blokiran račun zavrne, odvzete skupine pa ne vrne. Skupino vrne **samo** uporabniku, ki ima zapis v `#__belaunce_clani` in je trenutno na listi članov; račun, najden samo po emailu, članstva nikoli ne dobi. |
+| D54 | **Vodja runde ni nikoli zapisan v `#__belaunce_prijave`.** Šteje se kot udeleženec posebej (število udeležencev = vrstice prijav + vodja + gostje). Tako se vodja ne more podvojiti ne odjaviti s svoje runde, naloga 07 pa ob ustvarjanju runde ne vstavlja posebne vrstice. |
 
 **Označeno kot *predlog*:** izhodišča, ki jih arhitekt lahko spremeni po dogovoru z Matijo.
 
@@ -109,7 +110,7 @@ Vse tabele: `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci` (
 | `#__belaunce_poskusi` | id, tip, kljuc, ustvarjeno | indeks (tip, kljuc, ustvarjeno); `kljuc` je hash emaila ali IP, ne surova vrednost |
 
 - Tabele se ustvarjajo postopoma: vsaka naloga doda svoje tabele v namestitveni SQL **in** v SQL za posodobitev svoje verzije.
-- **URL runde (predlog, čaka potrditev):** `/runde/{id}-{alias}`. Runda se poišče po `id`; če se alias spremeni, stara povezava še vedno deluje (kanonični URL v `<link rel="canonical">`). **URL-jev po izidu ne spreminjati** (povezave so v Viber zgodovini).
+- **URL runde (potrjeno 2026-10-16, preverjeno na DDEV):** `/runde/{id}-{alias}`. Runda se poišče po `id`; če se alias spremeni, stara povezava še vedno deluje (kanonični URL v `<link rel="canonical">`). **URL-jev po izidu ne spreminjati** (povezave so v Viber zgodovini).
 
 ## 6. Prijava in članstvo (hibrid)
 1. Obiskovalec vpiše email → komponenta preveri v AcyMailing: uporabnik aktiven in naročen na **listo članov** (ID liste v možnostih).

@@ -157,7 +157,34 @@ class RundaTable extends Table
             $this->odpovedano = null;
         }
 
-        return parent::store($updateNulls);
+        // D54 velja tudi ob zamenjavi vodje v administraciji: če je bil novi vodja
+        // prej prijavljen, njegovo vrstico odstranimo skupaj s spremembo runde.
+        $baza = $this->getDatabase();
+        $baza->transactionStart();
+
+        try {
+            if (!parent::store($updateNulls)) {
+                $baza->transactionRollback();
+
+                return false;
+            }
+
+            $rundaId = (int) $this->id;
+            $vodjaId = (int) $this->vodja_id;
+            $poizvedba = $baza->createQuery()->delete($baza->quoteName('#__belaunce_prijave'))
+                ->where($baza->quoteName('runda_id') . ' = :runda')
+                ->where($baza->quoteName('uporabnik_id') . ' = :vodja')
+                ->bind(':runda', $rundaId, ParameterType::INTEGER)
+                ->bind(':vodja', $vodjaId, ParameterType::INTEGER);
+            $baza->setQuery($poizvedba)->execute();
+            $baza->transactionCommit();
+
+            return true;
+        } catch (\Throwable $napaka) {
+            $baza->transactionRollback();
+
+            throw $napaka;
+        }
     }
 
     /**

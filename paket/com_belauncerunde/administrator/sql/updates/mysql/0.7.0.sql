@@ -1,0 +1,1 @@
+-- Različica 0.7.0 dodaja frontend obrazec in vdelave tras; brez sprememb sheme ali podatkov.

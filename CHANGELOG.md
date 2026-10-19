@@ -6,6 +6,20 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.7.0] - 2026-10-19
+### Dodano
+- Nastavljiva omejitev 3/5/10 novih rund na člana v drsečih 24 urah (privzeto 5), preverjena ob odpiranju in tik pred zapisom; štejejo tudi odpovedane runde, urejanje ostane dovoljeno.
+- Frontend obrazec za ustvarjanje in urejanje lastne runde z objavljenimi šifranti, lokalnim časom prek `CasHelper` in ohranitvijo vnosa ob napaki.
+- Zaščiteni POST akciji `runda.shrani` in `runda.odpovej`; preverjanje članstva oziroma lastništva v kontrolerju in modelu, zaklep ob štartu ter prepoved sprememb odpovedane runde.
+- Gumbi za ustvarjanje, urejanje in odpoved na seznamu in strani runde ter potrditev odpovedi z Bootstrap modalom brez dodatnih skript.
+- SEF poti `/runde/nova` in `/runde/uredi-{id}-{alias}` ob ohranjenih dolgih povezavah in obstoječih URL-jih rund.
+- Preverjene vdelave tras Strava, Komoot in Bikemap z zaprtim seznamom gostiteljev in poti ter posamičnim izklopom v možnostih komponente.
+- Prevodi sl-SI/en-GB, navodila za člane in vodje, viri oblik vdelav ter navodilo za CSP `frame-src`.
+- Posodobitveni SQL 0.7.0 brez sprememb sheme in podatkov; vodja ostane udeleženec brez nove vrstice prijave (D54).
+
+### Popravljeno
+- Izpraznjena seja obrazca in napak se obravnava kot prazno polje: nova runda ponovno naloži privzetke, urejanje obstoječe pa podatke iz baze, vključno z opombami, trajanjem in traso. Neuspešni vnos se ohrani; enako so normalizirana branja seje v administratorskih obrazcih.
+
 ## [0.6.0] - 2026-10-18
 ### Dodano
 - Tabela članskih prijav z unikatnim parom runda/uporabnik ter namestitvenim, posodobitvenim in odstranitvenim SQL.

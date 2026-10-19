@@ -106,6 +106,42 @@ Javni in članski del kažeta število; seznam imen je vodja z značko, nato pri
 
 Meja za akcije je **štart**, za seznam in oznako končane runde pa **konec** z `COALESCE(trajanje_min, privzeto_trajanje_min)`. Obe meji model preveri z uro baze v UTC. Končana runda ostane dosegljiva, pokaže obvestilo, povezavo na prihajajoče in `robots=noindex, follow`. Open Graph uporablja isti absolutni URL kot canonical; opis sestavljajo samo lokalni datum/ura, tip, težavnost in dolžina iz jezikovnega niza. `Document::setMetaData(..., 'property')` in jedrni `MetasRenderer` poskrbita za izris in escapiranje (Joomla 6.1: `libraries/src/Document/Document.php`, `libraries/src/Document/Renderer/Html/MetasRenderer.php`).
 
+## Ustvarjanje in urejanje rund
+
+Možnost `omejitev_runde_dan` v zavihku **Prijava** določa največ 3, 5 ali 10 novih rund na člana (privzeto 5). `ObrazecModel::dovoljenje()` jo preveri samo za `id = 0`, takoj po članstvu; `shrani()` ponovno pokliče isto preverjanje tik pred `store()`, zato nova zaporedna oddaja upošteva že ustvarjeno rundo. Šteje `COUNT(*)` iz `#__belaunce_runde` po `ustvaril_id` z vezanim ID-jem identitete in mejo `ustvarjeno >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 DAY)`: drsečih 24 ur po UTC uri baze, brez filtra stanja. Tudi odpovedane runde ostanejo v kvoti, da je ni mogoče obiti z ustvarjanjem in odpovedovanjem. Urejanje in odpoved ne porabita dodatne kvote ter se zaradi nje ne zavrneta. Tabela `#__belaunce_poskusi` se ne uporablja, ker omejujemo uspešno ustvarjene runde, ne ogledov ali neuspešnih oddaj obrazca. Ob meji ostane gumb **Ustvari rundo** viden, GET obrazca ali POST ustvarjanja pa preusmeri na seznam s kodo `omejitev` in prevedenim obvestilom z dejansko nastavljeno mejo. Dnevnik vsebuje samo `RUNDA_OMEJITEV` in ID uporabnika.
+
+`Site\Model\ObrazecModel` (`FormModel`) uporablja izključno `site/forms/runda.xml`. `Site\View\Obrazec\HtmlView` ima eno postavitev za ustvarjanje in urejanje. Pred prikazom preveri pravico, doda `task` in POST `id` prek `addControlField()`, predloga pa izpiše `renderControlFields()` skupaj z Joomlinim CSRF žetonom. Obrazec uporablja `form.validate`, Bootstrap 5 in samo objavljene tipe ter težavnosti po `ordering, id`. Lokalni vnos se v UTC pretvori samo prek `CasHelper`; polje calendar ima `filter="string"`, brez `user_utc` ali `server_utc`. Povratna pretvorba zavrne neveljaven datum in neobstoječo uro ob prehodu na poletni čas. Trajanje je prazno ali celo število 1–1440; XML nima `min`/`max`.
+
+`RundaController::shrani()` in `odpovej()` zahtevata POST in CSRF. Kontroler pokliče preverjanje pravic, model ga ponovi ob vstopu in neposredno pred `store()`. Ustvarjanje uporablja isto `PrijaveModel::jeClan()` kot udeležba. Urejanje in odpoved zahtevata prijavljeno identiteto vodje, stanje 1 in `zacetek > UTC_TIMESTAMP()`; meja je štart, nikoli konec. Admin nima posebne frontend izjeme. Tudi GET obrazca za tujo, odpovedano ali štartano rundo preusmeri na seznam z zaprto kodo stanja.
+
+Model sprejme samo naslov, šifranta, začetek, lokacijo, dolžino, trajanje, opombe, URL trase in odprtost za goste. Ob ustvarjanju sam nastavi `vodja_id`, `stanje = 1`, `ustvaril_id`, `ustvarjeno`; pri urejanju te vrednosti in alias ohrani iz naložene tabele. ID prihaja iz ločenega POST polja, lastništvo vedno iz baze. Zapis gre prek obstoječe `Administrator\Table\RundaTable::check()` in `store()` (alias, revizija, odpoved in D54); nove prijave vodje se ne vstavlja. Odpoved nastavi samo stanje 2, čas odpovedi določi tabela. Članske prijave ostanejo. Potrditev odpovedi je Bootstrap modal, naložen prek WebAssetManagerja, z ločenim ID-jem za vsako kartico na seznamu.
+
+Vnos ob napaki ostane lokalni v seji pod `com_belauncerunde.obrazec.{id}.data`; po uspehu se odstrani. Napake validacije se izpišejo escapirano tudi brez sistemskih sporočil predloge. Uspeh preusmeri na stran runde s kodami `ustvarjena`, `shranjena`, `odpovedana`. Zavrnitve imajo zaprt seznam `ni_clan`, `prepovedano`, `zaklenjena`, `ni_najdena`, `neveljavna_zahteva`, `napaka_zapisa`, `omejitev`; neznane kode nimajo izpisa. Dnevnik hrani samo kode in ID-je.
+
+Router registrira `obrazec` kot otroka `runde` s ključem `id`. Segmenta sta `nova` za 0 in `uredi-{id}-{alias}`; `getObrazecId()` bere številko za `uredi-`, `nova` vrne 0. `StandardRules::parse()` sprejme otroka samo pri resničnem ključu, zato `Router::parse()` izrecno obravnava literal `nova` pod menijsko postavko seznama. Pri poteh brez menija ničelni ID podpira `NomenuRules`. Številčni segment runde se ne prekriva s predpono urejanja. Dolge povezave `index.php?option=com_belauncerunde&view=obrazec&id=…` ostanejo delujoče.
+
+Preverjeni viri Joomla **6.1-dev** (2026-10-19): `libraries/src/Component/Router/RouterView.php`, `libraries/src/Component/Router/Rules/StandardRules.php`, `libraries/src/Component/Router/Rules/NomenuRules.php`, `libraries/src/MVC/Model/FormModel.php`, `libraries/src/MVC/Model/BaseDatabaseModel.php`, `libraries/src/Form/Form.php`, `libraries/src/Form/Field/ListField.php`, `libraries/src/Form/Field/CalendarField.php` v [izvorni kodi Joomle](https://github.com/joomla/joomla-cms/tree/6.1-dev).
+
+## Vdelava trase
+
+`Site\Helper\TrasaHelper::preveriUrl()` dovoli samo absolutne HTTP/HTTPS povezave brez prijavnih podatkov in kontrolnih znakov. `vdelava()` vrne opis (`src`, jezikovni ključ naslova) ali `null`, nikoli HTML. Za iframe zahteva HTTPS brez izrecnih vrat, natančen gostitelj in prepoznano pot ter vključen parameter `trasa_strava`, `trasa_komoot` ali `trasa_bikemap` (privzeto 1, zavihek **Trasa** v možnostih).
+
+| Vhodni gostitelji (tudi različica z www) | Vzorec poti | Sestavljen iframe src |
+|---|---|---|
+| `strava.com` | `/routes/{številčni id}` z neobvezno zadnjo poševnico | `https://strava-embeds.com/route/{id}?style=standard` |
+| `komoot.com`, `komoot.de` | `/tour/{id}` ali `/{jezik-država}/tour/{id}`, neobvezna zadnja poševnica | `https://www.komoot.com/tour/{id}/embed?layout=classic&profile=1` |
+| `bikemap.net` | `/r/{id}` ali `/{jezik}/r/{id}`, neobvezen ASCII alias in zadnja poševnica | `https://widgets.bikemap.net/r/{id}?unit=metric&extended=1&distanceMarkers=1` |
+
+ID ostane niz številk (tudi veliki ID-ji Strava). Vhodni query in fragment se ne prenašata v iframe. Kratke povezave, aktivnosti, drugi poddomenski gostitelji ali druge poti ostanejo povezave. Ne izvajamo HTTP zahtev na uporabnikov URL in ne shranjujemo uporabnikovega HTML-ja. Iframe je escapiran v Bootstrap `ratio-4x3`, z `loading="lazy"`, `referrerpolicy="no-referrer"` in prevedenim naslovom. Povezava na izvirno traso je vedno na voljo, tudi ob vdelavi, z `target="_blank" rel="noopener noreferrer"`. Izklop ponudnika takoj pusti samo povezavo.
+
+Uradni viri, preverjeni **2026-10-19**:
+
+- Strava: [How to Embed a Strava Route](https://partners.strava.com/resources/how-to-embed-a-strava-route) in [uradni generator embed.js](https://strava-embeds.com/embed.js). Dokumentacija uporablja zunanji generator; njegov izvor potrjuje naslov `https://strava-embeds.com/{embedType}/{embedId}`. Uporabimo njegov route iframe neposredno, brez nalaganja generatorja ali inline skript na strani.
+- Komoot: [uradni generator in dokumentacija](https://www.komoot.com/b2b/embed), primer `/tour/13584167/embed?layout=classic&profile=1`.
+- Bikemap: [Embedding routes](https://help.bikemap.net/hc/en-us/articles/360017460279-Embedding-routes) ter [slika kode v istem navodilu](https://help.bikemap.net/hc/article_attachments/15548737043228), ki izrecno kaže `widgets.bikemap.net/r/13983492?unit=metric&extended=1&distanceMarkers=1`.
+
+CSP mora v `frame-src` dovoliti `https://strava-embeds.com`, `https://www.komoot.com`, `https://widgets.bikemap.net` za vključene ponudnike. Prikaz dejanskih javnih tras in morebitne preusmeritve ponudnikov se preverijo na DDEV.
+
 ## Pravila za Joomlo 6 (obvezna, iz izkušenj s com_kisegonma)
 
 1. **`tmpl/{pogled}/{postavitev}.php` je v korenu dela razširitve** (`administrator/tmpl/…`, `site/tmpl/…`), nikoli pod `src/View/…/tmpl/`.

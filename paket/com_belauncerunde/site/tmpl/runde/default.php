@@ -7,6 +7,9 @@ use Joomla\CMS\Router\Route;
 ?>
 <div class="br-runde">
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV')); ?></h1>
+    <?php if ($this->clan) : ?>
+        <p><a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a></p>
+    <?php endif; ?>
 
     <?php if ($this->obvestilo !== null) : ?>
         <p class="alert <?php echo $this->escape($this->obvestilo['razred']); ?>" role="alert"><?php echo $this->escape(Text::_($this->obvestilo['kljuc'])); ?></p>
@@ -71,6 +74,11 @@ use Joomla\CMS\Router\Route;
                                 <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt>
                                 <dd><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></dd>
                             </dl>
+                            <?php if ($runda->urejanje) : ?>
+                                <div class="d-flex gap-2 flex-wrap mt-3">
+                                    <?php require __DIR__ . '/../runda/upravljanje.php'; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </article>
                 </div>

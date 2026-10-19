@@ -38,6 +38,9 @@ class Router extends RouterView
         $runda = new RouterViewConfiguration('runda');
         $runda->setKey('id')->setParent($runde);
         $this->registerView($runda);
+        $obrazec = new RouterViewConfiguration('obrazec');
+        $obrazec->setKey('id')->setParent($runde);
+        $this->registerView($obrazec);
 
         // Obstoječa prijava in potrditev povezave morata delovati tudi s SEF.
         $this->registerView(new RouterViewConfiguration('prijava'));
@@ -84,6 +87,43 @@ class Router extends RouterView
             return (int) $ujemanje[1];
         }
 
-        return (int) $segment;
+        return ctype_digit($segment) ? (int) $segment : 0;
+    }
+
+    /** Sestavi novo ali urejevalno pot brez spremembe obstoječih URL-jev rund. */
+    public function getObrazecSegment($id, $query): array
+    {
+        $id = (int) $id;
+
+        if ($id === 0) {
+            return [0 => 'nova'];
+        }
+
+        $segment = $this->getRundaSegment($id, $query);
+
+        return [$id => 'uredi-' . $segment[$id]];
+    }
+
+    /** Razbere prvo številko za uredi-, nova ima ID 0; druge poti ne pripadajo obrazcu. */
+    public function getObrazecId($segment, $query): int
+    {
+        return preg_match('/^uredi-([1-9][0-9]*)(?:-.*)?$/D', $segment, $ujemanje) ? (int) $ujemanje[1] : 0;
+    }
+
+    /** StandardRules sprejme samo resničen ključ; literal nova zato razberemo izrecno. */
+    public function parse(&$segments)
+    {
+        $aktivna = $this->menu->getActive();
+
+        // Poseben je samo ključ 0 pod menijem seznama. Številčne poti in uredi-
+        // ostanejo pri StandardRules; brez menija nova deluje prek NomenuRules.
+        if ($segments === ['nova'] && $aktivna !== null
+            && $aktivna->component === 'com_belauncerunde' && ($aktivna->query['view'] ?? '') === 'runde') {
+            array_shift($segments);
+
+            return ['view' => 'obrazec', 'id' => $this->getObrazecId('nova', [])];
+        }
+
+        return parent::parse($segments);
     }
 }

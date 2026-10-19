@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\View\Runda;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\GenericDataException;
@@ -21,6 +22,9 @@ class HtmlView extends BaseHtmlView
         'ni_clan' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_UDELEZBA_NI_CLAN'],
         'runda_zaprta' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_UDELEZBA_RUNDA_ZAPRTA'],
         'napaka' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_UDELEZBA_NAPAKA'],
+        'ustvarjena' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_USTVARJENA'],
+        'shranjena' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_SHRANJENA'],
+        'odpovedana' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_ODPOVEDANA'],
     ];
 
     /** @var object Javni podatki runde. */
@@ -29,6 +33,8 @@ class HtmlView extends BaseHtmlView
     public string $zacetek;
     /** @var string Preverjena povezava na traso ali prazen niz. */
     public string $trasa = '';
+    /** @var array|null Preverjen src in naslov vdelave iz zaprtega seznama ponudnikov. */
+    public ?array $vdelava = null;
     /** @var bool Prijavljena identiteta ima nastavljeno člansko skupino. */
     public bool $clan = false;
     /** @var bool Obiskovalec ni prijavljen v Joomlo. */
@@ -82,10 +88,9 @@ class HtmlView extends BaseHtmlView
 
         // URL iz baze obravnavamo kot nezaupanja vreden vhod; HTML in druge sheme odpadejo.
         $trasa = (string) ($runda->trasa_url ?? '');
-        $shema = strtolower((string) parse_url($trasa, PHP_URL_SCHEME));
-
-        if (filter_var($trasa, FILTER_VALIDATE_URL) && \in_array($shema, ['http', 'https'], true)) {
+        if (TrasaHelper::preveriUrl($trasa)) {
             $this->trasa = $trasa;
+            $this->vdelava = TrasaHelper::vdelava($trasa);
         }
 
         // Router prebere sedanji alias iz baze; stara povezava ostane veljavna po ID-ju.
@@ -108,6 +113,9 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setMetaData('og:type', 'article', 'property');
         $this->getDocument()->setMetaData('og:site_name', (string) $app->get('sitename'), 'property');
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.site');
+        if ($this->vodja && $this->odprta) {
+            $this->getDocument()->getWebAssetManager()->useScript('bootstrap.modal');
+        }
         parent::display($tpl);
     }
 }

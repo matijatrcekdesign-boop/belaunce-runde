@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset name="runda">
+        <field name="naslov" type="text" label="COM_BELAUNCERUNDE_OBRAZEC_NASLOV" required="true" maxlength="255" filter="string" />
+        <field name="tip_id" type="list" label="COM_BELAUNCERUNDE_TIP" required="true" filter="integer">
+            <option value="">COM_BELAUNCERUNDE_OBRAZEC_IZBERI</option>
+        </field>
+        <field name="tezavnost_id" type="list" label="COM_BELAUNCERUNDE_TEZAVNOST" required="true" filter="integer">
+            <option value="">COM_BELAUNCERUNDE_OBRAZEC_IZBERI</option>
+        </field>
+        <field name="zacetek" type="calendar" label="COM_BELAUNCERUNDE_ZACETEK" description="COM_BELAUNCERUNDE_OBRAZEC_CAS" required="true" showtime="true" translateformat="false" format="%Y-%m-%d %H:%M:%S" filter="string" />
+        <field name="lokacija" type="text" label="COM_BELAUNCERUNDE_LOKACIJA" required="true" maxlength="255" filter="string" />
+        <field name="dolzina_km" type="number" label="COM_BELAUNCERUNDE_DOLZINA" required="true" step="0.1" filter="float" />
+        <field name="trajanje_min" type="number" label="COM_BELAUNCERUNDE_OBRAZEC_TRAJANJE" description="COM_BELAUNCERUNDE_OBRAZEC_TRAJANJE_OPIS" step="1" filter="string" />
+        <field name="opombe" type="textarea" label="COM_BELAUNCERUNDE_OPOMBE" rows="6" filter="string" />
+        <field name="trasa_url" type="url" label="COM_BELAUNCERUNDE_OBRAZEC_TRASA" maxlength="2048" validate="url" schemes="http,https" filter="string" />
+        <field name="odprto_za_goste" type="radio" label="COM_BELAUNCERUNDE_OBRAZEC_GOSTJE" layout="joomla.form.field.radio.switcher" default="0" filter="integer">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+    </fieldset>
+</form>

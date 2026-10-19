@@ -72,6 +72,8 @@ class RundeModel extends ListModel
             ->select($baza->quoteName('t.naziv', 'tip_naziv'))
             ->select($baza->quoteName('tz.naziv', 'tezavnost_naziv'))
             ->select($baza->quoteName('u.name', 'vodja_ime'))
+            ->select($baza->quoteName('a.vodja_id'))
+            ->select('a.zacetek <= UTC_TIMESTAMP() AS startala')
             ->from($baza->quoteName('#__belaunce_runde', 'a'))
             ->join('LEFT', $baza->quoteName('#__belaunce_tipi', 't') . ' ON t.id = a.tip_id')
             ->join('LEFT', $baza->quoteName('#__belaunce_tezavnosti', 'tz') . ' ON tz.id = a.tezavnost_id')

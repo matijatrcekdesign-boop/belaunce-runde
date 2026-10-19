@@ -35,6 +35,7 @@ class RundaModel extends ItemModel
             ->select($baza->quoteName('tz.naziv', 'tezavnost_naziv'))
             ->select($baza->quoteName('u.name', 'vodja_ime'))
             ->select($baza->quoteName('a.vodja_id'))
+            ->select($baza->quoteName('a.odprto_za_goste'))
             ->select('a.zacetek <= UTC_TIMESTAMP() AS startala')
             ->select('DATE_ADD(a.zacetek, INTERVAL COALESCE(a.trajanje_min, :trajanje) MINUTE) < UTC_TIMESTAMP() AS koncana')
             ->from($baza->quoteName('#__belaunce_runde', 'a'))

@@ -9,3 +9,12 @@
 .br-runda {
     overflow-wrap: anywhere;
 }
+
+/* Honeypot ostane navadno polje, vendar je zunaj vidnega dela obrazca. */
+.br-gost-dodatek {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

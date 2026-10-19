@@ -17,6 +17,9 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Prevodi sl-SI/en-GB, navodila za člane in vodje, viri oblik vdelav ter navodilo za CSP `frame-src`.
 - Posodobitveni SQL 0.7.0 brez sprememb sheme in podatkov; vodja ostane udeleženec brez nove vrstice prijave (D54).
 
+### Popravljeno
+- Izpraznjena seja obrazca in napak se obravnava kot prazno polje, zato nova runda tudi po uspešnem shranjevanju ponovno naloži privzeto lokacijo brez napak pri prikazu.
+
 ## [0.6.0] - 2026-10-18
 ### Dodano
 - Tabela članskih prijav z unikatnim parom runda/uporabnik ter namestitvenim, posodobitvenim in odstranitvenim SQL.

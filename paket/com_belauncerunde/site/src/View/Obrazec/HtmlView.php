@@ -49,7 +49,8 @@ class HtmlView extends BaseHtmlView
 
         $this->form->addControlField('task', 'runda.shrani');
         $this->form->addControlField('id', (string) $this->rundaId);
-        $this->napake = $app->getUserState($model->kljucSeje($this->rundaId) . '.napake', []);
+        // Po čiščenju je lahko vrnjen NULL; predloga vedno potrebuje seznam napak.
+        $this->napake = (array) ($app->getUserState($model->kljucSeje($this->rundaId) . '.napake', []) ?: []);
         $app->setUserState($model->kljucSeje($this->rundaId) . '.napake', null);
         $koda = $app->getInput()->getCmd('stanje', '');
 

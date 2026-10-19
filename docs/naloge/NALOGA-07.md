@@ -153,7 +153,11 @@ Matija preveri na DDEV (ZIP pred namestitvijo kopiraj v tmp/):
     runde se vedno dela.
 19. Odpoved ene od treh rund NE sprosti kvote; po odpovedi je cetrti poskus
     se vedno zavrnjen.
-20. Administracija (Runde, Tipi, Tezavnosti, Preveri clana), prijava z magic linkom
+20. Clan ustvari rundo, nato znova odpre /runde/nova: polje Lokacija je ponovno
+    prednastavljeno na vrednost iz moznosti, polja Naslov in Datum pa so prazna.
+    Po neuspeli oddaji se vpisane vrednosti se vedno ohranijo. Ponovno odpiranje
+    obrazca s pociscenim seznamom napak ne povzroci PHP opozoril.
+21. Administracija (Runde, Tipi, Tezavnosti, Preveri clana), prijava z magic linkom
     in udelezba iz naloge 06 delujejo nespremenjeno.
 
 9. DOKUMENTACIJA
@@ -188,4 +192,4 @@ Isti PR #7 in veja `feature/NALOGA-07-obrazec`, različica ostane 0.7.0.
    ne uporabljamo `#__belaunce_poskusi`. V `NAVODILA.md` navedi mesto nastavitve.
    V `CHANGELOG.md` dodaj vrstico pod 0.7.0.
 7. Dodatni merili sta 18 in 19 zgoraj. Prvotno merilo regresije administracije,
-   prijave in udeležbe je ohranjeno kot 20.
+   prijave in udeležbe je po dopolnitvi s popravkom seje ohranjeno kot 21.

@@ -79,8 +79,10 @@ class RundaController extends BaseController
             $url = 'index.php?option=com_belauncerunde&view=runde';
         }
 
-        $this->setRedirect(Route::_($url . '&stanje=' . $stanje, false),
-            Text::_('COM_BELAUNCERUNDE_OBRAZEC_' . strtoupper($stanje)),
+        $sporocilo = $stanje === 'omejitev'
+            ? Text::sprintf('COM_BELAUNCERUNDE_OBRAZEC_OMEJITEV', $model->omejitevRundNaDan())
+            : Text::_('COM_BELAUNCERUNDE_OBRAZEC_' . strtoupper($stanje));
+        $this->setRedirect(Route::_($url . '&stanje=' . $stanje, false), $sporocilo,
             \in_array($stanje, ['ustvarjena', 'shranjena', 'odpovedana'], true) ? 'message' : 'warning');
     }
 

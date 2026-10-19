@@ -8,6 +8,7 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 
 ## [0.7.0] - 2026-10-19
 ### Dodano
+- Nastavljiva omejitev 3/5/10 novih rund na člana v drsečih 24 urah (privzeto 5), preverjena ob odpiranju in tik pred zapisom; štejejo tudi odpovedane runde, urejanje ostane dovoljeno.
 - Frontend obrazec za ustvarjanje in urejanje lastne runde z objavljenimi šifranti, lokalnim časom prek `CasHelper` in ohranitvijo vnosa ob napaki.
 - Zaščiteni POST akciji `runda.shrani` in `runda.odpovej`; preverjanje članstva oziroma lastništva v kontrolerju in modelu, zaklep ob štartu ter prepoved sprememb odpovedane runde.
 - Gumbi za ustvarjanje, urejanje in odpoved na seznamu in strani runde ter potrditev odpovedi z Bootstrap modalom brez dodatnih skript.

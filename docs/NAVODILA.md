@@ -49,6 +49,7 @@ Vpiši email in izberi **Preveri**. Rezultat pove, ali je naslov član, neveljav
 ### Nastavitve prijave
 V *Komponente → Runde Belaunce → Možnosti → Prijava* nastavi:
 
+- **Nove runde na člana v 24 urah**: 3, 5 ali 10 (privzeto 5). Omejitev šteje ustvarjene runde v zadnjih 24 urah, tudi odpovedane. Ob doseženi meji član še vidi **Ustvari rundo**, vendar obrazec pokaže obvestilo na seznamu. Urejanje obstoječe runde pred štartom ostane dovoljeno; odpoved ne sprosti kvote.
 - **Zahteve na email na uro**: 3, 5 ali 10 (privzeto 3).
 - **Zahteve na IP na uro**: 10, 20 ali 50 (privzeto 20).
 - **Veljavnost povezave**: 10, 15 ali 30 minut (privzeto 15).

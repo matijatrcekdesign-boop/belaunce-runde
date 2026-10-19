@@ -25,6 +25,7 @@ class HtmlView extends BaseHtmlView
         'ni_najdena' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_NI_NAJDENA'],
         'neveljavna_zahteva' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNA_ZAHTEVA'],
         'napaka_zapisa' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_NAPAKA_ZAPISA'],
+        'omejitev' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_OMEJITEV'],
     ];
 
     /** @var array|null Obvestilo iz zaprtega seznama; neznana koda nima izpisa. */
@@ -61,6 +62,16 @@ class HtmlView extends BaseHtmlView
         $stanje = Factory::getApplication()->getInput()->getCmd('stanje', '');
         $this->obvestilo = self::OBVESTILA[$stanje] ?? null;
         $app = Factory::getApplication();
+        if ($this->obvestilo !== null) {
+            $this->obvestilo['besedilo'] = Text::_($this->obvestilo['kljuc']);
+
+            if ($stanje === 'omejitev') {
+                // Meja pride iz istih možnosti kot preverjanje modela, nikoli iz URL-ja.
+                $obrazec = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Obrazec', 'Site', []);
+                $this->obvestilo['besedilo'] = Text::sprintf($this->obvestilo['kljuc'], $obrazec->omejitevRundNaDan());
+            }
+        }
+
         $prijave = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Prijave', 'Site', []);
         $this->clan = $prijave->jeClan($app->getIdentity());
         $model = $this->getModel();

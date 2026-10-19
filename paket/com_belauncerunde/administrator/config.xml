@@ -51,6 +51,11 @@
 		</field>
 	</fieldset>
 	<fieldset name="prijava" label="COM_BELAUNCERUNDE_CONFIG_FIELDSET_PRIJAVA">
+		<field name="omejitev_runde_dan" type="list" filter="integer" default="5" label="COM_BELAUNCERUNDE_CONFIG_OMEJITEV_RUNDE_LABEL" description="COM_BELAUNCERUNDE_CONFIG_OMEJITEV_RUNDE_DESC">
+			<option value="3">3</option>
+			<option value="5">5</option>
+			<option value="10">10</option>
+		</field>
 		<field name="omejitev_email_uro" type="list" filter="integer" default="3" label="COM_BELAUNCERUNDE_CONFIG_OMEJITEV_EMAIL_LABEL" description="COM_BELAUNCERUNDE_CONFIG_OMEJITEV_EMAIL_DESC">
 			<option value="3">3</option>
 			<option value="5">5</option>

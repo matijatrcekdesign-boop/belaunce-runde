@@ -7,6 +7,7 @@ use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Model\FormModel;
 use Joomla\CMS\User\User;
 use Joomla\Database\ParameterType;
@@ -47,7 +48,11 @@ class ObrazecModel extends FormModel
         if ($id === 0) {
             $prijave = $this->getMVCFactory()->createModel('Prijave', 'Site', []);
 
-            return $prijave->jeClan($uporabnik) ? '' : 'ni_clan';
+            if (!$prijave->jeClan($uporabnik)) {
+                return 'ni_clan';
+            }
+
+            return $this->preveriDnevnoOmejitev($uporabnik);
         }
 
         $runda = $this->preberiRundo($id);
@@ -61,6 +66,35 @@ class ObrazecModel extends FormModel
         }
 
         return (int) $runda->stanje === 1 && (bool) $runda->pred_startom ? '' : 'zaklenjena';
+    }
+
+    /** Vrne dovoljeno število novih rund v 24 urah, z varnim privzetkom po D38. */
+    public function omejitevRundNaDan(): int
+    {
+        $omejitev = (int) ComponentHelper::getParams('com_belauncerunde')->get('omejitev_runde_dan', 5);
+
+        return \in_array($omejitev, [3, 5, 10], true) ? $omejitev : 5;
+    }
+
+    /** Šteje ustvarjene runde, tudi odpovedane; neuspešne oddaje ne porabijo kvote. */
+    private function preveriDnevnoOmejitev(User $uporabnik): string
+    {
+        $uporabnikId = (int) $uporabnik->id;
+        $baza = $this->getDatabase();
+        $poizvedba = $baza->createQuery()->select('COUNT(*)')
+            ->from($baza->quoteName('#__belaunce_runde'))
+            ->where($baza->quoteName('ustvaril_id') . ' = :uporabnik')
+            ->where($baza->quoteName('ustvarjeno') . ' >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 DAY)')
+            ->bind(':uporabnik', $uporabnikId, ParameterType::INTEGER);
+
+        // Vir je runda, ne poskus: odpoved ne sme sprostiti mesta v drsečem oknu.
+        if ((int) $baza->setQuery($poizvedba)->loadResult() >= $this->omejitevRundNaDan()) {
+            Log::add('RUNDA_OMEJITEV uporabnik_id=' . $uporabnikId, Log::WARNING, 'com_belauncerunde');
+
+            return 'omejitev';
+        }
+
+        return '';
     }
 
     /** Hrani sejo ločeno za vsak obrazec, da napaka ne napolni druge runde. */
@@ -180,6 +214,8 @@ class ObrazecModel extends FormModel
             return ['stanje' => 'neveljavno', 'id' => $id];
         }
 
+        // Neposredno pred zapisom ponovno preštejemo kvoto nove runde, da druga
+        // zaporedna oddaja upošteva prvo. Pri urejanju dovoljenje kvote ne preverja.
         $dovoljenje = $this->dovoljenje($id, $uporabnik);
 
         if ($dovoljenje !== '') {

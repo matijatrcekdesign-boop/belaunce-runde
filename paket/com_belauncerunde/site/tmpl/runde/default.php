@@ -12,7 +12,7 @@ use Joomla\CMS\Router\Route;
     <?php endif; ?>
 
     <?php if ($this->obvestilo !== null) : ?>
-        <p class="alert <?php echo $this->escape($this->obvestilo['razred']); ?>" role="alert"><?php echo $this->escape(Text::_($this->obvestilo['kljuc'])); ?></p>
+        <p class="alert <?php echo $this->escape($this->obvestilo['razred']); ?>" role="alert"><?php echo $this->escape($this->obvestilo['besedilo']); ?></p>
     <?php endif; ?>
 
     <?php if ((int) $this->parametri->get('prikazi_filtre', 1) === 1) : ?>

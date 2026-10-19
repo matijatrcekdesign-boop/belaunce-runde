@@ -90,6 +90,7 @@ class Com_BelauncerundeInstallerScript
         try {
             $db      = Factory::getContainer()->get(DatabaseInterface::class);
             MailTemplate::deleteTemplate('com_belauncerunde.prijava');
+            MailTemplate::deleteTemplate('com_belauncerunde.gost_potrditev');
             $sqlPath = __DIR__ . '/sql/uninstall.mysql.utf8.sql';
 
             if (!is_file($sqlPath)) {
@@ -269,6 +270,17 @@ class Com_BelauncerundeInstallerScript
     /** Registrira privzeto predlogo enkrat; adminovih popravkov ne prepisuje. */
     private function pripraviPostnoPredlogo(): void
     {
+        if (MailTemplate::getTemplate('com_belauncerunde.gost_potrditev', '') === null) {
+            if (!MailTemplate::createTemplate(
+                'com_belauncerunde.gost_potrditev',
+                'COM_BELAUNCERUNDE_MAIL_GOST_POTRDITEV_SUBJECT',
+                'COM_BELAUNCERUNDE_MAIL_GOST_POTRDITEV_BODY',
+                ['IME', 'RUNDA', 'ZACETEK', 'LOKACIJA', 'VODJA', 'POVEZAVA', 'SITENAME']
+            )) {
+                throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+            }
+        }
+
         if (MailTemplate::getTemplate('com_belauncerunde.prijava', '') === null) {
             if (!MailTemplate::createTemplate(
                 'com_belauncerunde.prijava',

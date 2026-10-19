@@ -16,8 +16,8 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 04 | Prijava z magic linkom: obrazec za email, žetoni, omejitve poskusov, vtičnik za avtentikacijo, ustvarjanje uporabnika v skupini "Člani", "Zapomni si me" | 0.4.0 | 03 | ✅ |
 | 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | ✅ |
 | 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | ✅ |
-| 07 | Frontend obrazec runde: ustvari, uredi, odpovej (pravila 4.1), trasa + vdelave | 0.7.0 | 06 | 🟡 |
-| 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | ⬜ |
+| 07 | Frontend obrazec runde: ustvari, uredi, odpovej (pravila 4.1), trasa + vdelave, dnevna omejitev (D38) | 0.7.0 | 06 | ✅ |
+| 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | 🟡 |
 | 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | ⬜ |
 | 10 | Transakcijski maili ob spremembi in odpovedi (nastavljiva besedila in polja) | 0.10.0 | 07, 08 | ⬜ |
 | 11 | Deli v Viber: gumb, besedilo za kopiranje | 0.11.0 | 06 | ⬜ |
@@ -53,6 +53,7 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
+- **07** — PR #7, združen 2026-10-19. Vseh 22 meril ✅. Med pregledom dodana dnevna omejitev rund (D38, razdelek 6.1), ki je naloga ni zajela; med testiranjem najdena napaka branja seje: po uspešnem shranjevanju se je obrazec odprl prazen in bi ob ponovnem urejanju tiho pobrisal neobvezna polja. Popravljeno tudi v treh administratorskih modelih. Obliki vdelav za Strava in Komoot potrjeni na pravih javnih trasah.
 - **06** — PR #6, združen 2026-10-19. Vseh 17 meril ✅ na DDEV, en popravek po vprašanju za arhitekta (izbrisana runda v toku D40 → `runda_ni_najdena` in preusmeritev na seznam z opozorilom). Testiranje je prvič opravil arhitekt v brskalniku (Claude in Chrome), Matija je potrjeval stanje v bazi.
 - **05** — PR #5, združen 2026-10-18 (`92b7ca9`). Vseh 17 meril ✅ na DDEV, brez popravkov po pregledu. Potrjena oblika URL-jev `/runde` in `/runde/{id}-{alias}`; prehod poletni/zimski čas preverjen na treh rundah.
 - **04** — PR #4, združen 2026-10-16 (`8fe6a00`). 19 od 20 meril ✅ na DDEV; merilo 20 (odstranitev) preloženo na nalogo 14, ker pobriše tabele. Med testom najdena blokerska napaka `User::bind()` po referenci (→ razširjeno pravilo 16), nevidnost lastnega dnevnika (→ pravilo 22) in konflikt med Joomlino blokado in AcyMailingom (→ D52, D53, popravljen D47).

@@ -6,6 +6,21 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.6.0] - 2026-10-18
+### Dodano
+- Tabela članskih prijav z unikatnim parom runda/uporabnik ter namestitvenim, posodobitvenim in odstranitvenim SQL.
+- Zaščiteni akciji **Pridem** in **Odjavi se**, preverjanje članske skupine v kontrolerju in modelu ter idempotentna prijava in odjava do štarta runde.
+- Število udeležencev za javnost in seznam imen samo za člane; obstoječi vodja je prvi in se šteje brez vrstice prijave (D54).
+- Transakcijsko ohranjanje D54 tudi ob administratorski zamenjavi vodje z že prijavljenim članom.
+- Dokončan tok D40: po prijavi z magic linkom se ID runde takoj odstrani iz seje in uporabi ista metoda za potrditev udeležbe.
+- Zaprte kode povratnih obvestil, pojasnila ob odpovedi in štartu ter obvestilo in `noindex, follow` za končane runde.
+- Open Graph oznake z javnimi podatki, lokalnim časom in kanoničnim URL-jem brez opomb in imen udeležencev.
+
+### Popravljeno
+
+- Tok D40 in običajni akciji udeležbe za medtem izbrisano ali nejavno rundo vrnejo na seznam z opozorilom namesto na 404; odpovedana ali štartana runda ostane ločeno obravnavana kot zaprta.
+- Dnevnik zabeleži dodajanje oziroma odstranjevanje prijave samo ob dejanski spremembi, ne ob ponovitvi iste zahteve.
+
 ## [0.5.0] - 2026-10-16
 ### Dodano
 - Javni seznam prihajajočih in še trajajočih rund s filtri GET po tipu in težavnosti ter Joomlino paginacijo.

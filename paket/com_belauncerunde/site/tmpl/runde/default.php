@@ -8,6 +8,10 @@ use Joomla\CMS\Router\Route;
 <div class="br-runde">
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV')); ?></h1>
 
+    <?php if ($this->obvestilo !== null) : ?>
+        <p class="alert <?php echo $this->escape($this->obvestilo['razred']); ?>" role="alert"><?php echo $this->escape(Text::_($this->obvestilo['kljuc'])); ?></p>
+    <?php endif; ?>
+
     <?php if ((int) $this->parametri->get('prikazi_filtre', 1) === 1) : ?>
         <form method="get" action="<?php echo $this->escape($this->povezavaSeznama); ?>" class="row g-3 align-items-end mb-4">
             <div class="col-12 col-sm-6 col-lg-4">

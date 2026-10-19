@@ -42,6 +42,9 @@ class PovezavaController extends BaseController
         // 4. username mora obstajati; autoregister=false ohrani skupino, ki jo določi vtičnik.
         $params = ComponentHelper::getParams('com_belauncerunde');
 
+        // Ostanka prejšnje neuspele prijave ne sme porabiti kasnejša povezava brez runde.
+        $this->app->getSession()->remove('com_belauncerunde.runda_po_prijavi');
+
         try {
             $uspeh = $this->app->login(
                 ['username' => '', 'zeton' => $surovZeton],
@@ -56,6 +59,33 @@ class PovezavaController extends BaseController
 
         // 5. Po uspehu ni žetona v URL-ju; prikaz prijave pove, da je uporabnik prijavljen.
         if ($uspeh === true) {
+            $seja = $this->app->getSession();
+            $rundaId = (int) $seja->get('com_belauncerunde.runda_po_prijavi', 0);
+            $seja->remove('com_belauncerunde.runda_po_prijavi');
+
+            if ($rundaId > 0) {
+                try {
+                    $prijave = $this->factory->createModel('Prijave', 'Site', []);
+                    $uporabnik = $this->app->getIdentity();
+                    $stanje = $prijave->jeClan($uporabnik) ? $prijave->pridem($rundaId, $uporabnik) : 'ni_clan';
+                } catch (\Throwable $napaka) {
+                    // Uspešne prijave ne razveljavimo, če zapis udeležbe ne uspe.
+                    Log::add('D40_NAPAKA runda_id=' . $rundaId . ' uporabnik_id=' . (int) $this->app->getIdentity()->id,
+                        Log::ERROR, 'com_belauncerunde');
+                    $stanje = 'napaka';
+                }
+
+                // Za izbrisano ali nejavno rundo pokažemo obvestilo na seznamu, da uspešni prijavi ne sledi 404.
+                $cilj = $stanje === 'runda_ni_najdena'
+                    ? 'index.php?option=com_belauncerunde&view=runde'
+                    : 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId;
+                $this->setRedirect(Route::_($cilj . '&stanje=' . $stanje, false),
+                    Text::_('COM_BELAUNCERUNDE_UDELEZBA_' . strtoupper($stanje)),
+                    $stanje === 'prijavljen' ? 'message' : 'warning');
+
+                return;
+            }
+
             $this->setRedirect(Route::_($url . '&stanje=uspeh', false), Text::_('COM_BELAUNCERUNDE_PRIJAVA_USPEH'));
 
             return;

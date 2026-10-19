@@ -86,7 +86,19 @@ Odpri povezavo iz maila in klikni **Prijavi me**. Samo odpiranje povezave te še
 
 Ob prvi prijavi se račun ustvari samodejno, gesla ne izbiraš. Naslednje prijave uporabijo isti račun. Če je vključena daljša prijava, Joomlin piškotek ohrani prijavo tudi po izteku kratke seje; odjaviš se z običajno Joomlino odjavo.
 
-Če povezava omenja rundo, njen naslov v verziji 0.4.0 služi samo kot informacija. Vpis udeležbe po prijavi pride z nalogo 06.
+### Prijava na rundo
+
+Kot prijavljen član na strani prihajajoče runde vidiš imena udeležencev in gumb **Pridem**. Po kliku je udeležba potrjena, tvoje ime se pojavi na seznamu in gumb se spremeni v **Odjavi se**. Z odjavo odstraniš svojo prijavo. Ponoven klik ali ponovna oddaja istega obrazca ne podvoji prijave. Vodja je udeležen samodejno, prvi na seznamu z oznako **Vodja**, in nima gumba za prijavo ali odjavo.
+
+Če nisi prijavljen, vidiš število udeležencev in javno ime vodje. **Pridem** odpre prijavni obrazec za izbrano rundo. Zahtevaj povezavo, odpri mail in klikni **Prijavi me in potrdi udeležbo na rundi …**. Po uspešni prijavi se samodejno potrdi tudi udeležba in odpre stran runde. Samo odprtje povezave v mailu še ne potrdi udeležbe. Če je bila runda medtem odpovedana ali je štartala, se prijaviš na stran, udeležba pa se ne zapiše; na strani runde je obvestilo.
+
+Prijavljen uporabnik brez članske skupine vidi samo število in poziv za včlanitev. Imena udeležencev vidijo samo člani; njihovi emaili, telefoni in IP-ji se na strani runde ne izpisujejo.
+
+### Odpovedana in končana runda
+
+Odpovedana runda ostane vidna z značko **Odpovedano** in pojasnilom; prijava in odjava nista mogoči. Tudi po štartu se udeležbe ne da več spreminjati, runda pa ostane na seznamu do svojega konca. Če trajanja nima, velja privzeto trajanje iz možnosti komponente.
+
+Po koncu neposredna povezava še vedno deluje in pokaže **Ta runda je končana** ter povezavo na prihajajoče runde. Iskalnikom stran naroči, naj končane runde ne indeksirajo. Predogled deljene povezave vsebuje naslov, datum in uro, tip, težavnost ter dolžino; imen udeležencev in opomb v predogledu ni.
 
 ## Kaj vidi obiskovalec
 
@@ -94,7 +106,7 @@ Seznam in posamezne runde so javni, tudi v zasebnem oknu brez prijave. Seznam pr
 
 Odpovedane runde ostanejo vidne z oznako **Odpovedano**. Runda izgine s seznama šele po začetku in trajanju; če trajanje ni vpisano, se uporabi privzeto trajanje iz možnosti. Njena neposredna povezava ostane dostopna tudi pozneje.
 
-Stran runde prikaže še trajanje, opombe in veljavno povezavo na traso v novem oknu. Če vodja ne obstaja več, je njegovo ime prazno. Sprememba aliasa ne pokvari stare povezave: runda se poišče po ID-ju, kanonična povezava v izvorni kodi pa kaže trenutni URL. Neobstoječa ali nejavna runda vrne 404. V verziji 0.5.0 ni prijavljanja na runde, seznama prijavljenih ali kontaktov gostov; to dodajo naslednje naloge.
+Stran runde prikaže še trajanje, opombe in veljavno povezavo na traso v novem oknu. Če vodja ne obstaja več, je njegovo ime prazno. Sprememba aliasa ne pokvari stare povezave: runda se poišče po ID-ju, kanonična povezava v izvorni kodi pa kaže trenutni URL. Neobstoječa ali nejavna runda vrne 404. Od verzije 0.6.0 je na strani tudi število udeležencev; njihova imena vidijo samo člani. Nečlanom se izpiše poziv za včlanitev. Prijava gostov in njihovi kontakti pridejo z nalogo 08.
 
 ## Za goste
 *(naloga 08)*

@@ -48,7 +48,8 @@ class TezavnostModel extends AdminModel
      */
     protected function loadFormData()
     {
-        $data = Factory::getApplication()->getUserState('com_belauncerunde.edit.tezavnost.data', []);
+        // Izpraznjeno sejo normaliziramo pred izbiro vnosa ali podatkov iz baze.
+        $data = (array) (Factory::getApplication()->getUserState('com_belauncerunde.edit.tezavnost.data') ?: []);
 
         if (empty($data)) {
             $data = $this->getItem();

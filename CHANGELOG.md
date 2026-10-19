@@ -18,7 +18,7 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Posodobitveni SQL 0.7.0 brez sprememb sheme in podatkov; vodja ostane udeleženec brez nove vrstice prijave (D54).
 
 ### Popravljeno
-- Izpraznjena seja obrazca in napak se obravnava kot prazno polje, zato nova runda tudi po uspešnem shranjevanju ponovno naloži privzeto lokacijo brez napak pri prikazu.
+- Izpraznjena seja obrazca in napak se obravnava kot prazno polje: nova runda ponovno naloži privzetke, urejanje obstoječe pa podatke iz baze, vključno z opombami, trajanjem in traso. Neuspešni vnos se ohrani; enako so normalizirana branja seje v administratorskih obrazcih.
 
 ## [0.6.0] - 2026-10-18
 ### Dodano

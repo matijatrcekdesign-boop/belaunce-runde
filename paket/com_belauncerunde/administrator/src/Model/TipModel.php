@@ -48,7 +48,8 @@ class TipModel extends AdminModel
      */
     protected function loadFormData()
     {
-        $data = Factory::getApplication()->getUserState('com_belauncerunde.edit.tip.data', []);
+        // Izpraznjeno sejo normaliziramo pred izbiro vnosa ali podatkov iz baze.
+        $data = (array) (Factory::getApplication()->getUserState('com_belauncerunde.edit.tip.data') ?: []);
 
         if (empty($data)) {
             $data = $this->getItem();

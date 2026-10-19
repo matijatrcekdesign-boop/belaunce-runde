@@ -157,7 +157,10 @@ Matija preveri na DDEV (ZIP pred namestitvijo kopiraj v tmp/):
     prednastavljeno na vrednost iz moznosti, polja Naslov in Datum pa so prazna.
     Po neuspeli oddaji se vpisane vrednosti se vedno ohranijo. Ponovno odpiranje
     obrazca s pociscenim seznamom napak ne povzroci PHP opozoril.
-21. Administracija (Runde, Tipi, Tezavnosti, Preveri clana), prijava z magic linkom
+21. Clan uredi rundo in shrani, nato znova odpre isto rundo v urejanju: vsa polja
+    so napolnjena iz baze, vkljucno z opombami, trajanjem in traso. Po shranjevanju
+    brez sprememb ostanejo neobvezna polja v bazi nespremenjena.
+22. Administracija (Runde, Tipi, Tezavnosti, Preveri clana), prijava z magic linkom
     in udelezba iz naloge 06 delujejo nespremenjeno.
 
 9. DOKUMENTACIJA
@@ -192,4 +195,13 @@ Isti PR #7 in veja `feature/NALOGA-07-obrazec`, različica ostane 0.7.0.
    ne uporabljamo `#__belaunce_poskusi`. V `NAVODILA.md` navedi mesto nastavitve.
    V `CHANGELOG.md` dodaj vrstico pod 0.7.0.
 7. Dodatni merili sta 18 in 19 zgoraj. Prvotno merilo regresije administracije,
-   prijave in udeležbe je po dopolnitvi s popravkom seje ohranjeno kot 21.
+   prijave in udeležbe je po dopolnitvi s popravkom seje ohranjeno kot 22.
+
+## Popravek: nalaganje obrazca po uspešnem shranjevanju
+
+`loadFormData()` obravnava vrednost iz seje kot `(array) (... ?: [])`, tudi ko jo
+kontroler ali kdo drug počisti z `null`. Neprazen neuspešni vnos ima še naprej
+prednost. Pri prazni seji nova runda dobi privzetke, obstoječa pa vsa vnosna polja
+iz baze. Enaka normalizacija velja za seznam `.napake` v pogledu Obrazec in za
+ostala branja podatkov obrazcev iz seje. Popravek ni v kontrolerju. Poleg privzetkov
+je treba po merilu 21 preveriti ohranitev neobveznih podatkov runde.

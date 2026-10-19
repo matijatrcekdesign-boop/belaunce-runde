@@ -113,9 +113,10 @@ class ObrazecModel extends FormModel
             return [];
         }
 
-        // Po čiščenju je v seji lahko NULL; tedaj ponovno uporabimo privzetke nove runde.
-        $podatki = (array) ($app->getUserState($this->kljucSeje($id), []) ?: []);
-        // Podrejeni ključ .napake ni vnos: sam ne sme preprečiti nalaganja privzetkov.
+        // Po čiščenju je v seji lahko NULL; nova runda potrebuje privzetke,
+        // obstoječa pa sveže podatke iz baze, tudi vsa neobvezna polja.
+        $podatki = (array) ($app->getUserState($this->kljucSeje($id)) ?: []);
+        // Podrejeni ključ .napake ni vnos: sam ne sme preprečiti ponovnega nalaganja.
         $podatki = $this->podatkiObrazca($podatki);
 
         if ($podatki !== []) {

@@ -75,9 +75,30 @@ Za dodajanje izberi **Nov**, izpolni obvezni **Naziv** in po potrebi **Alias** t
 Tipa ali težavnosti, ki ju uporablja vsaj ena runda, ni mogoče izbrisati. Skrit tip ali težavnost ostane vidna v obrazcu obstoječe runde z oznako **(skrito)**.
 
 ## Za vodje rund
-*(naloge 07, 09)*
+
+### Kako vodja odpove rundo
+
+Na strani svoje objavljene runde ali na njeni kartici na seznamu pred štartom izberi **Odpovej**. Odpre se potrditveno okno. **Prekliči** ga zapre, **Odpovej** pa rundo označi kot odpovedano. Prijave članov ostanejo shranjene. Odpovedana runda ostane javna z značko **Odpovedano**, urejanje in ponovna odpoved nista mogoča. Vrnitev v objavljeno stanje je mogoča samo v administraciji.
+
+Za spremembo svoje runde pred štartom izberi **Uredi**, popravi podatke in klikni **Shrani rundo**. Vodje ne moreš zamenjati in runde ne moreš izbrisati na strani. Ob štartu sta urejanje in odpoved zaklenjena, tudi če runda zaradi trajanja še ostaja na seznamu.
+
+### Trasa in vdelave
+
+V obrazec vpiši povezavo na traso, nikoli kode HTML. Javne HTTPS trase Strava (`/routes/…`), Komoot (`/tour/…`) in Bikemap (`/en/r/…` oziroma `/r/…`) se samodejno vdelajo. Pod traso je vedno tudi povezava v novem oknu. Drugi veljavni HTTP/HTTPS naslovi se prikažejo kot povezava; `javascript:` in `data:` nista dovoljena. Kratke delilne povezave zamenjaj s polnim naslovom trase. Zasebna trasa pri ponudniku za obiskovalce morda ne bo vidna.
+
+Administrator lahko v *Komponente → Runde Belaunce → Možnosti → Trasa* izklopi vdelavo za vsakega ponudnika posebej; shranjeni URL ostane in se izpiše kot povezava. Če je vklopljen CSP, v direktivi **frame-src** dovoli izvore vključenih ponudnikov: `https://strava-embeds.com`, `https://www.komoot.com`, `https://widgets.bikemap.net`.
 
 ## Za člane
+
+### Kako član ustvari rundo
+
+1. Prijavi se kot član društva. Na seznamu ali strani runde izberi **Ustvari rundo** (`/runde/nova`).
+2. Vpiši naslov, tip, težavnost, datum in uro štarta, lokacijo ter dolžino. Lokacija je privzeto **Gorenja vas**, če je administrator ni spremenil. Začetek je prazen, **Odprto za goste** je privzeto **Ne**.
+3. Uro vpiši v časovnem pasu rund (privzeto **Europe/Ljubljana**). Poletni in zimski čas komponenta upošteva sama; v bazi shrani UTC.
+4. Po želji dodaj trajanje v minutah (1–1440), opombe kot navadno besedilo ter povezavo na traso. Če trajanje pustiš prazno, se za prikaz konca uporabi privzeto trajanje iz možnosti. Prijava gostov bo na voljo z nalogo 08.
+5. Izberi **Shrani rundo**. Odpre se stran nove runde; si njen vodja in že šteješ kot en udeleženec. Posebna prijava ni potrebna. Ob napaki se vnos ohrani in obrazec prikaže obvestilo.
+
+Rundo urejaš in odpoveš samo kot njen vodja do štarta. Obiskovalci in prijavljeni nečlani gumba za ustvarjanje ne vidijo.
 
 ### Prijava za člane
 Odpri stran za prijavo (`index.php?option=com_belauncerunde&view=prijava` oziroma menijsko postavko **Prijava za člane**). Vpiši email, s katerim si včlanjen v društvo, in klikni **Pošlji povezavo**. Vedno se prikaže obvestilo, da je bila povezava poslana, če društvo pozna naslov. Če maila ni, preveri pravi naslov in neželeno pošto ali piši društvu.

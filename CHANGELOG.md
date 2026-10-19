@@ -6,6 +6,16 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.7.0] - 2026-10-19
+### Dodano
+- Frontend obrazec za ustvarjanje in urejanje lastne runde z objavljenimi šifranti, lokalnim časom prek `CasHelper` in ohranitvijo vnosa ob napaki.
+- Zaščiteni POST akciji `runda.shrani` in `runda.odpovej`; preverjanje članstva oziroma lastništva v kontrolerju in modelu, zaklep ob štartu ter prepoved sprememb odpovedane runde.
+- Gumbi za ustvarjanje, urejanje in odpoved na seznamu in strani runde ter potrditev odpovedi z Bootstrap modalom brez dodatnih skript.
+- SEF poti `/runde/nova` in `/runde/uredi-{id}-{alias}` ob ohranjenih dolgih povezavah in obstoječih URL-jih rund.
+- Preverjene vdelave tras Strava, Komoot in Bikemap z zaprtim seznamom gostiteljev in poti ter posamičnim izklopom v možnostih komponente.
+- Prevodi sl-SI/en-GB, navodila za člane in vodje, viri oblik vdelav ter navodilo za CSP `frame-src`.
+- Posodobitveni SQL 0.7.0 brez sprememb sheme in podatkov; vodja ostane udeleženec brez nove vrstice prijave (D54).
+
 ## [0.6.0] - 2026-10-18
 ### Dodano
 - Tabela članskih prijav z unikatnim parom runda/uporabnik ter namestitvenim, posodobitvenim in odstranitvenim SQL.

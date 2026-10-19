@@ -6,6 +6,15 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.8.0] - 2026-10-19
+### Dodano
+- Prijava gostov brez računa na odprte objavljene runde pred štartom, z imenom in vsaj enim preverjenim kontaktom.
+- Tabela gostov, namestitveni in posodobitveni SQL, soljen SHA-256 omrežnega naslova in hash enkratnega žetona za odjavo.
+- Honeypot, minimalni čas v seji, transakcijska omejitev gostov na naslov in rundo ter izbirna Joomla captcha (privzeto izklopljena).
+- Poštna predloga `com_belauncerunde.gost_potrditev` z lokalnim časom; stran `/runde/odjava-gosta` in odjava samo s POST in CSRF.
+- Gostje v skupnem številu udeležencev, imena z značko »gost« za člane in kontakt samo za vodjo runde.
+- Nastavitve zaščite, prevodi sl-SI/en-GB in navodila za goste, vodje ter administratorja.
+
 ## [0.7.0] - 2026-10-19
 ### Dodano
 - Nastavljiva omejitev 3/5/10 novih rund na člana v drsečih 24 urah (privzeto 5), preverjena ob odpiranju in tik pred zapisom; štejejo tudi odpovedane runde, urejanje ostane dovoljeno.

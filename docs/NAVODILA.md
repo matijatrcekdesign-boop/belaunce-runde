@@ -132,3 +132,26 @@ Stran runde prikaže še trajanje, opombe in veljavno povezavo na traso v novem 
 
 ## Za goste
 *(naloga 08)*
+
+## Gostje
+
+### Kako se prijavi gost
+1. Odpri stran prihodnje runde, ki jo je vodja označil kot odprto za goste. Obrazec je na voljo do štarta; na odpovedani rundi ga ni.
+2. V obrazec **Prijava gosta** vpiši ime (2–100 znakov) in vsaj telefon ali email. Računa ne potrebuješ. Tudi prijavljen nečlan lahko uporabi ta obrazec; član uporablja **Pridem**.
+3. Počakaj vsaj nekaj sekund in klikni **Prijavi me kot gosta**. Nad gumbom je opozorilo »Vožnja je na lastno odgovornost.« Če je vključena captcha, jo izpolni.
+4. Če si vpisal email, prejmeš potrdilo z naslovom runde, lokalnim časom, lokacijo, vodjo in povezavo za odjavo. Odprtje povezave prikaže gumb **Potrdi odjavo**; šele klik izbriše prijavo. Povezava je enkratna in velja do izbrisa prijave. Pri ponovni uporabi se pokaže nevtralno obvestilo.
+5. Če si vpisal samo telefon, potrditvenega maila in povezave za odjavo ni; za spremembe se obrni na vodjo. Če pošiljanje pošte odpove, prijava ostane veljavna in stran pokaže opozorilo.
+
+### Kaj vidi vodja
+Člani vidijo najprej vodjo, nato prijavljene člane in nazadnje goste po času prijave. Gost ima značko **gost**. Vodja svoje runde poleg gostovega imena vidi vpisani telefon in/ali email; drugi člani vidijo samo ime. Neprijavljeni in prijavljeni nečlani vidijo samo skupno število udeležencev in javno ime vodje. Gostje se štejejo enako kot drugi udeleženci.
+
+### Nastavitve zaščite
+V **Komponente → Runde Belaunce → Možnosti → Gostje** so:
+
+- **Prijave gostov na računalnik in rundo:** 1, 2, 3 ali 5 (privzeto 2). Omejitev velja na isti omrežni naslov in isto rundo, zato si jo ljudje v skupnem omrežju delijo. Druga runda ima svojo kvoto; odjava sprosti mesto.
+- **Minimalni čas izpolnjevanja:** privzeto 3 sekunde od prikaza obrazca. Po prehitri oddaji ali poteku seje znova počakaj in oddaj obrazec.
+- **Captcha za goste:** privzeto izklopljena. Ob vklopu uporabi vtičnik iz globalne nastavitve Joomle. Če vtičnik ni nastavljen ali ni na voljo, se zabeleži opozorilo in obrazec ostane uporaben brez captche. Komponenta ne namešča zunanje storitve.
+
+Honeypot je vključen vedno. Dnevnik zavrnitev vsebuje samo kodo in ID runde; naslova ne hrani surovega. Potrditveno pošto ureja administrator v **System → Mail Templates**, predloga `com_belauncerunde.gost_potrditev`. Namestitev obstoječih popravkov predloge ne prepiše.
+
+Samodejni izbris podatkov gostov po 30 dneh in obvestila o spremembah oziroma odpovedi pridejo v nalogah 12 in 10.

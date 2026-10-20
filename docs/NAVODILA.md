@@ -181,4 +181,21 @@ V **Komponente → Runde Belaunce → Možnosti → Gostje** so:
 
 Honeypot je vključen vedno. Dnevnik zavrnitev vsebuje samo kodo in ID runde; naslova ne hrani surovega. Potrditveno pošto ureja administrator v **System → Mail Templates**, predloga `com_belauncerunde.gost_potrditev`. Namestitev obstoječih popravkov predloge ne prepiše.
 
-Samodejni izbris podatkov gostov po 30 dneh in obvestila o spremembah oziroma odpovedi pridejo v nalogah 12 in 10.
+Samodejni izbris podatkov gostov po 30 dneh pride v nalogi 12.
+
+
+## Obveščanje ob spremembi
+
+Ko vodja na strani ali administrator v administraciji spremeni začetek ali lokacijo runde, prijavljeni člani, gostje z emailom in vodja prejmejo obvestilo. Mail navaja samo spremenjena vključena polja. Začetek je v časovnem pasu komponente (privzeto Europe/Ljubljana). Vodja dobi obvestilo tudi, kadar spremembo naredi sam. Ob odpovedi prek obrazca ali administratorskega seznama prejmejo jasno obvestilo o odpovedi s prvotnim terminom in povezavo na prihajajoče runde.
+
+Vsak naslov dobi ločeno sporočilo. Če več prejemnikov uporablja isti email, dobi samo en izvod. Gost samo s telefonom ne dobi maila; zanj je odgovoren vodja. Ustvarjanje nove runde ali sprememba drugih polj (npr. opomb, dolžine ali naslova) ne pošlje obvestila.
+
+Gostov mail vsebuje novo povezavo za odjavo: odpri jo in odjavo potrdi z gumbom. **Po vsakem novem obvestilu velja le zadnja povezava.** Če isti email uporablja več gostov, je v enem sporočilu več odjavnih povezav. Vsaka odjavi enega gosta.
+
+### Nastavitev sprožilnih polj
+
+Administrator v **Komponente → Belaunce – runde → Možnosti → Maili** pri **Polja, ki sprožijo mail** izbere začetek in/ali lokacijo. Privzeto sta vključeni obe polji. Odkljukaj lokacijo in shrani, če naj pošta odide samo ob spremembi časa. Za izklop obeh vrst sprememb odkljukaj obe polji in shrani. **Odpoved vedno pošlje obvestilo**, tudi kadar ni izbrano nobeno polje.
+
+Besedila ureja administrator v **System → Mail Templates**, predlogi `com_belauncerunde.runda_sprememba` in `com_belauncerunde.runda_odpoved`, posebej za sl-SI/en-GB. Ohraniti je treba oznake za povezavo, spremenjena polja in odjavo gosta. Namestitev in posodobitev obstoječih popravkov ne prepišeta. Pošiljatelj in SMTP se nastavita v Joomli; uporabite klubski naslov iz nastavitev. Za ti sporočili dodatna nastavitev kopiranja Bcc ne velja, ker imata vedno samo enega prejemnika.
+
+Če pošta odpove, se runda vseeno shrani oziroma odpove in izpiše se opozorilo, da nekaterih obvestil ni bilo mogoče poslati. Preveri SMTP in po potrebi osebno obvesti udeležence; samodejnega ponovnega pošiljanja ni. Ob neuspelem pošiljanju gostu lahko prejšnja odjavna povezava že preneha veljati. Dnevnik komponente vsebuje samo kode, ID runde in število prejemnikov, brez kontaktov ali žetonov.

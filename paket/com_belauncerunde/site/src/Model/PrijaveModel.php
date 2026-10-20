@@ -34,16 +34,29 @@ class PrijaveModel extends BaseDatabaseModel
         return $this->spremeniUdelezbo($rundaId, $uporabnik, false);
     }
 
-    /** Edino mesto za seštevanje prijav, obstoječega vodje in gostov (D54). */
+    /** Vrne skupni SQL izraz brez poizvedbe; vzdevek je izključno SQL identifikator. */
+    public function izrazStevilaUdelezencev(string $vzdevek): string
+    {
+        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/D', $vzdevek)) {
+            throw new \InvalidArgumentException('COM_BELAUNCERUNDE_MOJE_NAPAKA_VZDEVEK');
+        }
+
+        // D54: štejejo vrstice prijav, obstoječi vodja in gostje, brez branja imen ali kontaktov.
+        $id = $this->getDatabase()->quoteName($vzdevek . '.id');
+        $vodja = $this->getDatabase()->quoteName($vzdevek . '.vodja_id');
+
+        return '(SELECT COUNT(*) FROM #__belaunce_prijave AS br_p WHERE br_p.runda_id = ' . $id . ')'
+            . ' + CASE WHEN EXISTS (SELECT 1 FROM #__users AS br_u WHERE br_u.id = ' . $vodja . ') THEN 1 ELSE 0 END'
+            . ' + (SELECT COUNT(*) FROM #__belaunce_gostje AS br_g WHERE br_g.runda_id = ' . $id . ')';
+    }
+
+    /** Prebere skupno število z istim SQL izrazom kot članski seznam. */
     public function steviloUdelezencev(int $rundaId): int
     {
         $baza = $this->getDatabase();
         $poizvedba = $baza->createQuery()
-            ->select('(SELECT COUNT(*) FROM #__belaunce_prijave AS p WHERE p.runda_id = r.id)'
-                . ' + CASE WHEN u.id IS NULL THEN 0 ELSE 1 END'
-                . ' + (SELECT COUNT(*) FROM #__belaunce_gostje AS g WHERE g.runda_id = r.id)')
+            ->select($this->izrazStevilaUdelezencev('r'))
             ->from($baza->quoteName('#__belaunce_runde', 'r'))
-            ->join('LEFT', $baza->quoteName('#__users', 'u') . ' ON u.id = r.vodja_id')
             ->where('r.id = :runda')->where('r.stanje IN (1, 2)')
             ->bind(':runda', $rundaId, ParameterType::INTEGER);
 

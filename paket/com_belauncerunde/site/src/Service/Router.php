@@ -21,6 +21,17 @@ class Router extends RouterView
     /** @var DatabaseInterface Baza za pridobivanje trenutnega aliasa. */
     private DatabaseInterface $baza;
 
+    /** @var array<int, string> Aliasi iz že prebranih seznamov, samo za trenutno zahtevo. */
+    private static array $aliasi = [];
+
+    /** Prevzame aliase iz baze, da povezave kartic ne sprožijo poizvedb v zanki. */
+    public static function predpomniAliase(array $runde): void
+    {
+        foreach ($runde as $runda) {
+            self::$aliasi[(int) $runda->id] = (string) $runda->alias;
+        }
+    }
+
     /**
      * Registrira hierarhijo pogledov in standardna Joomlina pravila.
      *
@@ -41,6 +52,9 @@ class Router extends RouterView
         $obrazec = new RouterViewConfiguration('obrazec');
         $obrazec->setKey('id')->setParent($runde);
         $this->registerView($obrazec);
+        $moje = new RouterViewConfiguration('moje');
+        $moje->setParent($runde);
+        $this->registerView($moje);
 
         // Obstoječa prijava in potrditev povezave morata delovati tudi s SEF.
         $this->registerView(new RouterViewConfiguration('prijava'));
@@ -65,6 +79,10 @@ class Router extends RouterView
     public function getRundaSegment($id, $query): array
     {
         $rundaId = (int) $id;
+        if (array_key_exists($rundaId, self::$aliasi)) {
+            return [$rundaId => $rundaId . '-' . self::$aliasi[$rundaId]];
+        }
+
         $poizvedba = $this->baza->createQuery()
             ->select($this->baza->quoteName('alias'))
             ->from($this->baza->quoteName('#__belaunce_runde'))

@@ -83,13 +83,17 @@ class RundeController extends AdminController
      */
     private function spremeniStanje(int $stanje): void
     {
+        if ($this->input->server->getString('REQUEST_METHOD') !== 'POST') {
+            throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+        }
+
         $this->checkToken();
 
         if (!Factory::getApplication()->getIdentity()->authorise('core.edit.state', 'com_belauncerunde')) {
             throw new \RuntimeException(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'), 403);
         }
 
-        $pks = array_map('intval', (array) $this->input->get('cid', [], 'array'));
+        $pks = array_map('intval', (array) $this->input->post->get('cid', [], 'array'));
 
         if ($this->getModel()->nastaviStanje($pks, $stanje)) {
             $this->setMessage(Text::_($stanje === 2 ? 'COM_BELAUNCERUNDE_RUNDE_ODPOVEDANE' : 'COM_BELAUNCERUNDE_RUNDE_OBNOVLJENE'));

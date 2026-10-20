@@ -12,6 +12,7 @@ class HtmlView extends BaseHtmlView
 {
     /** Dovoljene kode določajo besedilo in videz brez izpisovanja uporabnikovega vnosa. */
     private const OBVESTILA = [
+        'moje_prijava' => ['razred' => 'alert-info', 'kljuc' => 'COM_BELAUNCERUNDE_MOJE_PRIJAVA'],
         'poslano' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_PRIJAVA_POSLANO'],
         'uspeh' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_PRIJAVA_USPEH'],
         'napaka' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_PRIJAVA_NAPAKA'],

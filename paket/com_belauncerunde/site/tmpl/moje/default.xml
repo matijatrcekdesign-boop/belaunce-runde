@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <layout title="COM_BELAUNCERUNDE_MOJE_MENU_TITLE" option="COM_BELAUNCERUNDE_MOJE_MENU_OPTION" />
+    <message>COM_BELAUNCERUNDE_MOJE_MENU_DESC</message>
+    <fields name="params">
+        <fieldset name="basic">
+            <field name="pretekle_omejitev" type="number" label="COM_BELAUNCERUNDE_MOJE_OMEJITEV" default="20" min="1" filter="integer" />
+            <field name="prikazi_pretekle" type="radio" label="COM_BELAUNCERUNDE_MOJE_PRIKAZI_PRETEKLE" default="1" filter="integer" layout="joomla.form.field.radio.switcher">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+        </fieldset>
+    </fields>
+</metadata>

@@ -124,9 +124,15 @@ class RundaController extends BaseController
         }
 
         // Star obrazec lahko kaže na medtem izbrisano rundo; obvestilo zato prikaže seznam.
-        $url = $stanje === 'runda_ni_najdena'
-            ? 'index.php?option=com_belauncerunde&view=runde'
-            : 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId;
+        // Zaprt seznam ciljev: samo odjava s točno vrednostjo moje sme spremeniti cilj.
+        // Poljubni URL, referer in polje vrni pri prijavi nikoli niso cilj preusmeritve.
+        if (!$prihod && $this->input->post->getString('vrni', '') === 'moje') {
+            $url = 'index.php?option=com_belauncerunde&view=moje';
+        } else {
+            $url = $stanje === 'runda_ni_najdena'
+                ? 'index.php?option=com_belauncerunde&view=runde'
+                : 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId;
+        }
         $this->setRedirect(Route::_($url . '&stanje=' . $stanje, false), Text::_('COM_BELAUNCERUNDE_UDELEZBA_' . strtoupper($stanje)),
             \in_array($stanje, ['prijavljen', 'odjavljen'], true) ? 'message' : 'warning');
     }

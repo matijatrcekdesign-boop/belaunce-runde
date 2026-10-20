@@ -18,8 +18,8 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | ✅ |
 | 07 | Frontend obrazec runde: ustvari, uredi, odpovej (pravila 4.1), trasa + vdelave, dnevna omejitev (D38) | 0.7.0 | 06 | ✅ |
 | 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | ✅ |
-| 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | 🟡 |
-| 10 | Transakcijski maili ob spremembi in odpovedi (nastavljiva besedila in polja) | 0.10.0 | 07, 08 | ⬜ |
+| 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | ✅ |
+| 10 | Transakcijski maili ob spremembi in odpovedi (nastavljiva besedila in polja) | 0.10.0 | 07, 08 | 🟡 |
 | 11 | Deli v Viber: gumb, besedilo za kopiranje | 0.11.0 | 06 | ⬜ |
 | 12 | Scheduler opravila: sinhronizacija članov (**odvzem/vrnitev skupine "Člani", nikoli blokada** — D47, D52, D53), izbris gostov (30 dni), čiščenje žetonov in poskusov | 0.12.0 | 04, 08 | ⬜ |
 | 13 | Backend statistika in izvoz v CSV | 0.13.0 | 02 | ⬜ |
@@ -58,6 +58,7 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
+- **09** — PR #9, združen 2026-10-20. Vseh 19 meril ✅ brez popravkov. Izraz za število udeležencev prestavljen v `PrijaveModel::izrazStevilaUdelezencev()` (eno mesto, D54). Router aliase predpomni iz že prebranega seznama (brez N+1), kar je potrdil dnevnik poizvedb: 2 poizvedbi seznama na zavihek. Cilj preusmeritve po odjavi je zaprt seznam (zunanji `vrni` zavrnjen).
 - **08** — PR #8, združen 2026-10-20. Vseh 21 meril ✅. Med testiranjem najdeno, da Joomlin privzeti zapisovalnik v lasten dnevnik zapisuje IP obiskovalca (`{CLIENTIP}`); popravljeno z izrecno obliko zapisa → pravilo 24 in merilo 21. Prijava gosta teče v transakciji z `FOR UPDATE`, odjava uporablja izziv v seji namesto surovega žetona v POST.
 - **07** — PR #7, združen 2026-10-19. Vseh 22 meril ✅. Med pregledom dodana dnevna omejitev rund (D38, razdelek 6.1), ki je naloga ni zajela; med testiranjem najdena napaka branja seje: po uspešnem shranjevanju se je obrazec odprl prazen in bi ob ponovnem urejanju tiho pobrisal neobvezna polja. Popravljeno tudi v treh administratorskih modelih. Obliki vdelav za Strava in Komoot potrjeni na pravih javnih trasah.
 - **06** — PR #6, združen 2026-10-19. Vseh 17 meril ✅ na DDEV, en popravek po vprašanju za arhitekta (izbrisana runda v toku D40 → `runda_ni_najdena` in preusmeritev na seznam z opozorilom). Testiranje je prvič opravil arhitekt v brskalniku (Claude in Chrome), Matija je potrjeval stanje v bazi.

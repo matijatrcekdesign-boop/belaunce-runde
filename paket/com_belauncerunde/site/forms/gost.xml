@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset name="gost">
+        <field name="ime" type="text" label="COM_BELAUNCERUNDE_GOST_IME" filter="string" required="true" maxlength="100" autocomplete="name" />
+        <field name="telefon" type="tel" label="COM_BELAUNCERUNDE_GOST_TELEFON" filter="string" maxlength="30" autocomplete="tel" />
+        <field name="email" type="email" label="COM_BELAUNCERUNDE_GOST_EMAIL" filter="string" maxlength="255" autocomplete="email" />
+        <field name="spletisce" type="text" label="COM_BELAUNCERUNDE_GOST_SPLETISCE" filter="raw" autocomplete="off" tabindex="-1" />
+    </fieldset>
+</form>

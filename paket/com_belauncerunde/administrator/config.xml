@@ -109,6 +109,15 @@
 			<option value="0">JNO</option><option value="1">JYES</option>
 		</field>
 	</fieldset>
+	<fieldset name="gostje" label="COM_BELAUNCERUNDE_CONFIG_GOSTJE">
+		<field name="gostje_omejitev" type="list" filter="integer" default="2" label="COM_BELAUNCERUNDE_CONFIG_GOSTJE_OMEJITEV" description="COM_BELAUNCERUNDE_CONFIG_GOSTJE_OMEJITEV_OPIS">
+			<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option>
+		</field>
+		<field name="gostje_captcha" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="0" label="COM_BELAUNCERUNDE_CONFIG_GOSTJE_CAPTCHA" description="COM_BELAUNCERUNDE_CONFIG_GOSTJE_CAPTCHA_OPIS">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
+		<field name="gostje_min_cas" type="number" filter="integer" default="3" min="0" label="COM_BELAUNCERUNDE_CONFIG_GOSTJE_CAS" description="COM_BELAUNCERUNDE_CONFIG_GOSTJE_CAS_OPIS" />
+	</fieldset>
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL">
 		<field
 			name="rules"

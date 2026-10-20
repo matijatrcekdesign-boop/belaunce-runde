@@ -45,6 +45,9 @@ class Router extends RouterView
         // Obstoječa prijava in potrditev povezave morata delovati tudi s SEF.
         $this->registerView(new RouterViewConfiguration('prijava'));
         $this->registerView(new RouterViewConfiguration('povezava'));
+        $odjava = new RouterViewConfiguration('odjavagosta');
+        $odjava->setParent($runde);
+        $this->registerView($odjava);
 
         parent::__construct($app, $menu);
         $this->attachRule(new MenuRules($this));
@@ -110,10 +113,34 @@ class Router extends RouterView
         return preg_match('/^uredi-([1-9][0-9]*)(?:-.*)?$/D', $segment, $ujemanje) ? (int) $ujemanje[1] : 0;
     }
 
-    /** StandardRules sprejme samo resničen ključ; literal nova zato razberemo izrecno. */
+    /** Vidno ime poti odjave loči od ASCII imena MVC pogleda. */
+    public function build(&$query)
+    {
+        $odjava = ($query['view'] ?? '') === 'odjavagosta';
+        $segmenti = parent::build($query);
+
+        if ($odjava) {
+            foreach ($segmenti as &$segment) {
+                if ($segment === 'odjavagosta') {
+                    $segment = 'odjava-gosta';
+                }
+            }
+            unset($segment);
+        }
+
+        return $segmenti;
+    }
+
+    /** Razbere posebno ničelno novo rundo in literal odjave gosta pod menijem seznama. */
     public function parse(&$segments)
     {
         $aktivna = $this->menu->getActive();
+
+        // Brez menija NomenuRules pričakuje ime pogleda kot prvi segment.
+        if (($segments[0] ?? '') === 'odjava-gosta'
+            && ($aktivna === null || $aktivna->component !== 'com_belauncerunde' || ($aktivna->query['view'] ?? '') === 'runde')) {
+            $segments[0] = 'odjavagosta';
+        }
 
         // Poseben je samo ključ 0 pod menijem seznama. Številčne poti in uredi-
         // ostanejo pri StandardRules; brez menija nova deluje prek NomenuRules.

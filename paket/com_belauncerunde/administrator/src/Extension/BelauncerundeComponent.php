@@ -48,7 +48,11 @@ class BelauncerundeComponent extends MVCComponent implements BootableExtensionIn
         }
 
         // Kategorija mora imeti zapisovalnik tudi brez nastavitve Log Almost Everything.
-        Log::addLogger(['text_file' => 'com_belauncerunde.php'], Log::ALL, ['com_belauncerunde']);
+        // Obliko določimo izrecno, ker privzeta oblika jedra zapisuje tudi IP obiskovalca.
+        Log::addLogger([
+            'text_file' => 'com_belauncerunde.php',
+            'text_entry_format' => "{DATETIME}\t{PRIORITY}\t{CATEGORY}\t{MESSAGE}",
+        ], Log::ALL, ['com_belauncerunde']);
         self::$dnevnikRegistriran = true;
     }
 }

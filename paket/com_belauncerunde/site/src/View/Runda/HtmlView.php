@@ -4,6 +4,8 @@ namespace Belaunce\Component\Belauncerunde\Site\View\Runda;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\GenericDataException;
@@ -51,6 +53,10 @@ class HtmlView extends BaseHtmlView
     public array $udelezenci = [];
     /** @var array|null Obvestilo iz zaprtega seznama. */
     public ?array $obvestilo = null;
+    /** @var \Joomla\CMS\Form\Form|null Obrazec samo za nečlana na odprti rundi. */
+    public $gostObrazec = null;
+    /** @var string Zaupan izpis Joomlinega captcha vtičnika. */
+    public string $gostCaptcha = '';
 
     /**
      * Zavrne neobstoječo rundo s 404 in pripravi varen izpis javnih podatkov.
@@ -76,6 +82,46 @@ class HtmlView extends BaseHtmlView
         $this->odprta = (int) $runda->stanje === 1 && !(bool) $runda->startala;
         $this->steviloUdelezencev = $prijave->steviloUdelezencev((int) $runda->id);
         $this->obvestilo = self::OBVESTILA[$app->getInput()->getCmd('stanje', '')] ?? null;
+        $gostObvestila = [
+            'gost_prijavljen' => ['alert-success', 'PRIJAVLJEN'],
+            'gost_mail' => ['alert-warning', 'MAIL'],
+            'gost_clan' => ['alert-warning', 'CLAN'],
+            'gost_zaprto' => ['alert-warning', 'ZAPRTO'],
+            'gost_prehitro' => ['alert-warning', 'PREHITRO'],
+            'gost_vnos' => ['alert-warning', 'VNOS'],
+            'gost_ime' => ['alert-warning', 'IME_NAPAKA'],
+            'gost_kontakt' => ['alert-warning', 'KONTAKT_NAPAKA'],
+            'gost_telefon' => ['alert-warning', 'TELEFON_NAPAKA'],
+            'gost_email' => ['alert-warning', 'EMAIL_NAPAKA'],
+            'gost_captcha' => ['alert-warning', 'CAPTCHA_NAPAKA'],
+            'gost_omejitev' => ['alert-warning', 'OMEJITEV'],
+            'gost_zahteva' => ['alert-warning', 'ZAHTEVA'],
+            'gost_napaka' => ['alert-warning', 'NAPAKA'],
+        ];
+        $gostObvestilo = $gostObvestila[$app->getInput()->getCmd('stanje', '')] ?? null;
+
+        if ($gostObvestilo !== null) {
+            $this->obvestilo = ['razred' => $gostObvestilo[0], 'kljuc' => 'COM_BELAUNCERUNDE_GOST_' . $gostObvestilo[1]];
+        }
+
+        if (!$this->clan && $this->odprta && (int) $runda->odprto_za_goste === 1) {
+            $gost = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Gost', 'Site', []);
+            $this->gostObrazec = $gost->getForm([], false);
+            $this->gostObrazec->addControlField('task', 'gost.prijava');
+            $this->gostObrazec->addControlField('id', (string) $runda->id);
+            $captcha = GostCaptchaHelper::pridobi((int) $runda->id);
+
+            if ($captcha !== null) {
+                try {
+                    $this->gostCaptcha = (string) $captcha->display('gost_captcha', 'br-gost-captcha', 'mb-3');
+                } catch (\Throwable $napaka) {
+                    Log::add('GOST_CAPTCHA_IZPIS_NAPAKA runda_id=' . (int) $runda->id, Log::WARNING, 'com_belauncerunde');
+                }
+            }
+
+            // Čas nastavimo ob pripravi dejansko vidnega obrazca, ne iz vhodnega POST.
+            $app->setUserState($gost->kljucCasa((int) $runda->id), microtime(true));
+        }
 
         // Imen ne beremo in ne vdelamo v HTML javnega obiskovalca ali prijavljenega nečlana.
         if ($this->clan) {

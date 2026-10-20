@@ -45,7 +45,10 @@ else
     echo "Opozorilo: xmllint ni na voljo, preverjanje XML sintakse je preskočeno."
 fi
 
-if grep -R -n -E 'JHtml|JFactory|JText|JRoute|JUri|JTable|jQuery|getInstance\(' paket; then
+# Captcha::getInstance je javni API jedra 6.1, izrecno zahtevan v nalogi 08.
+# Izjema velja samo za točno ta klic; druge prepovedi veljajo tudi na isti vrstici.
+if grep -R -n -E 'JHtml|JFactory|JText|JRoute|JUri|JTable|jQuery' paket \
+    || grep -R -n -E 'getInstance\(' paket | sed -E 's/(^|[^[:alnum:]_\\])Captcha::getInstance\(/\1/g' | grep -E 'getInstance\('; then
     echo "Napaka: najden je prepovedan Joomla vzorec." >&2
     exit 1
 fi

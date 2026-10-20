@@ -67,6 +67,17 @@ $runda = $this->runda;
                     <?php if ($udelezenec->vodja) : ?>
                         <span class="badge bg-secondary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></span>
                     <?php endif; ?>
+                    <?php if (!empty($udelezenec->gost)) : ?>
+                        <span class="badge bg-info text-dark"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_ZNACKA')); ?></span>
+                        <?php if ($this->vodja) : ?>
+                            <?php if ($udelezenec->telefon !== '') : ?>
+                                <span><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_TELEFON') . ': ' . $udelezenec->telefon); ?></span>
+                            <?php endif; ?>
+                            <?php if ($udelezenec->email !== '') : ?>
+                                <span><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_EMAIL') . ': ' . $udelezenec->email); ?></span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -82,6 +93,9 @@ $runda = $this->runda;
         </form>
     <?php elseif ($this->odprta && $this->neprijavljen) : ?>
         <p><a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava&runda_id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a></p>
+    <?php endif; ?>
+    <?php if ($this->gostObrazec !== null) : ?>
+        <?php require __DIR__ . '/gost.php'; ?>
     <?php endif; ?>
     <?php if (!$this->clan) : ?>
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>

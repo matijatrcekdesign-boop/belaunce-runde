@@ -34,13 +34,14 @@ class PrijaveModel extends BaseDatabaseModel
         return $this->spremeniUdelezbo($rundaId, $uporabnik, false);
     }
 
-    /** Vrne število prijav in obstoječega vodje; naloga 08 tu prišteje goste. */
+    /** Edino mesto za seštevanje prijav, obstoječega vodje in gostov (D54). */
     public function steviloUdelezencev(int $rundaId): int
     {
         $baza = $this->getDatabase();
         $poizvedba = $baza->createQuery()
             ->select('(SELECT COUNT(*) FROM #__belaunce_prijave AS p WHERE p.runda_id = r.id)'
-                . ' + CASE WHEN u.id IS NULL THEN 0 ELSE 1 END')
+                . ' + CASE WHEN u.id IS NULL THEN 0 ELSE 1 END'
+                . ' + (SELECT COUNT(*) FROM #__belaunce_gostje AS g WHERE g.runda_id = r.id)')
             ->from($baza->quoteName('#__belaunce_runde', 'r'))
             ->join('LEFT', $baza->quoteName('#__users', 'u') . ' ON u.id = r.vodja_id')
             ->where('r.id = :runda')->where('r.stanje IN (1, 2)')
@@ -80,6 +81,37 @@ class PrijaveModel extends BaseDatabaseModel
 
         foreach ($baza->setQuery($poizvedba)->loadObjectList() as $prijava) {
             $seznam[] = (object) ['ime' => (string) ($prijava->ime ?? ''), 'vodja' => false];
+        }
+
+        // Kontakta sploh ne beremo za navadnega člana; frontend nima izjeme za admina.
+        $kontakt = !$uporabnik->guest && (int) $uporabnik->id > 0;
+        $uporabnikId = (int) $uporabnik->id;
+        $poizvedba = $baza->createQuery()->select('COUNT(*)')->from($baza->quoteName('#__belaunce_runde'))
+            ->where('id = :runda')->where('vodja_id = :uporabnik')
+            ->bind(':runda', $rundaId, ParameterType::INTEGER)->bind(':uporabnik', $uporabnikId, ParameterType::INTEGER);
+        $kontakt = $kontakt && (int) $baza->setQuery($poizvedba)->loadResult() === 1;
+        $poizvedba = $baza->createQuery()->select('g.ime')
+            ->from($baza->quoteName('#__belaunce_gostje', 'g'))
+            ->join('INNER', $baza->quoteName('#__belaunce_runde', 'r') . ' ON r.id = g.runda_id')
+            ->where('g.runda_id = :runda')->where('r.stanje IN (1, 2)')
+            ->order('g.ustvarjeno ASC, g.id ASC')->bind(':runda', $rundaId, ParameterType::INTEGER);
+
+        if ($kontakt) {
+            // Tudi zamenjava vodje med obema branjema ne sme razkriti kontakta prejšnjemu vodji.
+            $vodjaTelefon = $uporabnikId;
+            $vodjaEmail = $uporabnikId;
+            $poizvedba->select('CASE WHEN r.vodja_id = :vodja_telefon THEN g.telefon ELSE NULL END AS telefon')
+                ->select('CASE WHEN r.vodja_id = :vodja_email THEN g.email ELSE NULL END AS email')
+                ->bind(':vodja_telefon', $vodjaTelefon, ParameterType::INTEGER)
+                ->bind(':vodja_email', $vodjaEmail, ParameterType::INTEGER);
+        }
+
+        foreach ($baza->setQuery($poizvedba)->loadObjectList() as $gost) {
+            $seznam[] = (object) [
+                'ime' => $gost->ime, 'vodja' => false, 'gost' => true,
+                'telefon' => $kontakt ? (string) ($gost->telefon ?? '') : '',
+                'email' => $kontakt ? (string) ($gost->email ?? '') : '',
+            ];
         }
 
         return $seznam;

@@ -12,6 +12,14 @@ Uporabniška navodila nastajajo postopoma z nalogami. Vsaka naloga dopolni svoj 
 
 Pri odstranitvi paket privzeto ohrani tabele s podatki. Če želiš tabele izbrisati, pred odstranitvijo v možnostih izklopi **Ohrani podatke ob odstranitvi**.
 
+### Dnevnik brez IP-ja in čiščenje pred produkcijo
+
+Lasten dnevnik `administrator/logs/com_belauncerunde.php` po popravku zapisuje samo datum, raven, kategorijo in sporočilo, ločene s tabulatorji. Stara datoteka na DDEV vsebuje vrstice z IP-jem in glavo s stolpcem `clientip`; namestitev popravka jih ne odstrani.
+
+Pred ponovnim preverjanjem na DDEV in **pred zagonom na produkciji izbriši datoteko dnevnika `com_belauncerunde.php`** iz Joomline nastavljene mape dnevnikov (na DDEV `administrator/logs/`). Ob naslednjem dogodku jo zapisovalnik ustvari znova z novo glavo. Starega testnega dnevnika ne prenašaj na produkcijo.
+
+**Merilo sprejema 21 (naloga 08):** Po popravku nova vrstica v `administrator/logs/com_belauncerunde.php` nima stolpca z IP naslovom; vsebuje samo datum, raven, kategorijo in sporočilo. Po namestitvi paketa in izbrisu starega dnevnika na DDEV sproži zavrnjeno prijavo gosta (npr. izpolni honeypot). Preveri, da ima glava `#Fields` samo `datetime`, `priority`, `category`, `message`, vsaka nova podatkovna vrstica pa štiri polja, ločena s tabulatorji, brez `clientip` ali IP-ja obiskovalca.
+
 ### Menijska postavka za runde
 
 1. V *Meniji → Main Menu → Nov* izberi tip **Runde Belaunce → Seznam rund**.

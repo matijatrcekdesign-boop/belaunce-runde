@@ -15,6 +15,9 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Gostje v skupnem številu udeležencev, imena z značko »gost« za člane in kontakt samo za vodjo runde.
 - Nastavitve zaščite, prevodi sl-SI/en-GB in navodila za goste, vodje ter administratorja.
 
+### Popravljeno
+- Lasten zapisovalnik izrecno določi štiri polja brez IP-ja obiskovalca; privzeti stolpec `CLIENTIP` se ne zapisuje več. Dodano pravilo 24, navodilo za izbris starega dnevnika pred produkcijo in merilo sprejema 21.
+
 ## [0.7.0] - 2026-10-19
 ### Dodano
 - Nastavljiva omejitev 3/5/10 novih rund na člana v drsečih 24 urah (privzeto 5), preverjena ob odpiranju in tik pred zapisom; štejejo tudi odpovedane runde, urejanje ostane dovoljeno.

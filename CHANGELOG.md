@@ -6,6 +6,14 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.9.0] - 2026-10-20
+### Dodano
+- Zasebni članski pogled **Moje runde** na `/runde/moje`, z zavihkoma Prihajajoče in Pretekle, ločenima sklopoma vodenih rund in prijav ter paginacijo preteklih rund.
+- Menijska postavka z nastavljivim številom preteklih rund na stran in prikazom zavihka Pretekle, preusmeritve za neprijavljene in nečlane ter `noindex, nofollow`.
+- Urejanje in potrjena odpoved prek obstoječega delnega prikaza ter odjava s povratkom na Moje runde prek zaprte vrednosti `vrni=moje`.
+- Skupni SQL izraz števila udeležencev v `PrijaveModel`, uporabljen tako na strani runde kot na članskem seznamu, ter uporaba že prebranih aliasov pri gradnji povezav brez poizvedb v zanki.
+- Prevodi sl-SI/en-GB, dokumentacija in posodobitveni SQL 0.9.0 brez sprememb sheme ali podatkov.
+
 ## [0.8.0] - 2026-10-19
 ### Dodano
 - Prijava gostov brez računa na odprte objavljene runde pred štartom, z imenom in vsaj enim preverjenim kontaktom.

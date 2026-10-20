@@ -1,0 +1,1 @@
+-- NALOGA-09: Moje runde; brez sprememb sheme ali podatkov.

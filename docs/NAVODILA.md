@@ -32,6 +32,13 @@ Brez te menijske postavke Joomla uporablja `/component/belauncerunde/…`; to je
 
 Filtra se oddata z gumbom **Filtriraj**, izbira je v URL-ju in povezavo lahko deliš. **Počisti** vrne na seznam brez filtrov. Če filtre v menijski postavki skriješ, se obrazec ne prikaže; filtri v že deljenih povezavah še vedno veljajo.
 
+### Menijska postavka Moje runde
+
+1. V *Meniji → Main Menu → Nov* izberi tip **Runde Belaunce → Moje runde**.
+2. Nastavi naslov **Moje runde**, alias **moje**, nadrejeno postavko **Runde**, stanje **Objavljeno** in dostop **Public**. Dostop preveri komponenta; tako neprijavljeni obiskovalec dobi naš obrazec za prijavo članov.
+3. Nastavi **Število preteklih rund na stran** (privzeto 20) in **Prikaži zavihek Pretekle** (privzeto Da). Za test paginacije nastavi število na 1. Če zavihek skriješ, tudi neposredna povezava na pretekle odpre prihajajoče.
+4. Ob vključenem SEF odpri `/runde/moje`. Deluje tudi `index.php?option=com_belauncerunde&view=moje`, za pretekle dodaj `&pogled=pretekle`.
+
 ### Runde v administraciji
 Runde so privzeti pogled pod *Komponente → Runde Belaunce*. Seznam omogoča iskanje po naslovu ali lokaciji, iskanje po ID z obliko `id:12`, filtre po tipu, težavnosti, stanju, vodji in obdobju ter razvrščanje po začetku, naslovu, stanju in ID.
 
@@ -129,6 +136,18 @@ Prijavljen uporabnik brez članske skupine vidi samo število in poziv za včlan
 Odpovedana runda ostane vidna z značko **Odpovedano** in pojasnilom; prijava in odjava nista mogoči. Tudi po štartu se udeležbe ne da več spreminjati, runda pa ostane na seznamu do svojega konca. Če trajanja nima, velja privzeto trajanje iz možnosti komponente.
 
 Po koncu neposredna povezava še vedno deluje in pokaže **Ta runda je končana** ter povezavo na prihajajoče runde. Iskalnikom stran naroči, naj končane runde ne indeksirajo. Predogled deljene povezave vsebuje naslov, datum in uro, tip, težavnost ter dolžino; imen udeležencev in opomb v predogledu ni.
+
+## Moje runde
+
+Kot prijavljen član odpri **Moje runde**. Če še nisi prijavljen, se odpre obrazec za prijavo članov. Prijavljen uporabnik brez članske skupine se vrne na javni seznam z obvestilom.
+
+Privzeti zavihek **Prihajajoče** ima sklopa **Runde, ki jih vodim** in **Prijavljen sem**. Tvoja vodena runda je samo v prvem. Na kartici vidiš naslov s povezavo, lokalni datum in uro, tip, težavnost, lokacijo, dolžino, ime vodje ter skupno število članov, vodje in gostov. Imen drugih udeležencev in kontaktov gostov na tem pregledu ni. Prazni sklopi pokažejo pojasnilo.
+
+Pred štartom objavljene runde lahko svojo rundo **urediš** ali **odpoveš** s potrditvijo v pogovornem oknu; po shranjevanju ali odpovedi se odpre stran runde. Z runde, na katero si prijavljen, se lahko pred štartom **odjaviš** in se vrneš na Moje runde z obvestilom. Odpovedane runde imajo značko **Odpovedano** in nimajo teh gumbov. Runda, ki že poteka, ostane med prihajajočimi do konca, vendar nima gumbov za spremembe.
+
+Zavihek **Pretekle** pokaže tvoje končane runde od najnovejše, z oznako, ali si jih vodil ali bil prijavljen. Upošteva se začetek in trajanje, pri praznem trajanju privzeto trajanje iz možnosti. Odpovedanih rund tu ni. Daljši seznam ima povezave med stranmi; akcij za spreminjanje preteklih rund ni.
+
+Na vrhu je **Ustvari rundo**. Dnevna omejitev ostaja ista kot pri ustvarjanju z drugih strani; ob doseženi meji obrazec pokaže obvestilo.
 
 ## Kaj vidi obiskovalec
 

@@ -17,13 +17,15 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 05 | Javni seznam prihajajočih rund s filtri tip/težavnost, SEF router, tip menijske postavke | 0.5.0 | 02 | ✅ |
 | 06 | Stran runde: javno/člani (8), "Pridem"/odjava, D40, končane runde (`noindex`), Open Graph | 0.6.0 | 04, 05 | ✅ |
 | 07 | Frontend obrazec runde: ustvari, uredi, odpovej (pravila 4.1), trasa + vdelave, dnevna omejitev (D38) | 0.7.0 | 06 | ✅ |
-| 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | 🟡 |
-| 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | ⬜ |
+| 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | ✅ |
+| 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | 🟡 |
 | 10 | Transakcijski maili ob spremembi in odpovedi (nastavljiva besedila in polja) | 0.10.0 | 07, 08 | ⬜ |
 | 11 | Deli v Viber: gumb, besedilo za kopiranje | 0.11.0 | 06 | ⬜ |
 | 12 | Scheduler opravila: sinhronizacija članov (**odvzem/vrnitev skupine "Člani", nikoli blokada** — D47, D52, D53), izbris gostov (30 dni), čiščenje žetonov in poskusov | 0.12.0 | 04, 08 | ⬜ |
 | 13 | Backend statistika in izvoz v CSV | 0.13.0 | 02 | ⬜ |
 | 14 | Zaključni pregled: varnost, ACL, GDPR (orodja za zasebnost), dostopnost, PHPDoc, `NAVODILA.md`; **test odstranitve paketa** (merilo 20 naloge 04, preloženo); zamenjava zastarelega `getError()` | 0.14.0 | vse | ⬜ |
+| 16 | **Vizualni pregled**: enoten videz vseh strani komponente (seznam, runda, obrazci, prijava, gostje), lasten CSS s predpono `br-`, mobilni pregled, dostopnost (kontrast, fokus, oznake). Po nalogi 11, pred izidom. | 0.15.0 | 11 | ⬜ |
+| 17 | **Otroška predloga za runde**: child template iz j4starter, dodeljena menijskima postavkama Runde in Prijava; vanjo doda `<jdoc:include type="message" />` (reši D41 brez posega v starša) in po potrebi lasten slog. Po izidu v1. | — | 16 | ⬜ |
 | 15 | **Povzetek načina dela** (za katerikoli agent, za prihodnje projekte): brainstorming z Matijo (želje, osnutek, ideja) → pregled zahtev in vprašanja → vir resnice → postavitev repozitorija → naloge arhitekt/izvajalec → pregled → test v pravem okolju → zapis lekcij. Pripravi arhitekt z Matijo. | — | 14 | ⬜ |
 
 Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo ostati izpolnjene.
@@ -36,6 +38,8 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 - [ ] Pred nalogo 12 preveriti, ali AcyMailing kaj spremeni tudi ob spremembi **skupine** uporabnika (ne samo ob blokadi)
 - [ ] Možnosti na produkciji: izbrani pravi listi članov in "Runde" (ID-ja sta drugačna kot na DDEV)
 
+- [ ] **Piškotki, če bi kdaj uvedli pravo poddomeno:** piškotek seje in `cookie_domain` vtičnika *Authentication – Cookie* nastavljena na `.belaunce.cc`, sicer je član prijavljen samo na eni domeni
+- [ ] **Dnevnik pred zagonom:** pobriši `administrator/logs/com_belauncerunde.php`, ker stare vrstice (pred 0.8.0) vsebujejo IP naslove
 - [ ] **Predloga j4starter:** `<jdoc:include type="message" />` tudi v veji brez modula `sidebar` (sicer uporabniki ne vidijo sporočil o prijavi) — D41
 - [ ] AcyMailing: javni obrazec vpisuje samo na listo "Runde"; ID liste članov in liste "Runde" vpisana v možnosti
 - [ ] Vtičnika *Authentication – Cookie* in *System – Remember Me* vklopljena (D43); `cookie_lifetime` v vtičniku Cookie nastavljen po dogovoru
@@ -49,10 +53,12 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 ## Backlog (izven v1)
 
 - Predlogi zadnjih lokacij (`datalist`) pri vnosu lokacije (D36)
+- **Poddomena `runde.belaunce.cc`:** zdaj preusmeritev na strežniku (`runde.belaunce.cc/...` → `belaunce.cc/runde/...`), brez posega v Joomlo. Prava poddomena nad isto namestitvijo (domain mapping) šele po izidu — zahteva piškotek seje in piškotek »Zapomni si me« na `.belaunce.cc`, enotno kanonično povezavo in ohranitev starih povezav iz Viber zgodovine.
 - Tedenski povzetek, kode za prijavo, PWA, .ics, komentarji, hitra runda (faza 2)
 
 ## Končano
 
+- **08** — PR #8, združen 2026-10-20. Vseh 21 meril ✅. Med testiranjem najdeno, da Joomlin privzeti zapisovalnik v lasten dnevnik zapisuje IP obiskovalca (`{CLIENTIP}`); popravljeno z izrecno obliko zapisa → pravilo 24 in merilo 21. Prijava gosta teče v transakciji z `FOR UPDATE`, odjava uporablja izziv v seji namesto surovega žetona v POST.
 - **07** — PR #7, združen 2026-10-19. Vseh 22 meril ✅. Med pregledom dodana dnevna omejitev rund (D38, razdelek 6.1), ki je naloga ni zajela; med testiranjem najdena napaka branja seje: po uspešnem shranjevanju se je obrazec odprl prazen in bi ob ponovnem urejanju tiho pobrisal neobvezna polja. Popravljeno tudi v treh administratorskih modelih. Obliki vdelav za Strava in Komoot potrjeni na pravih javnih trasah.
 - **06** — PR #6, združen 2026-10-19. Vseh 17 meril ✅ na DDEV, en popravek po vprašanju za arhitekta (izbrisana runda v toku D40 → `runda_ni_najdena` in preusmeritev na seznam z opozorilom). Testiranje je prvič opravil arhitekt v brskalniku (Claude in Chrome), Matija je potrjeval stanje v bazi.
 - **05** — PR #5, združen 2026-10-18 (`92b7ca9`). Vseh 17 meril ✅ na DDEV, brez popravkov po pregledu. Potrjena oblika URL-jev `/runde` in `/runde/{id}-{alias}`; prehod poletni/zimski čas preverjen na treh rundah.

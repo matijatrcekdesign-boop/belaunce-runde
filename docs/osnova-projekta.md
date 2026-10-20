@@ -74,6 +74,7 @@ Priloga: `docs/osnutek-vmesnika.pdf` (5 zaslonov: seznam, stran runde, nova rund
 | D52 | **AcyMailing zrcali stanje Joomla računa v `acym_user.active`** (preverjeno na DDEV, 11.1.1): blokada postavi `active = 0`, odblokada nazaj na 1. Nastavitve za izklop te sinhronizacije **ni** (pregledana razdelka *Joomla! integration* in *Advanced configuration*), izklop celotnega vtičnika pa bi vzel tudi povezovanje `cms_id`. |
 | D53 | **Članstvo se uveljavlja prek skupine "Člani", nikoli prek polja `block`.** Komponenta polja `block` ne spreminja: blokiran račun zavrne, odvzete skupine pa ne vrne. Skupino vrne **samo** uporabniku, ki ima zapis v `#__belaunce_clani` in je trenutno na listi članov; račun, najden samo po emailu, članstva nikoli ne dobi. |
 | D54 | **Vodja runde ni nikoli zapisan v `#__belaunce_prijave`.** Šteje se kot udeleženec posebej (število udeležencev = vrstice prijav + vodja + gostje). Tako se vodja ne more podvojiti ne odjaviti s svoje runde, naloga 07 pa ob ustvarjanju runde ne vstavlja posebne vrstice. |
+| D55 | **IP gosta se nikoli ne shrani surov.** V `#__belaunce_gostje.ip` gre SHA-256 hash naslova, soljen z Joomlinim `secret`. Hash služi izključno omejitvi prijav gostov na rundo (6.1) in se nikoli ne izpiše. Lasten dnevnik komponente prav tako ne zapisuje IP-ja (pravilo 24). |
 
 **Označeno kot *predlog*:** izhodišča, ki jih arhitekt lahko spremeni po dogovoru z Matijo.
 

@@ -1,0 +1,1 @@
+-- Naloga 11: deljenje v Viber uporablja javne podatke in možnosti; shema ostane nespremenjena.

@@ -75,6 +75,28 @@ Paket ob namestitvi sam vklopi **Authentication - Belaunce runde**. Če manjka k
 ### Besedilo maila
 V *Sistem → Predloge za pošto (System → Mail Templates)* poišči `com_belauncerunde.prijava`. Uredi zadevo in telo. Razpoložljive oznake so `{IME}`, `{POVEZAVA}`, `{VELJAVNOST}` in `{SITENAME}`; oznako `{POVEZAVA}` ohrani, da se član lahko prijavi. Posodobitev paketa tvojih sprememb ne prepiše. Pošiljanje uporablja Joomline nastavitve pošte; na produkciji nastavi SMTP in dogovorjenega pošiljatelja, na DDEV Mailpit.
 
+### Urejanje besedila za Viber
+
+V **Komponente → Runde Belaunce → Možnosti → Viber** uredi **Predloga besedila** in shrani. Prazno polje pomeni privzeto besedilo z emojiji v trenutnem jeziku strani. Prelome v lastni predlogi vneseš s tipko Enter. Posodobitev paketa shranjene predloge ne prepiše.
+
+Razpoložljive oznake so:
+
+| Oznaka | Vsebina |
+|---|---|
+| `{NASLOV}` | Naslov runde |
+| `{DAN}` | Polno prevedeno ime dneva |
+| `{DATUM}` | Lokalni datum |
+| `{URA}` | Lokalna ura |
+| `{LOKACIJA}` | Lokacija štarta |
+| `{TIP}` | Tip vožnje |
+| `{TEZAVNOST}` | Težavnost |
+| `{DOLZINA}` | Dolžina s km |
+| `{TRAJANJE}` | Trajanje z minutami; prazno, če ni vpisano |
+| `{VODJA}` | Javno polno ime vodje; prazno, če ni več na voljo |
+| `{POVEZAVA}` | Absolutna kanonična povezava na rundo |
+
+Ohrani `{POVEZAVA}`, da prejemniki lahko odprejo rundo in se prijavijo. Neznane oznake ostanejo dobesedno zapisane. Imen udeležencev ali gostov, njihovih kontaktov, opomb in trase ni mogoče vključiti z oznakami. Datum in ura uporabljata časovni pas komponente, tudi ob prehodu med poletnim in zimskim časom.
+
 ### Ko član ni več član
 Članstvo določa aktivni naročnik AcyMailinga z aktivno naročnino na listo članov. Odjava samo z liste Runde ne vpliva na dostop. Ob porabi vsake povezave se članstvo preveri znova; če je član medtem izstopil, prijava ne uspe. Dnevna sinhronizacija in blokiranje prideta z nalogo 12, zato ta verzija obstoječih sej še ne blokira samodejno.
 
@@ -115,6 +137,15 @@ Administrator lahko v *Komponente → Runde Belaunce → Možnosti → Trasa* iz
 5. Izberi **Shrani rundo**. Odpre se stran nove runde; si njen vodja in že šteješ kot en udeleženec. Posebna prijava ni potrebna. Ob napaki se vnos ohrani in obrazec prikaže obvestilo.
 
 Rundo urejaš in odpoveš samo kot njen vodja do štarta. Obiskovalci in prijavljeni nečlani gumba za ustvarjanje ne vidijo.
+
+### Kako deliš rundo v Viber
+
+1. Kot član ali vodja odpri objavljeno rundo pred štartom. Pod gumbom za udeležbo oziroma obrazcem gosta je **Deli rundo**. Blok je na voljo tudi neprijavljenim obiskovalcem in nečlanom.
+2. Na telefonu z nameščenim Viberjem izberi **Deli v Viber**, nato pogovor oziroma skupino društva in pošlji pripravljeno besedilo. Povezava v sporočilu vodi na javno stran runde; predogled uporablja njene Open Graph podatke.
+3. Če brskalnik ponuja **Deli …**, lahko uporabiš sistemsko deljenje in izbereš Viber ali drugo aplikacijo. Preklic izbire ne izpiše napake.
+4. **Kopiraj besedilo** kopira celotno sporočilo. Ob neuspehu se besedilo označi in prikaže navodilo za ročno kopiranje. Tudi brez JavaScripta je polje **Besedilo za objavo** vidno: označi ga, kopiraj in prilepi v Viber. Povezava **Deli v Viber** prav tako deluje brez JavaScripta.
+
+V **Moje runde → Prihajajoče** je **Deli v Viber** tudi ob gumbih na karticah obeh sklopov, **Runde, ki jih vodim** in **Prijavljen sem**. Odpovedane runde, runde po štartu in zavihek **Pretekle** nimajo deljenja. Na javnem seznamu rund deljenja ni. Besedilo vključuje samo izbrane javne podatke in ime vodje; imen drugih udeležencev, gostov, kontaktov, opomb in trase ne vsebuje.
 
 ### Prijava za člane
 Odpri stran za prijavo (`index.php?option=com_belauncerunde&view=prijava` oziroma menijsko postavko **Prijava za člane**). Vpiši email, s katerim si včlanjen v društvo, in klikni **Pošlji povezavo**. Vedno se prikaže obvestilo, da je bila povezava poslana, če društvo pozna naslov. Če maila ni, preveri pravi naslov in neželeno pošto ali piši društvu.

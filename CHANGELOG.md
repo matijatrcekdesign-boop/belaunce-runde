@@ -6,6 +6,14 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.11.0] - 2026-10-21
+### Dodano
+- Deljenje objavljene runde pred štartom v Viber za vse obiskovalce, sistemsko deljenje in kopiranje besedila z dostopnim obvestilom ter ročnim nadomestnim kopiranjem.
+- Skupni `DeljenjeHelper` z zaprtim seznamom javnih oznak, prevedenim dnevom, lokalnim časom prek `CasHelper` in absolutno kanonično povezavo.
+- Zavihek Možnosti → Viber z uredljivo predlogo; prazna vrednost uporabi privzeto besedilo z emojiji v sl-SI/en-GB.
+- Povezava Deli v Viber na deljivih prihajajočih karticah obeh seznamov Moje runde brez dodatnih poizvedb.
+- Vanilla JavaScript prek WebAssetManagerja; Viber in besedilo za ročno kopiranje ostaneta uporabna brez JavaScripta. Posodobitveni SQL 0.11.0 brez sprememb sheme.
+
 ## [0.10.0] - 2026-10-20
 ### Dodano
 - Transakcijski maili ob spremembi časa ali lokacije in ob odpovedi runde, tako s frontenda kot iz administratorskega obrazca ali seznama (D56).

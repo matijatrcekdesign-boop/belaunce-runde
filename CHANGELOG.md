@@ -6,6 +6,14 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.10.0] - 2026-10-20
+### Dodano
+- Transakcijski maili ob spremembi časa ali lokacije in ob odpovedi runde, tako s frontenda kot iz administratorskega obrazca ali seznama (D56).
+- Vodja vedno prejme obvestilo (D57); člani in gostje z emailom dobijo vsak svoje sporočilo, enaki naslovi se združijo, dodatno Joomlino kopiranje Bcc je za ti predlogi izključeno.
+- Uredljivi predlogi `runda_sprememba` in `runda_odpoved` s sl-SI/en-GB nizi, lokalnim časom D42 in novimi enkratnimi odjavnimi povezavami gostov.
+- Zavihek Maili z nastavljivima sprožilnima poljema; možen je izklop obeh, odpoved pa vedno sproži pošto.
+- Opozorilo ob napaki pošiljanja ob ohranjenem zapisu runde, dnevniki brez osebnih podatkov ter posodobitveni SQL 0.10.0 brez sprememb sheme.
+
 ## [0.9.0] - 2026-10-20
 ### Dodano
 - Zasebni članski pogled **Moje runde** na `/runde/moje`, z zavihkoma Prihajajoče in Pretekle, ločenima sklopoma vodenih rund in prijav ter paginacijo preteklih rund.

@@ -75,6 +75,8 @@ Priloga: `docs/osnutek-vmesnika.pdf` (5 zaslonov: seznam, stran runde, nova rund
 | D53 | **Članstvo se uveljavlja prek skupine "Člani", nikoli prek polja `block`.** Komponenta polja `block` ne spreminja: blokiran račun zavrne, odvzete skupine pa ne vrne. Skupino vrne **samo** uporabniku, ki ima zapis v `#__belaunce_clani` in je trenutno na listi članov; račun, najden samo po emailu, članstva nikoli ne dobi. |
 | D54 | **Vodja runde ni nikoli zapisan v `#__belaunce_prijave`.** Šteje se kot udeleženec posebej (število udeležencev = vrstice prijav + vodja + gostje). Tako se vodja ne more podvojiti ne odjaviti s svoje runde, naloga 07 pa ob ustvarjanju runde ne vstavlja posebne vrstice. |
 | D55 | **IP gosta se nikoli ne shrani surov.** V `#__belaunce_gostje.ip` gre SHA-256 hash naslova, soljen z Joomlinim `secret`. Hash služi izključno omejitvi prijav gostov na rundo (6.1) in se nikoli ne izpiše. Lasten dnevnik komponente prav tako ne zapisuje IP-ja (pravilo 24). |
+| D56 | **Transakcijski mail sprožita sprememba na frontendu (vodja) in v administraciji (admin).** Zaznava spremembe je v `RundaTable::store()`, skozi katerega gresta obe poti; pošiljanje sledi uspešnemu commitu. |
+| D57 | **Vodja runde vedno dobi kopijo maila ob spremembi ali odpovedi, tudi če je spremembo naredil sam.** Ker vodja ni v `#__belaunce_prijave` (D54), se med prejemnike doda posebej. |
 
 **Označeno kot *predlog*:** izhodišča, ki jih arhitekt lahko spremeni po dogovoru z Matijo.
 

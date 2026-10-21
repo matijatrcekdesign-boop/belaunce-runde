@@ -27,6 +27,8 @@ class HtmlView extends BaseHtmlView
         'ustvarjena' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_USTVARJENA'],
         'shranjena' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_SHRANJENA'],
         'odpovedana' => ['razred' => 'alert-success', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_ODPOVEDANA'],
+        'shranjena_mail' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_SHRANJENA_MAIL'],
+        'odpovedana_mail' => ['razred' => 'alert-warning', 'kljuc' => 'COM_BELAUNCERUNDE_OBRAZEC_ODPOVEDANA_MAIL'],
     ];
 
     /** @var object Javni podatki runde. */

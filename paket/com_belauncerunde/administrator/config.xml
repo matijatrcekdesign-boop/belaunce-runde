@@ -118,6 +118,13 @@
 		</field>
 		<field name="gostje_min_cas" type="number" filter="integer" default="3" min="0" label="COM_BELAUNCERUNDE_CONFIG_GOSTJE_CAS" description="COM_BELAUNCERUNDE_CONFIG_GOSTJE_CAS_OPIS" />
 	</fieldset>
+	<fieldset name="maili" label="COM_BELAUNCERUNDE_CONFIG_MAILI" addfieldprefix="Belaunce\Component\Belauncerunde\Administrator\Field">
+		<field name="mail_sprozilna_polja" type="mailpolja" multiple="true" filter="string" checked="zacetek,lokacija"
+			label="COM_BELAUNCERUNDE_CONFIG_MAIL_POLJA" description="COM_BELAUNCERUNDE_CONFIG_MAIL_POLJA_OPIS">
+			<option value="zacetek">COM_BELAUNCERUNDE_FIELD_ZACETEK_LABEL</option>
+			<option value="lokacija">COM_BELAUNCERUNDE_FIELD_LOKACIJA_LABEL</option>
+		</field>
+	</fieldset>
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL">
 		<field
 			name="rules"

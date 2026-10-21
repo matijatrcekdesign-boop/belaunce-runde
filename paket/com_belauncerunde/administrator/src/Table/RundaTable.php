@@ -11,6 +11,7 @@ namespace Belaunce\Component\Belauncerunde\Administrator\Table;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
 use Joomla\CMS\Application\ApplicationHelper;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
@@ -27,6 +28,15 @@ use Joomla\Event\DispatcherInterface;
  */
 class RundaTable extends Table
 {
+    /** @var array Spremenjena vključena polja zadnjega uspešno potrjenega zapisa. */
+    public array $_sprozilnaSprememba = [];
+
+    /** @var bool Ali je zadnji uspešni zapis pravkar odpovedal obstoječo rundo. */
+    public bool $_pravkarOdpovedana = false;
+
+    /** @var string Prvotni UTC termin za odpoved, tudi ob sočasni spremembi začetka. */
+    public string $_prvotniZacetek = '';
+
     /**
      * Dovoli NULL za polja, kjer prazna vrednost pomeni odsotnost podatka.
      *
@@ -137,6 +147,12 @@ class RundaTable extends Table
      */
     public function store($updateNulls = true): bool
     {
+        // Interna javna polja z _ niso stolpci; ob vsaki ponovitvi počistimo zaznavo.
+        $this->_sprozilnaSprememba = [];
+        $this->_pravkarOdpovedana = false;
+        $this->_prvotniZacetek = '';
+        $sprozilnaPolja = (array) ComponentHelper::getParams('com_belauncerunde')
+            ->get('mail_sprozilna_polja', ['zacetek', 'lokacija']);
         $isNew       = empty($this->id);
         $prejsnje    = $isNew ? null : $this->naloziPrejsnjeStanje((int) $this->id);
         $zdaj        = CasHelper::zdajUtc();
@@ -178,13 +194,33 @@ class RundaTable extends Table
                 ->bind(':vodja', $vodjaId, ParameterType::INTEGER);
             $baza->setQuery($poizvedba)->execute();
             $baza->transactionCommit();
-
-            return true;
         } catch (\Throwable $napaka) {
             $baza->transactionRollback();
 
             throw $napaka;
         }
+
+        // Šele potrjen zapis objavi rezultat; omrežja tabela nikoli ne kliče.
+        if (!$isNew && $prejsnje !== null) {
+            $this->_pravkarOdpovedana = (int) $prejsnje->stanje !== 2 && (int) $this->stanje === 2;
+            $this->_prvotniZacetek = (string) $prejsnje->zacetek;
+
+            foreach (['zacetek', 'lokacija'] as $polje) {
+                $staro = (string) $prejsnje->$polje;
+                $novo = (string) $this->$polje;
+
+                if ($polje === 'lokacija') {
+                    $staro = trim($staro);
+                    $novo = trim($novo);
+                }
+
+                if ($staro !== $novo && \in_array($polje, $sprozilnaPolja, true)) {
+                    $this->_sprozilnaSprememba[] = $polje;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -200,7 +236,7 @@ class RundaTable extends Table
     {
         $db = $this->getDatabase();
         $query = $db->createQuery()
-            ->select($db->quoteName(['stanje', 'odpovedano']))
+            ->select($db->quoteName(['stanje', 'odpovedano', 'zacetek', 'lokacija']))
             ->from($db->quoteName('#__belaunce_runde'))
             ->where($db->quoteName('id') . ' = :id')
             ->bind(':id', $id, ParameterType::INTEGER);

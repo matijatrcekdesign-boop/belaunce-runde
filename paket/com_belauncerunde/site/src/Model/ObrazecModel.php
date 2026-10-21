@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\Model;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Administrator\Service\MailService;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
@@ -230,7 +231,9 @@ class ObrazecModel extends FormModel
             return ['stanje' => 'napaka_zapisa', 'id' => $id];
         }
 
-        return ['stanje' => $id === 0 ? 'ustvarjena' : 'shranjena', 'id' => (int) $tabela->id];
+        $posta = MailService::poZapisu($tabela);
+
+        return ['stanje' => $id === 0 ? 'ustvarjena' : ($posta ? 'shranjena' : 'shranjena_mail'), 'id' => (int) $tabela->id];
     }
 
     /** Odpove samo lastno objavljeno rundo pred štartom; prijav se ne dotika. */
@@ -260,7 +263,15 @@ class ObrazecModel extends FormModel
 
         $dovoljenje = $this->dovoljenje($id, $uporabnik);
 
-        return $dovoljenje !== '' ? $dovoljenje : ($tabela->store() ? 'odpovedana' : 'napaka_zapisa');
+        if ($dovoljenje !== '') {
+            return $dovoljenje;
+        }
+
+        if (!$tabela->store()) {
+            return 'napaka_zapisa';
+        }
+
+        return MailService::poZapisu($tabela) ? 'odpovedana' : 'odpovedana_mail';
     }
 
     /** Bere stanje za pravice in podatke lastnega obrazca brez kontaktov uporabnika. */

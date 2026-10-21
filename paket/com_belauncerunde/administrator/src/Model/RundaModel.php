@@ -10,6 +10,8 @@
 namespace Belaunce\Component\Belauncerunde\Administrator\Model;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Administrator\Service\MailService;
+use Belaunce\Component\Belauncerunde\Administrator\Table\RundaTable;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
@@ -26,6 +28,24 @@ use Joomla\Database\ParameterType;
  */
 class RundaModel extends AdminModel
 {
+    /** @var RundaTable|null Dejanska tabela jedrnega save(), ne nova instanca getTable(). */
+    private ?RundaTable $tabelaZaObvestilo = null;
+
+    /** Ohrani referenco tabele, ki jo bo jedrni save() shranil in potrdil. */
+    protected function prepareTable($table)
+    {
+        parent::prepareTable($table);
+        $this->tabelaZaObvestilo = $table;
+    }
+
+    /** Po commitu obvesti prejemnike; opozorilo o pošti ne spremeni rezultata zapisa. */
+    private function obvestiPoZapisu(RundaTable $tabela): void
+    {
+        if (!MailService::poZapisu($tabela)) {
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_MAIL_NAPAKA'), 'warning');
+        }
+    }
+
     /**
      * Vrne obrazec urejanja.
      *
@@ -162,7 +182,15 @@ class RundaModel extends AdminModel
             }
         }
 
-        return parent::save($data);
+        $this->tabelaZaObvestilo = null;
+        $uspeh = parent::save($data);
+
+        // onTableAfterStore je še znotraj transakcije RundaTable; obvestimo šele tu.
+        if ($uspeh && $this->tabelaZaObvestilo !== null) {
+            $this->obvestiPoZapisu($this->tabelaZaObvestilo);
+        }
+
+        return $uspeh;
     }
 
     /**
@@ -177,6 +205,12 @@ class RundaModel extends AdminModel
      */
     public function nastaviStanje(array $pks, int $stanje): bool
     {
+        if (!Factory::getApplication()->getIdentity()->authorise('core.edit.state', 'com_belauncerunde')) {
+            $this->setError(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
+
+            return false;
+        }
+
         if (!\in_array($stanje, [1, 2], true)) {
             $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_STANJE_INVALID'));
 
@@ -207,6 +241,8 @@ class RundaModel extends AdminModel
 
                 return false;
             }
+
+            $this->obvestiPoZapisu($table);
         }
 
         return true;

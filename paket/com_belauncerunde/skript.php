@@ -91,6 +91,8 @@ class Com_BelauncerundeInstallerScript
             $db      = Factory::getContainer()->get(DatabaseInterface::class);
             MailTemplate::deleteTemplate('com_belauncerunde.prijava');
             MailTemplate::deleteTemplate('com_belauncerunde.gost_potrditev');
+            MailTemplate::deleteTemplate('com_belauncerunde.runda_sprememba');
+            MailTemplate::deleteTemplate('com_belauncerunde.runda_odpoved');
             $sqlPath = __DIR__ . '/sql/uninstall.mysql.utf8.sql';
 
             if (!is_file($sqlPath)) {
@@ -270,6 +272,8 @@ class Com_BelauncerundeInstallerScript
     /** Registrira privzeto predlogo enkrat; adminovih popravkov ne prepisuje. */
     private function pripraviPostnoPredlogo(): void
     {
+        $this->pripraviPredlogiRunde();
+
         if (MailTemplate::getTemplate('com_belauncerunde.gost_potrditev', '') === null) {
             if (!MailTemplate::createTemplate(
                 'com_belauncerunde.gost_potrditev',
@@ -289,6 +293,43 @@ class Com_BelauncerundeInstallerScript
                 ['IME', 'POVEZAVA', 'VELJAVNOST', 'SITENAME']
             )) {
                 throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+            }
+        }
+    }
+
+    /** Registrira D50 predlogi in jezikovni različici brez prepisovanja adminovih sprememb. */
+    private function pripraviPredlogiRunde(): void
+    {
+        $baza = Factory::getContainer()->get(DatabaseInterface::class);
+
+        foreach (['sprememba', 'odpoved'] as $dogodek) {
+            $kljuc = 'com_belauncerunde.runda_' . $dogodek;
+            $predpona = 'COM_BELAUNCERUNDE_MAIL_RUNDA_' . strtoupper($dogodek);
+
+            if (MailTemplate::getTemplate($kljuc, '') === null
+                && !MailTemplate::createTemplate($kljuc, $predpona . '_SUBJECT', $predpona . '_BODY',
+                    ['RUNDA', 'ZACETEK', 'SPREMEMBE', 'POVEZAVA', 'ODJAVA', 'SITENAME'])) {
+                throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+            }
+
+            // createTemplate ustvari samo language=''; getTemplate sicer vrne tudi
+            // ta rezervni zapis, zato obstoj jezikovne vrstice preverimo izrecno.
+            foreach (['sl-SI', 'en-GB'] as $jezik) {
+                $poizvedba = $baza->createQuery()->select('COUNT(*)')->from($baza->quoteName('#__mail_templates'))
+                    ->where('template_id = :kljuc')->where('language = :jezik')
+                    ->bind(':kljuc', $kljuc, ParameterType::STRING)->bind(':jezik', $jezik, ParameterType::STRING);
+
+                if ((int) $baza->setQuery($poizvedba)->loadResult() > 0) {
+                    continue;
+                }
+
+                $sql = 'INSERT INTO #__mail_templates'
+                    . ' (template_id, language, subject, body, htmlbody, attachments, params, extension)'
+                    . ' SELECT template_id, :jezik, subject, body, htmlbody, attachments, params, extension'
+                    . " FROM #__mail_templates WHERE template_id = :kljuc AND language = ''";
+                $poizvedba = $baza->createQuery()->setQuery($sql)
+                    ->bind(':jezik', $jezik, ParameterType::STRING)->bind(':kljuc', $kljuc, ParameterType::STRING);
+                $baza->setQuery($poizvedba)->execute();
             }
         }
     }

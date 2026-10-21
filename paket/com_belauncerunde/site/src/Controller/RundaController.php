@@ -50,7 +50,7 @@ class RundaController extends BaseController
                         $rezultat = $model->shrani($id, $vnos, $uporabnik);
                         $stanje = $rezultat['stanje'];
 
-                        if (\in_array($stanje, ['ustvarjena', 'shranjena'], true)) {
+                        if (\in_array($stanje, ['ustvarjena', 'shranjena', 'shranjena_mail'], true)) {
                             $this->app->setUserState($model->kljucSeje($id), null);
                             $this->app->setUserState($model->kljucSeje($id) . '.napake', null);
                             $id = $rezultat['id'];
@@ -73,7 +73,7 @@ class RundaController extends BaseController
         // Zavrnitev lastništva ali zaklepa gre na seznam, da tudi izbris ne povzroči 404.
         if ($obrazec && \in_array($stanje, ['neveljavno', 'napaka_zapisa'], true)) {
             $url = 'index.php?option=com_belauncerunde&view=obrazec&id=' . $id;
-        } elseif (\in_array($stanje, ['ustvarjena', 'shranjena', 'odpovedana'], true)) {
+        } elseif (\in_array($stanje, ['ustvarjena', 'shranjena', 'odpovedana', 'shranjena_mail', 'odpovedana_mail'], true)) {
             $url = 'index.php?option=com_belauncerunde&view=runda&id=' . $id;
         } else {
             $url = 'index.php?option=com_belauncerunde&view=runde';

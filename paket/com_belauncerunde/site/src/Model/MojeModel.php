@@ -65,7 +65,7 @@ class MojeModel extends BaseDatabaseModel
         $privzetoTrajanje = (int) $app->getParams('com_belauncerunde')->get('privzeto_trajanje_min', 180);
         $pretekle = $sklop === 'pretekle';
         $poizvedba = $baza->createQuery()
-            ->select($baza->quoteName(['a.id', 'a.naslov', 'a.alias', 'a.zacetek', 'a.lokacija', 'a.dolzina_km', 'a.stanje', 'a.vodja_id']))
+            ->select($baza->quoteName(['a.id', 'a.naslov', 'a.alias', 'a.zacetek', 'a.lokacija', 'a.dolzina_km', 'a.trajanje_min', 'a.stanje', 'a.vodja_id']))
             ->select($baza->quoteName('t.naziv', 'tip_naziv'))
             ->select($baza->quoteName('tz.naziv', 'tezavnost_naziv'))
             ->select($baza->quoteName('u.name', 'vodja_ime'))

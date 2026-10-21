@@ -97,6 +97,9 @@ $runda = $this->runda;
     <?php if ($this->gostObrazec !== null) : ?>
         <?php require __DIR__ . '/gost.php'; ?>
     <?php endif; ?>
+    <?php if ($this->deljiva) : ?>
+        <?php require __DIR__ . '/deli.php'; ?>
+    <?php endif; ?>
     <?php if (!$this->clan) : ?>
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>
     <?php endif; ?>

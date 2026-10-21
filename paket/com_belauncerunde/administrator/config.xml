@@ -125,6 +125,10 @@
 			<option value="lokacija">COM_BELAUNCERUNDE_FIELD_LOKACIJA_LABEL</option>
 		</field>
 	</fieldset>
+	<fieldset name="viber" label="COM_BELAUNCERUNDE_CONFIG_VIBER">
+		<field name="viber_predloga" type="textarea" rows="8" filter="string" default=""
+			label="COM_BELAUNCERUNDE_CONFIG_VIBER_PREDLOGA" description="COM_BELAUNCERUNDE_CONFIG_VIBER_PREDLOGA_OPIS" />
+	</fieldset>
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL">
 		<field
 			name="rules"

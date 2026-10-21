@@ -67,7 +67,7 @@ class OmejitevHelper
         return $meja > 0 && $this->steviloZadnjaUra($tip, $surovKljuc) > $meja;
     }
 
-    /** Izbriše stare poskuse; klic iz opravila pride v nalogi 12. */
+    /** Izbriše stare poskuse za vzdrževalno opravilo. */
     public function pociscenje(int $dni = 2): int
     {
         $od = gmdate('Y-m-d H:i:s', time() - max(0, $dni) * 86400);

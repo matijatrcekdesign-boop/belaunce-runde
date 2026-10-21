@@ -110,7 +110,7 @@ class ZetonService
         return $db->setQuery($poizvedba)->loadObject() ?: null;
     }
 
-    /** Izbriše dovolj stare porabljene ali potekle žetone; opravilo pride kasneje. */
+    /** Izbriše dovolj stare porabljene ali potekle žetone za vzdrževalno opravilo. */
     public function pociscenje(int $dni = 7): int
     {
         $od = gmdate('Y-m-d H:i:s', time() - max(0, $dni) * 86400);

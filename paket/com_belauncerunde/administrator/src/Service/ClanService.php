@@ -33,6 +33,61 @@ class ClanService
         $this->tovarna = $tovarna ?: Factory::getContainer()->get(UserFactoryInterface::class);
     }
 
+    /** Uskladi samo skupino Člani in vrne zaprto kodo dejanske spremembe. */
+    public function uskladiSkupino(int $uporabnikId, bool $najBoClan): string
+    {
+        $skupinaClani = (int) $this->params->get('skupina_clani', 0);
+
+        if ($skupinaClani <= 0 || $uporabnikId <= 0) {
+            throw new \RuntimeException('COM_BELAUNCERUNDE_NAPAKA_SKUPINA');
+        }
+
+        $uporabnik = $this->tovarna->loadUserById($uporabnikId);
+
+        if ((int) $uporabnik->id !== $uporabnikId) {
+            throw new \RuntimeException('COM_BELAUNCERUNDE_NAPAKA_UPORABNIK');
+        }
+
+        // Adminovo blokado pustimo povsem pri miru, tudi če je skupina že napačna.
+        if ((int) $uporabnik->block === 1) {
+            return 'PRESKOCENO_BLOKIRAN';
+        }
+
+        $skupine = array_map('intval', (array) $uporabnik->groups);
+        $jeClan = \in_array($skupinaClani, $skupine, true);
+
+        if ($jeClan === $najBoClan) {
+            return 'BREZ_SPREMEMBE';
+        }
+
+        // Joomla Table\User::store() primerja ID-je s ključi polja, zato jih ohranimo.
+        $noveSkupine = $najBoClan
+            ? array_values(array_unique([...$skupine, $skupinaClani]))
+            : array_values(array_filter($skupine, static fn (int $id): bool => $id !== $skupinaClani));
+        $uporabnik->groups = array_combine($noveSkupine, $noveSkupine) ?: [];
+
+        if (!$uporabnik->save()) {
+            throw new \RuntimeException('COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE');
+        }
+
+        if (!$najBoClan && $noveSkupine === []) {
+            // Jedro 6.1 pri praznem groups preskoči zapis mapiranja; odstranimo samo našo vrstico.
+            $db = $this->db;
+            $poizvedba = $db->createQuery()->delete($db->quoteName('#__user_usergroup_map'))
+                ->where($db->quoteName('user_id') . ' = :uporabnik')
+                ->where($db->quoteName('group_id') . ' = :skupina')
+                ->bind(':uporabnik', $uporabnikId, ParameterType::INTEGER)
+                ->bind(':skupina', $skupinaClani, ParameterType::INTEGER);
+            $db->setQuery($poizvedba)->execute();
+
+            if ($db->getAffectedRows() !== 1) {
+                return 'BREZ_SPREMEMBE';
+            }
+        }
+
+        return $najBoClan ? 'VRNJENA' : 'ODVZETA';
+    }
+
     /** Vrne ID računa člana; klicatelj mora predhodno ponovno preveriti članstvo. */
     public function zagotoviUporabnika(object $acymZapis): int
     {
@@ -153,10 +208,14 @@ class ClanService
                 $this->napaka('COM_BELAUNCERUNDE_NAPAKA_EMAIL_ZASEDEN', $acymId, $uporabnikId);
             }
 
-            // Dodamo samo manjkajočo skupino; vse obstoječe skupine in block ostanejo nedotaknjeni.
-            $uporabnik->groups[] = $skupinaClani;
+            // Prijava in vzdrževanje uporabljata isto pot; napaka prijave ostane ista.
+            try {
+                $rezultat = $this->uskladiSkupino($uporabnikId, true);
+            } catch (\Throwable $napaka) {
+                $this->napaka('COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE', $acymId, $uporabnikId);
+            }
 
-            if (!$uporabnik->save()) {
+            if ($rezultat !== 'VRNJENA') {
                 $this->napaka('COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE', $acymId, $uporabnikId);
             }
 

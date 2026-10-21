@@ -6,6 +6,12 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.12.0] - 2026-10-21
+### Dodano
+- Vtičnik Scheduler z enim dnevnim opravilom za uskladitev članstva, izbris gostov 30 dni po štartu runde in čiščenje starih žetonov ter poskusov.
+- Skupna pot za vrnitev in odvzem skupine Člani brez spreminjanja blokade ali drugih skupin; varovalke ob manjkajoči listi in napaki branja AcyMailinga.
+- Samodejni vklop vtičnika ob namestitvi paketa, prevedeno opravilo in lasten dnevnik brez IP-ja; posodobitveni SQL brez spremembe sheme.
+
 ## [0.11.0] - 2026-10-21
 ### Dodano
 - Deljenje objavljene runde pred štartom v Viber za vse obiskovalce, sistemsko deljenje in kopiranje besedila z dostopnim obvestilom ter ročnim nadomestnim kopiranjem.

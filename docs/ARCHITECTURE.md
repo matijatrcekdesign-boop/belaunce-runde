@@ -14,7 +14,7 @@
 |---|---|---|---|
 | `com_belauncerunde` | komponenta | 01+ | šifranti, runde, prijave, gostje, frontend pogledi, maili, CSV |
 | `plg_authentication_belauncerunde` | vtičnik (authentication) | 04 | porabi magic link žeton, zagotovi uporabnika in potrdi prijavo |
-| `plg_task_belauncerunde` | vtičnik (task) | 12 *(načrtovano)* | sinhronizacija članov, izbris gostov, čiščenje žetonov in poskusov |
+| `plg_task_belauncerunde` | vtičnik (task) | 12 | sinhronizacija članov, izbris gostov, čiščenje žetonov in poskusov |
 
 ## Tehnologija
 
@@ -33,7 +33,7 @@
 | Komponenta, admin | `Belaunce\Component\Belauncerunde\Administrator` |
 | Komponenta, site | `Belaunce\Component\Belauncerunde\Site` |
 | Vtičnik za prijavo | `Belaunce\Plugin\Authentication\Belauncerunde` |
-| Vtičnik za opravila | `Belaunce\Plugin\Task\Belauncerunde` *(načrtovano)* |
+| Vtičnik za opravila | `Belaunce\Plugin\Task\Belauncerunde` |
 
 ## Podatkovni model
 
@@ -64,13 +64,15 @@ Standardni stolpci ogrodja ostanejo angleški (`id`, `ordering`, `checked_out`, 
 
 Kontroler `PrijavaController` najprej preveri POST in CSRF, nato stanje gosta, filtrira in normalizira email ter pred vsakim dostopom do AcyMailinga zabeleži poskuse. `OmejitevHelper` hrani SHA-256 emaila oziroma IP-ja in šteje poskuse v zadnjih 60 minutah. Vhodni IP je samo `REMOTE_ADDR`. Neveljaven email, nečlan, presežena omejitev in napaka pošte dobijo isto sporočilo in preusmeritev kot uspešna zahteva.
 
-`ZetonService` razveljavi prejšnje neporabljene povezave člana in izda 32 naključnih bajtov, v bazi pa shrani samo SHA-256. `preveri()` je namenjen GET prikazu in ne piše v bazo. `porabi()` najprej izvede pogojni `UPDATE` in zahteva natanko eno spremenjeno vrstico; šele potem prebere zapis. Ponoven POST istega žetona zato ne uspe. Metodi `pociscenje()` za žetone in poskuse sta pripravljeni, klic iz Schedulerja pride v nalogi 12.
+`ZetonService` razveljavi prejšnje neporabljene povezave člana in izda 32 naključnih bajtov, v bazi pa shrani samo SHA-256. `preveri()` je namenjen GET prikazu in ne piše v bazo. `porabi()` najprej izvede pogojni `UPDATE` in zahteva natanko eno spremenjeno vrstico; šele potem prebere zapis. Ponoven POST istega žetona zato ne uspe. Metodi `pociscenje()` za žetone in poskuse kliče dnevno vzdrževalno opravilo.
 
 Avtentikacijo opravi vtičnik (D48), ker samo standardni Joomlin tok sproži uporabniške dogodke in piškotek za daljšo prijavo. Kontroler posreduje `username = ''`, surovi `zeton`, `remember` iz možnosti in `autoregister = false`. Vtičnik na odjemalcu `site` ob lastnem žetonu prevzame odgovor in v `finally` ustavi propagacijo tudi ob napaki. Žeton porabi pred ponovnim preverjanjem AcyMailing članstva in pripravo uporabnika; neuspeh po porabi zahteva novo povezavo. Ob prijavah brez žetona in v administraciji se ne odzove.
 
 `ClanService` najprej išče povezavo po AcyMailing ID, nato članski račun po emailu. Zastarelo povezavo odstrani, ob spremenjenem AcyMailing ID posodobi povezavo obstoječega člana. **Članstvo se uveljavlja prek skupine Člani, komponenta polja `block` nikoli ne spreminja** (odločitev A po testu na DDEV). Blokiran račun zavrne s kodo `COM_BELAUNCERUNDE_NAPAKA_BLOKIRAN`; adminove namerne blokade ne razveljavi.
 
 Obstoječi povezavi v `#__belaunce_clani` zaupamo: po ponovni potrditvi AcyMailing članstva neblokiranemu povezanemu uporabniku vrnemo manjkajočo skupino Člani prek `User::save()`, brez odvzema drugih skupin, in zabeležimo `SKUPINA_VRNJENA` z ID-jema. Iskanje po emailu ostane omejeno na račune, ki skupino že imajo. Email ali uporabniško ime računa brez naše povezave in brez skupine Člani ostane zavrnjeno s `COM_BELAUNCERUNDE_NAPAKA_EMAIL_ZASEDEN`. Samo email torej ni podlaga za dodelitev skupine.
+
+Od 0.12.0 `ClanService::uskladiSkupino()` centralizira vrnitev in odvzem skupine Člani. Prijava ga uporabi šele po potrditvi zaupanja vredne povezave, Scheduler pa samo za vrstice `#__belaunce_clani`. Metoda preskoči blokiran račun, ne spreminja `block` in pri shranjevanju ohrani druge skupine. Če je bila Člani edina skupina, `User::save()` v jedru 6.1 praznega seznama ne prenese v mapiranje; po njem metoda z vezanima ID-jema izbriše samo to vrstico iz `#__user_usergroup_map` ([Table/User.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Table/User.php), `store()`).
 
 Novega uporabnika ustvari samo v skupini Člani z emailom kot uporabniškim imenom in praznim vhodnim geslom; naključno geslo določi `User::bind()` (D49), `block` pa ni del vhodnega polja. `zadnja_prijava` se hrani v UTC. Naša koda ne piše v AcyMailing; povezavo `cms_id` lahko nastavi njegov uporabniški vtičnik. Razlog za odločitev A je na DDEV potrjena sinhronizacija blokade v `acym_user.active`, ki bi bivšemu članu ustavila tudi pošto z drugih klubskih list.
 
@@ -250,7 +252,7 @@ Router registrira `odjavagosta` kot otroka `runde`; `build()` prevede njegov seg
 
 Preverjena izvorna koda Joomla **6.1-dev** (2026-10-19): [Captcha.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Captcha/Captcha.php), [CaptchaField.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Form/Field/CaptchaField.php), [CaptchaRule.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Form/Rule/CaptchaRule.php), [MailTemplate.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Mail/MailTemplate.php), [StandardRules.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Component/Router/Rules/StandardRules.php), [BaseController.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/MVC/Controller/BaseController.php). Tip vezave NULL je preverjen v [Joomla Framework Database ParameterType.php](https://github.com/joomla-framework/database/blob/master/src/ParameterType.php).
 
-Izbris po 30 dneh (D16) in administratorsko urejanje gostov sta izrecno preložena v nalogi 12 in 13. Obvestila o spremembah/odpovedi izvaja spodnji MailService (naloga 10). AcyMailing se za goste ne uporablja.
+Izbris po 30 dneh (D16) izvaja vzdrževalno opravilo; administratorsko urejanje gostov je preloženo v nalogo 13. Obvestila o spremembah/odpovedi izvaja spodnji MailService (naloga 10). AcyMailing se za goste ne uporablja.
 
 
 ## Deljenje v Viber
@@ -282,3 +284,15 @@ Zavihek **Maili** vsebuje `mail_sprozilna_polja`: privzeto zacetek in lokacija, 
 Namestitveni skript idempotentno registrira `com_belauncerunde.runda_sprememba` in `com_belauncerunde.runda_odpoved` prek MailTemplate::createTemplate(), nato doda manjkajoči jezikovni vrstici sl-SI/en-GB z jezikovnimi ključi. Ker getTemplate vrača tudi rezervno vrstico language='', se obstoj posamezne jezikovne vrstice preveri z natančno poizvedbo. Obstoječih administratorskih popravkov ne prepisuje. Pri odstranitvi z ohrani_podatke=0 odstrani tudi obe predlogi. Migracija 0.10.0 je samo komentar, brez sprememb sheme ali podatkov.
 
 Preverjeni viri Joomla **6.1-dev** (2026-10-20): [Table.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Table/Table.php) (čas dogodka onTableAfterStore), [AdminModel.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/MVC/Model/AdminModel.php) (prepareTable in save), [MailTemplate.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Mail/MailTemplate.php) (createTemplate, jezikovni fallback, addUnsafeTags in copyto), [MailerFactory.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Mail/MailerFactory.php), [LanguageFactory.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Language/LanguageFactory.php), [Route.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Router/Route.php), [CheckboxesField.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Form/Field/CheckboxesField.php) in njegov [layout](https://github.com/joomla/joomla-cms/blob/6.1-dev/layouts/joomla/form/field/checkboxes.php). Interna polja in zapis objektov sta preverjena v [Joomla Framework DatabaseDriver.php](https://github.com/joomla-framework/database/blob/3.x-dev/src/DatabaseDriver.php).
+
+## Vzdrževalno opravilo
+
+`plg_task_belauncerunde` objavi eno opravilo `belaunce_vzdrzevanje`; administrator ga v Schedulerju ročno ustvari z dnevnim urnikom. Vtičnik in komponenta se namestita v paketu, vtičnik pred komponento; `postflight` ga vklopi. `TaskPluginTrait` poveže tip opravila z metodo `opraviVzdrzevanje(ExecuteTaskEvent): int`. Metoda vrne `Status::OK` tudi po zabeleženi napaki posameznega dela, saj vsak del teče ločeno.
+
+`VzdrzevanjeService` najprej sinhronizira povezane člane. Če AcyMailing ni nameščen, lista članov ni nastavljena ali izbrana lista ne obstaja, sinhronizacijo preskoči. Strogo branje `AcymailingAdapter::idjiClanov()` ob napaki vrže izjemo, da prazen rezultat ob izpadu baze ne povzroči množičnega odvzema. Za vsako vrstico `#__belaunce_clani` `ClanService::uskladiSkupino()` vrne ali odvzame izključno skupino Člani; blokirane račune preskoči. Uporabnikov brez naše povezave ne obravnava.
+
+Drugi del z uro baze `UTC_TIMESTAMP()` izbriše goste rund, katerih začetek je starejši od 30 dni, ne glede na stanje runde. Tretji del uporabi obstoječa `ZetonService::pociscenje()` (7 dni) in `OmejitevHelper::pociscenje()` (2 dni). Shema se ne spremeni.
+
+Scheduler teče izven zagona komponente. Vtičnik zato enkrat na izvajanje sam registrira zapisovalnik kategorije `com_belauncerunde` z obliko brez `{CLIENTIP}`. Zapisuje samo kode, ID-je in števila, nikoli osebnih vrednosti ali besedila izjem.
+
+Preverjeni viri Joomla **6.1-dev** (2026-10-21): [Requests.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/plugins/task/requests/src/Extension/Requests.php), [provider.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/plugins/task/requests/services/provider.php), [TaskPluginTrait.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/administrator/components/com_scheduler/src/Traits/TaskPluginTrait.php), [ExecuteTaskEvent.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/administrator/components/com_scheduler/src/Event/ExecuteTaskEvent.php), [Status.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/administrator/components/com_scheduler/src/Task/Status.php), [Log.php](https://github.com/joomla/joomla-cms/blob/6.1-dev/libraries/src/Log/Log.php).

@@ -20,7 +20,7 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 08 | Gostje: obrazec, zaščita (D25), značka "gost", potrditveni mail z odjavo | 0.8.0 | 06 | ✅ |
 | 09 | "Moje runde" (vodim / prijavljen sem / pretekle) | 0.9.0 | 07 | ✅ |
 | 10 | Transakcijski maili ob spremembi in odpovedi (nastavljiva besedila in polja) | 0.10.0 | 07, 08 | ✅ |
-| 11 | Deli v Viber: gumb, besedilo za kopiranje | 0.11.0 | 06 | 🟡 |
+| 11 | Deli v Viber: gumb, besedilo za kopiranje | 0.11.0 | 06 | ✅ |
 | 12 | Scheduler opravila: sinhronizacija članov (**odvzem/vrnitev skupine "Člani", nikoli blokada** — D47, D52, D53), izbris gostov (30 dni), čiščenje žetonov in poskusov | 0.12.0 | 04, 08 | ⬜ |
 | 13 | Backend statistika in izvoz v CSV | 0.13.0 | 02 | ⬜ |
 | 14 | Zaključni pregled: varnost, ACL, GDPR (orodja za zasebnost), dostopnost, PHPDoc, `NAVODILA.md`; **test odstranitve paketa** (merilo 20 naloge 04, preloženo); zamenjava zastarelega `getError()` | 0.14.0 | vse | ⬜ |
@@ -49,6 +49,7 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 - [ ] Akeeba backup pred namestitvijo, načrt povratka
 - [ ] Menijska postavka **Seznam rund** z aliasom `runde` (brez nje so URL-ji `/component/…`)
 - [ ] Menijska postavka **Prijava za člane** z aliasom `prijava` (čist naslov za povezavo „Prijava"; dolga pot `index.php?option=…&view=prijava` mora ostati delujoča zaradi starih mailov)
+- [ ] **Naloga 11, merilo 14:** na kopiji produkcije (prava domena) preveri, da „Deli v Viber" na telefonu odpre Viber s pripravljenim besedilom in da se pokaže Open Graph predogled (na DDEV ni izvedljivo — `ddev share` prek `trycloudflare.com` vrne 421)
 
 ## Backlog (izven v1)
 
@@ -58,6 +59,7 @@ Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo
 
 ## Končano
 
+- **11** — PR #11, združen 2026-10-21. Vsa preverljiva merila ✅ na DDEV brez popravkov kode (PHP gradnja; deljivost glede na stanje/štart; besedilo brez osebnih podatkov; escapiranje naslova; kopiranje in sistemsko deljenje; prazna/lastna predloga; Moje runde na obeh listah). Merilo 14 (pravi telefon z Viberjem) preloženo na test na kopiji produkcije (DDEV tunel vrne 421). Dodani D58, D59. `DeljenjeHelper` sestavi besedilo iz zaprtega seznama oznak, `viber://` prek `rawurlencode` in nikoli skozi `Route`.
 - **10** — PR #10, združen 2026-10-21. Vseh 17 meril ✅ brez popravkov. Zaznava sprememb v `RundaTable::store()` (interne javne lastnosti s `_`, niso DB stolpci), pošiljanje po commitu prek `MailService`; frontend in admin gresta skozi isto točko (D56), vodja vedno dobi kopijo (D57). Vsak naslov dobi svoj mail (brez Cc/Bcc), gostu se žeton ob mailu zamenja, dnevnik beleži samo kodo+ID+število. Potrjeno z Mailpitom: ločeni maili, pravilni čas/lokacija, odpoved s prvotnim terminom, neprožilno polje brez maila, pokvarjen SMTP ne razveljavi zapisa.
 - **09** — PR #9, združen 2026-10-20. Vseh 19 meril ✅ brez popravkov. Izraz za število udeležencev prestavljen v `PrijaveModel::izrazStevilaUdelezencev()` (eno mesto, D54). Router aliase predpomni iz že prebranega seznama (brez N+1), kar je potrdil dnevnik poizvedb: 2 poizvedbi seznama na zavihek. Cilj preusmeritve po odjavi je zaprt seznam (zunanji `vrni` zavrnjen).
 - **08** — PR #8, združen 2026-10-20. Vseh 21 meril ✅. Med testiranjem najdeno, da Joomlin privzeti zapisovalnik v lasten dnevnik zapisuje IP obiskovalca (`{CLIENTIP}`); popravljeno z izrecno obliko zapisa → pravilo 24 in merilo 21. Prijava gosta teče v transakciji z `FOR UPDATE`, odjava uporablja izziv v seji namesto surovega žetona v POST.

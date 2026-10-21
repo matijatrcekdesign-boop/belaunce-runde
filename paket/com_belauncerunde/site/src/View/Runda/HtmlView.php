@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\View\Runda;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
 use Joomla\CMS\Log\Log;
@@ -47,6 +48,12 @@ class HtmlView extends BaseHtmlView
     public bool $vodja = false;
     /** @var bool Udeležbo je še dovoljeno spreminjati. */
     public bool $odprta = false;
+    /** @var bool Javna runda je objavljena in še ni štartala. */
+    public bool $deljiva = false;
+    /** @var string Pripravljeno navadno besedilo iz javnih polj. */
+    public string $deliBesedilo = '';
+    /** @var string Povezava Viber, ki se ne usmerja prek Joomla routerja. */
+    public string $deliViber = '';
     /** @var bool Član ima vrstico prijave. */
     public bool $udelezen = false;
     /** @var int Javno število udeležencev, vključno z obstoječim vodjo. */
@@ -143,6 +150,15 @@ class HtmlView extends BaseHtmlView
 
         // Router prebere sedanji alias iz baze; stara povezava ostane veljavna po ID-ju.
         $kanonicna = Route::_('index.php?option=com_belauncerunde&view=runda&id=' . (int) $runda->id, false, Route::TLS_IGNORE, true);
+        // Deljivost je neodvisna od identitete in uporablja isto UTC mejo kot akcije.
+        $this->deljiva = (int) $runda->stanje === 1 && !(bool) $runda->startala;
+        if ($this->deljiva) {
+            $this->deliBesedilo = DeljenjeHelper::besedilo($runda, $kanonicna);
+            $this->deliViber = DeljenjeHelper::viberPovezava($this->deliBesedilo);
+            $this->getDocument()->getWebAssetManager()->useScript('com_belauncerunde.deli');
+            Text::script('COM_BELAUNCERUNDE_DELI_KOPIRANO');
+            Text::script('COM_BELAUNCERUNDE_DELI_KOPIRAJ_ROCNO');
+        }
         $this->getDocument()->addHeadLink($kanonicna, 'canonical');
         $this->getDocument()->setTitle($runda->naslov);
 

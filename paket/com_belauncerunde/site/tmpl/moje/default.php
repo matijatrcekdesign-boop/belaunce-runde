@@ -30,7 +30,7 @@ use Joomla\CMS\Router\Route;
                 <div class="row row-cols-1 row-cols-md-2 g-3">
                     <?php foreach ($runde as $runda) : ?>
                         <div class="col"><article class="card h-100"><div class="card-body">
-                            <h3 class="h4 card-title"><a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runda&id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape($runda->naslov); ?></a></h3>
+                            <h3 class="h4 card-title"><a href="<?php echo $this->escape($runda->povezava); ?>"><?php echo $this->escape($runda->naslov); ?></a></h3>
                             <?php if ((int) $runda->stanje === 2) : ?>
                                 <p><span class="badge bg-danger"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPOVEDANO')); ?></span></p>
                             <?php endif; ?>
@@ -52,19 +52,22 @@ use Joomla\CMS\Router\Route;
                                 <dd><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></dd>
                             </dl>
                             <p><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $runda->stevilo_udelezencev)); ?></p>
-                            <?php if ($runda->urejanje) : ?>
-                                <div class="d-flex gap-2 flex-wrap">
+                            <div class="d-flex gap-2 flex-wrap">
+                                <?php if ($runda->urejanje) : ?>
                                     <?php require __DIR__ . '/../runda/upravljanje.php'; ?>
-                                </div>
-                            <?php elseif ($runda->odjava) : ?>
-                                <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>" method="post">
-                                    <input type="hidden" name="task" value="runda.odjava">
-                                    <input type="hidden" name="id" value="<?php echo $this->escape((string) $runda->id); ?>">
-                                    <input type="hidden" name="vrni" value="moje">
-                                    <?php echo HTMLHelper::_('form.token'); ?>
-                                    <button type="submit" class="btn btn-outline-secondary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODJAVA')); ?></button>
-                                </form>
-                            <?php endif; ?>
+                                <?php elseif ($runda->odjava) : ?>
+                                    <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>" method="post">
+                                        <input type="hidden" name="task" value="runda.odjava">
+                                        <input type="hidden" name="id" value="<?php echo $this->escape((string) $runda->id); ?>">
+                                        <input type="hidden" name="vrni" value="moje">
+                                        <?php echo HTMLHelper::_('form.token'); ?>
+                                        <button type="submit" class="btn btn-outline-secondary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODJAVA')); ?></button>
+                                    </form>
+                                <?php endif; ?>
+                                <?php if ($runda->deljiva) : ?>
+                                    <a class="btn btn-outline-primary" href="<?php echo $this->escape($runda->deli_viber); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DELI_VIBER')); ?></a>
+                                <?php endif; ?>
+                            </div>
                         </div></article></div>
                     <?php endforeach; ?>
                 </div>

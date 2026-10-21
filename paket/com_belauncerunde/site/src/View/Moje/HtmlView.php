@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\View\Moje;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Service\Router;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -78,6 +79,12 @@ class HtmlView extends BaseHtmlView
                 $odprta = $this->pogled !== 'pretekle' && (int) $runda->stanje === 1 && !(bool) $runda->startala;
                 $runda->urejanje = $odprta && $runda->je_vodja;
                 $runda->odjava = $odprta && $sklop === 'prijavljen';
+                $runda->deljiva = $odprta;
+                $runda->povezava = Route::_('index.php?option=com_belauncerunde&view=runda&id=' . (int) $runda->id, false, Route::TLS_IGNORE, true);
+                if ($runda->deljiva) {
+                    // Alias je že v predpomnilniku; deljenje ne doda poizvedb v zanki.
+                    $runda->deli_viber = DeljenjeHelper::viberPovezava(DeljenjeHelper::besedilo($runda, $runda->povezava));
+                }
                 $lokalni = new \DateTimeImmutable(CasHelper::izUtc($runda->zacetek), new \DateTimeZone('UTC'));
                 $runda->zacetek_prikaz = $lokalni->format(Text::_('COM_BELAUNCERUNDE_DATUM_OBLIKA'));
 

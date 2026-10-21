@@ -1,12 +1,19 @@
 {
   "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
   "name": "com_belauncerunde",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "assets": [
     {
       "name": "com_belauncerunde.site",
       "type": "style",
       "uri": "com_belauncerunde/site.css"
+    },
+    {
+      "name": "com_belauncerunde.deli",
+      "type": "script",
+      "uri": "com_belauncerunde/deli.js",
+      "dependencies": ["core"],
+      "attributes": {"defer": true}
     }
   ]
 }

@@ -6,6 +6,12 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.13.0] - 2026-10-22
+### Dodano
+- Administratorski pogled Statistika s skupnimi kazalniki in razčlenitvijo po tipu ter težavnosti.
+- CSV izvoz vseh filtriranih rund s podpičjem, UTF-8 BOM, lokalnim časom in decimalno vejico; vsebuje samo javno ime vodje in število udeležencev.
+- Skupni filtri za seznam rund, statistiko in izvoz ter ponovno uporabljen izraz D54 za število udeležencev.
+
 ## [0.12.0] - 2026-10-21
 ### Dodano
 - Vtičnik Scheduler z enim dnevnim opravilom za uskladitev članstva, izbris gostov 30 dni po štartu runde in čiščenje starih žetonov ter poskusov.

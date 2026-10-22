@@ -1,0 +1,1 @@
+-- NALOGA-13: statistika in CSV ne spreminjata sheme baze.

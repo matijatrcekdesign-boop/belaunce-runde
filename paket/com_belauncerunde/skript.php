@@ -334,27 +334,30 @@ class Com_BelauncerundeInstallerScript
         }
     }
 
-    /** Vklopi naš vtičnik in opozori na manjkajoča vtičnika za daljšo prijavo. */
+    /** Vklopi naša vtičnika in opozori na manjkajoča vtičnika za daljšo prijavo. */
     private function pripraviVticnike(DatabaseInterface $db): void
     {
         $tip = 'plugin';
-        $mapa = 'authentication';
         $element = 'belauncerunde';
         $izklopljen = 0;
         $vklopljen = 1;
-        $poizvedba = $db->createQuery()->update($db->quoteName('#__extensions'))
-            ->set($db->quoteName('enabled') . ' = :vklopljen')
-            ->where($db->quoteName('type') . ' = :tip')
-            ->where($db->quoteName('folder') . ' = :mapa')
-            ->where($db->quoteName('element') . ' = :element')
-            ->where($db->quoteName('enabled') . ' = :izklopljen')
-            ->bind(':vklopljen', $vklopljen, ParameterType::INTEGER)
-            ->bind(':tip', $tip, ParameterType::STRING)
-            ->bind(':mapa', $mapa, ParameterType::STRING)
-            ->bind(':element', $element, ParameterType::STRING)
-            ->bind(':izklopljen', $izklopljen, ParameterType::INTEGER);
-        $db->setQuery($poizvedba)->execute();
-        Log::add('VTICNIK_VKLOP spremenjeno=' . $db->getAffectedRows(), Log::INFO, 'com_belauncerunde');
+
+        // Paket namesti oba vtičnika pred komponento; ob posodobitvi vklopimo le izklopljena.
+        foreach (['authentication', 'task'] as $mapa) {
+            $poizvedba = $db->createQuery()->update($db->quoteName('#__extensions'))
+                ->set($db->quoteName('enabled') . ' = :vklopljen')
+                ->where($db->quoteName('type') . ' = :tip')
+                ->where($db->quoteName('folder') . ' = :mapa')
+                ->where($db->quoteName('element') . ' = :element')
+                ->where($db->quoteName('enabled') . ' = :izklopljen')
+                ->bind(':vklopljen', $vklopljen, ParameterType::INTEGER)
+                ->bind(':tip', $tip, ParameterType::STRING)
+                ->bind(':mapa', $mapa, ParameterType::STRING)
+                ->bind(':element', $element, ParameterType::STRING)
+                ->bind(':izklopljen', $izklopljen, ParameterType::INTEGER);
+            $db->setQuery($poizvedba)->execute();
+            Log::add('VTICNIK_VKLOP mapa=' . $mapa . ' spremenjeno=' . $db->getAffectedRows(), Log::INFO, 'com_belauncerunde');
+        }
 
         // Jedrnih vtičnikov ne vklapljamo samodejno, ampak admina opozorimo na oba pogoja D43.
         foreach ([['authentication', 'cookie'], ['system', 'remember']] as [$mapaJedra, $elementJedra]) {

@@ -1,0 +1,1 @@
+-- Naloga 12: vzdrževalno opravilo uporablja obstoječe tabele; shema ostane nespremenjena.

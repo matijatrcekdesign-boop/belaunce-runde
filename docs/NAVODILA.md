@@ -212,7 +212,7 @@ V **Komponente → Runde Belaunce → Možnosti → Gostje** so:
 
 Honeypot je vključen vedno. Dnevnik zavrnitev vsebuje samo kodo in ID runde; naslova ne hrani surovega. Potrditveno pošto ureja administrator v **System → Mail Templates**, predloga `com_belauncerunde.gost_potrditev`. Namestitev obstoječih popravkov predloge ne prepiše.
 
-Samodejni izbris podatkov gostov po 30 dneh pride v nalogi 12.
+Podatki gosta se izbrišejo z dnevnim vzdrževalnim opravilom 30 dni po začetku runde, tudi če je bila runda odpovedana.
 
 
 ## Obveščanje ob spremembi
@@ -230,3 +230,11 @@ Administrator v **Komponente → Belaunce – runde → Možnosti → Maili** pr
 Besedila ureja administrator v **System → Mail Templates**, predlogi `com_belauncerunde.runda_sprememba` in `com_belauncerunde.runda_odpoved`, posebej za sl-SI/en-GB. Ohraniti je treba oznake za povezavo, spremenjena polja in odjavo gosta. Namestitev in posodobitev obstoječih popravkov ne prepišeta. Pošiljatelj in SMTP se nastavita v Joomli; uporabite klubski naslov iz nastavitev. Za ti sporočili dodatna nastavitev kopiranja Bcc ne velja, ker imata vedno samo enega prejemnika.
 
 Če pošta odpove, se runda vseeno shrani oziroma odpove in izpiše se opozorilo, da nekaterih obvestil ni bilo mogoče poslati. Preveri SMTP in po potrebi osebno obvesti udeležence; samodejnega ponovnega pošiljanja ni. Ob neuspelem pošiljanju gostu lahko prejšnja odjavna povezava že preneha veljati. Dnevnik komponente vsebuje samo kode, ID runde in število prejemnikov, brez kontaktov ali žetonov.
+
+## Scheduler opravilo
+
+Administrator po posodobitvi paketa v **System → Scheduled Tasks** izbere **New**, nato tip **Vzdrževanje rund Belaunce** in nastavi dnevno izvajanje. Vtičnik **Task - Runde Belaunce** se ob namestitvi vklopi samodejno; vnosa v urniku namestitev ne ustvari. Opravilo lahko administrator za preizkus zažene ročno.
+
+Pred zagonom preveri, da je v **Možnosti → AcyMailing** izbrana prava lista članov. Opravilo skupino **Člani** odvzame povezanim uporabnikom, ki niso več aktivni člani te liste, in jo ob vrnitvi na listo spet doda. Blokiranih računov ter uporabnikov brez povezave v tabeli članov ne spreminja. Če lista ni nastavljena, ne obstaja ali AcyMailing ni dosegljiv, sinhronizacijo preskoči. Izbriše goste 30 dni po začetku runde ter počisti stare žetone in poskuse. Rezultati so v dnevniku `com_belauncerunde.php` kot kode in števila brez osebnih podatkov.
+
+Na produkciji nastavi **pravi strežniški cron** za Joomlin Scheduler; samo spletno proženje ni dovolj. Ta korak je tudi v [kontrolnem seznamu pred zagonom](TASKS.md#kontrolni-seznam-pred-zagonom-na-produkciji-ni-naloga-za-codex).

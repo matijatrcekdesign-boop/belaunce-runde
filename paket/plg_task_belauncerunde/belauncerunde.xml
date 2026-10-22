@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="plugin" group="task" method="upgrade">
+    <name>PLG_TASK_BELAUNCERUNDE</name>
+    <author>Belaunce</author>
+    <creationDate>2026-10</creationDate>
+    <copyright>(C) 2026 Belaunce</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <version>0.12.0</version>
+    <description>PLG_TASK_BELAUNCERUNDE_XML_DESCRIPTION</description>
+    <namespace path="src">Belaunce\Plugin\Task\Belauncerunde</namespace>
+    <files>
+        <folder plugin="belauncerunde">services</folder>
+        <folder>src</folder>
+    </files>
+    <languages folder="language">
+        <language tag="sl-SI">sl-SI/plg_task_belauncerunde.ini</language>
+        <language tag="sl-SI">sl-SI/plg_task_belauncerunde.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_task_belauncerunde.ini</language>
+        <language tag="en-GB">en-GB/plg_task_belauncerunde.sys.ini</language>
+    </languages>
+</extension>

@@ -327,13 +327,14 @@ class AcymailingAdapter
     /**
      * Vrne ID-je vseh trenutnih članov izbrane liste.
      *
-     * @param   int  $listaId  ID liste članov.
+     * @param   int   $listaId  ID liste članov.
+     * @param   bool  $strogo   Ob napaki branja vrže izjemo namesto praznega seznama.
      *
      * @return  int[]
      *
      * @since   0.3.0
      */
-    public function idjiClanov(int $listaId): array
+    public function idjiClanov(int $listaId, bool $strogo = false): array
     {
         if ($listaId <= 0 || !$this->jeNamescen()) {
             return [];
@@ -358,6 +359,11 @@ class AcymailingAdapter
             return array_map('intval', $this->db->loadColumn());
         } catch (\Throwable $e) {
             $this->zabeleziNapako('Branje ID-jev AcyMailing članov ni uspelo.', $e);
+
+            // Vzdrževanje mora razlikovati med prazno listo in napako branja.
+            if ($strogo) {
+                throw new \RuntimeException('ACYM_BRANJE_NAPAKA', 0, $e);
+            }
 
             return [];
         }

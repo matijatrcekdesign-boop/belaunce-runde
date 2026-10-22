@@ -291,7 +291,7 @@ Preverjeni viri Joomla **6.1-dev** (2026-10-20): [Table.php](https://github.com/
 
 `VzdrzevanjeService` najprej sinhronizira povezane člane. Če AcyMailing ni nameščen, lista članov ni nastavljena ali izbrana lista ne obstaja, sinhronizacijo preskoči. Strogo branje `AcymailingAdapter::idjiClanov()` ob napaki vrže izjemo, da prazen rezultat ob izpadu baze ne povzroči množičnega odvzema. Za vsako vrstico `#__belaunce_clani` `ClanService::uskladiSkupino()` vrne ali odvzame izključno skupino Člani; blokirane račune preskoči. Uporabnikov brez naše povezave ne obravnava.
 
-Drugi del z uro baze `UTC_TIMESTAMP()` izbriše goste rund, katerih začetek je starejši od 30 dni, ne glede na stanje runde. Tretji del uporabi obstoječa `ZetonService::pociscenje()` (7 dni) in `OmejitevHelper::pociscenje()` (2 dni). Shema se ne spremeni.
+Drugi del z uro baze `UTC_TIMESTAMP()` izbriše goste rund, katerih začetek je starejši od 30 dni, ne glede na stanje runde. Nato z ločenima poizvedbama `NOT EXISTS` izbriše še goste in članske prijave brez obstoječe runde, ki lahko ostanejo po administratorskem izbrisu runde. Vsak izbris zapiše svojo kodo in število vrstic v dnevnik. Tretji del uporabi obstoječa `ZetonService::pociscenje()` (7 dni) in `OmejitevHelper::pociscenje()` (2 dni). Shema se ne spremeni.
 
 Scheduler teče izven zagona komponente. Vtičnik zato enkrat na izvajanje sam registrira zapisovalnik kategorije `com_belauncerunde` z obliko brez `{CLIENTIP}`. Zapisuje samo kode, ID-je in števila, nikoli osebnih vrednosti ali besedila izjem.
 

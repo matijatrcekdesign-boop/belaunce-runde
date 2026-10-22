@@ -46,6 +46,13 @@ class DisplayController extends BaseController
         $layout = $this->input->getCmd('layout', 'default');
         $id     = $this->input->getInt('id');
 
+        if ($view === 'statistika' && !$this->app->getIdentity()->authorise('core.manage', 'com_belauncerunde')) {
+            $this->setMessage(Text::_('COM_BELAUNCERUNDE_STATISTIKA_NI_DOSTOPA'), 'warning');
+            $this->setRedirect(Route::_('index.php?option=com_belauncerunde&view=runde', false));
+
+            return false;
+        }
+
         if ($view === 'runda' && $layout === 'edit' && !$this->checkEditId('com_belauncerunde.edit.runda', $id)) {
             if (!\count($this->app->getMessageQueue())) {
                 $this->setMessage(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id), 'error');

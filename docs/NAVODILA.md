@@ -238,3 +238,9 @@ Administrator po posodobitvi paketa v **System → Scheduled Tasks** izbere **Ne
 Pred zagonom preveri, da je v **Možnosti → AcyMailing** izbrana prava lista članov. Opravilo skupino **Člani** odvzame povezanim uporabnikom, ki niso več aktivni člani te liste, in jo ob vrnitvi na listo spet doda. Blokiranih računov ter uporabnikov brez povezave v tabeli članov ne spreminja. Če lista ni nastavljena, ne obstaja ali AcyMailing ni dosegljiv, sinhronizacijo preskoči. Izbriše goste 30 dni po začetku runde ter počisti stare žetone in poskuse. Rezultati so v dnevniku `com_belauncerunde.php` kot kode in števila brez osebnih podatkov.
 
 Na produkciji nastavi **pravi strežniški cron** za Joomlin Scheduler; samo spletno proženje ni dovolj. Ta korak je tudi v [kontrolnem seznamu pred zagonom](TASKS.md#kontrolni-seznam-pred-zagonom-na-produkciji-ni-naloga-za-codex).
+
+## Statistika in izvoz
+
+Administrator odpre **Komponente → Runde Belaunce → Statistika**. Filtri za iskanje, tip, težavnost, stanje, vodjo in obdobje veljajo za vse tri tabele ter za gumb **Izvozi CSV**. Kazalniki štejejo objavljene in odpovedane runde; skupna in povprečna dolžina sta v kilometrih. Povprečno trajanje v minutah upošteva samo runde, ki imajo trajanje vpisano. Število udeležencev vključuje prijavljene člane, obstoječega vodjo in goste. Razčlenitvi po tipu in težavnosti prikazujeta število rund ter povprečni dolžini in števili udeležencev.
+
+**Izvozi CSV** prenese vse runde, ki ustrezajo trenutnim filtrom, ne le trenutne strani. Datoteka uporablja podpičje, UTF-8 z BOM in decimalno vejico pri dolžini, zato jo slovenski Excel razdeli v stolpce ter pravilno prikaže šumnike. Vsebuje javno ime vodje in skupno število udeležencev; imen prijavljenih, gostov in njihovih kontaktov ne vsebuje.

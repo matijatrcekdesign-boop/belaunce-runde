@@ -1,0 +1,1 @@
+-- Verzija 0.15.0 spreminja samo prikaz in ne spreminja sheme ali podatkov.

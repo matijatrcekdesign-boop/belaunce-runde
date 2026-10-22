@@ -31,6 +31,8 @@ class HtmlView extends BaseHtmlView
     public bool $prikaziPretekle = true;
     /** @var array Sklopi trenutnega zavihka, pripravljeni za prikaz. */
     public array $sklopi = [];
+    /** @var array Objavljene težavnosti za merilnike na karticah. */
+    public array $tezavnosti = [];
     /** @var Pagination|null Paginacija samo za pretekle runde. */
     public ?Pagination $paginacija = null;
     /** @var array|null Prevedeno obvestilo in varen Bootstrap razred. */
@@ -65,6 +67,8 @@ class HtmlView extends BaseHtmlView
         $this->pogled = $this->prikaziPretekle && $app->getInput()->getCmd('pogled', 'prihajajoce') === 'pretekle'
             ? 'pretekle' : 'prihajajoce';
         $podatki = $this->getModel()->podatki($this->pogled);
+        $this->tezavnosti = $app->bootComponent('com_belauncerunde')->getMVCFactory()
+            ->createModel('Runde', 'Site', [])->tezavnosti();
         $this->paginacija = $podatki['paginacija'];
 
         if ($this->paginacija !== null) {

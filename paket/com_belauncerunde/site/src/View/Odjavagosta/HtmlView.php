@@ -55,6 +55,7 @@ class HtmlView extends BaseHtmlView
             $this->obvestilo = 'COM_BELAUNCERUNDE_GOST_ODJAVA_KONCANO';
         }
 
+        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.site');
         parent::display($tpl);
     }
 }

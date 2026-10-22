@@ -18,7 +18,7 @@ use Joomla\CMS\Uri\Uri;
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN')); ?></p>
         <a href="<?php echo $this->escape(Uri::root()); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOMOV')); ?></a>
     <?php else : ?>
-        <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_OPIS')); ?></p>
+        <p class="br-lead"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_OPIS')); ?></p>
         <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&task=prijava.poslji')); ?>" method="post">
             <?php echo $this->form->renderField('email'); ?>
             <?php echo $this->form->renderField('runda_id'); ?>

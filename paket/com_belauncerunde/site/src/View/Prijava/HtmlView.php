@@ -47,6 +47,7 @@ class HtmlView extends BaseHtmlView
             $this->form = $this->getModel()->getForm();
         }
 
+        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.site');
         parent::display($tpl);
     }
 }

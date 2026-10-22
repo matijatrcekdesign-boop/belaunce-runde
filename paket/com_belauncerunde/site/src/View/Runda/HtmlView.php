@@ -6,6 +6,7 @@ use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\VidezHelper;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -34,6 +35,8 @@ class HtmlView extends BaseHtmlView
 
     /** @var object Javni podatki runde. */
     public object $runda;
+    /** @var array Objavljene težavnosti za merilnik po vrstnem redu. */
+    public array $tezavnosti = [];
     /** @var string Lokalni začetek za prikaz. */
     public string $zacetek;
     /** @var string Preverjena povezava na traso ali prazen niz. */
@@ -83,6 +86,8 @@ class HtmlView extends BaseHtmlView
 
         $this->runda = $runda;
         $app = Factory::getApplication();
+        $this->tezavnosti = $app->bootComponent('com_belauncerunde')->getMVCFactory()
+            ->createModel('Runde', 'Site', [])->tezavnosti();
         $uporabnik = $app->getIdentity();
         $prijave = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Prijave', 'Site', []);
         $this->clan = $prijave->jeClan($uporabnik);
@@ -170,7 +175,7 @@ class HtmlView extends BaseHtmlView
         // da se narekovaji in ampersandi ne kodirajo dvakrat. Opomb ali imen tu ni.
         $opis = Text::sprintf('COM_BELAUNCERUNDE_OG_OPIS', $this->zacetek,
             (string) ($runda->tip_naziv ?? ''), (string) ($runda->tezavnost_naziv ?? ''),
-            Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', $runda->dolzina_km));
+            Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', VidezHelper::dolzina($runda->dolzina_km)));
         $this->getDocument()->setMetaData('og:title', $runda->naslov, 'property');
         $this->getDocument()->setMetaData('og:description', $opis, 'property');
         $this->getDocument()->setMetaData('og:url', $kanonicna, 'property');

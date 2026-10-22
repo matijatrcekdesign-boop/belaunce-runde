@@ -51,36 +51,10 @@ use Joomla\CMS\Router\Route;
     <?php if (!$this->runde) : ?>
         <p class="alert alert-info"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_RUNDE_PRAZNO')); ?></p>
     <?php else : ?>
-        <div class="row row-cols-1 row-cols-md-2 g-3">
+        <div class="row g-3">
             <?php foreach ($this->runde as $runda) : ?>
-                <div class="col">
-                    <article class="card h-100">
-                        <div class="card-body">
-                            <h2 class="h4 card-title"><a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runda&id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape($runda->naslov); ?></a></h2>
-                            <?php if ((int) $runda->stanje === 2) : ?>
-                                <p><span class="badge bg-danger"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPOVEDANO')); ?></span></p>
-                            <?php endif; ?>
-                            <dl class="mb-0">
-                                <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZACETEK')); ?></dt>
-                                <dd><?php echo $this->escape($runda->zacetek_prikaz); ?></dd>
-                                <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TIP')); ?></dt>
-                                <dd><?php echo $this->escape((string) ($runda->tip_naziv ?? '')); ?></dd>
-                                <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TEZAVNOST')); ?></dt>
-                                <dd><?php echo $this->escape((string) ($runda->tezavnost_naziv ?? '')); ?></dd>
-                                <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_LOKACIJA')); ?></dt>
-                                <dd><?php echo $this->escape($runda->lokacija); ?></dd>
-                                <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOLZINA')); ?></dt>
-                                <dd><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', $runda->dolzina_km)); ?></dd>
-                                <dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt>
-                                <dd><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></dd>
-                            </dl>
-                            <?php if ($runda->urejanje) : ?>
-                                <div class="d-flex gap-2 flex-wrap mt-3">
-                                    <?php require __DIR__ . '/../runda/upravljanje.php'; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </article>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <?php $naslovNivo = 'h2'; require __DIR__ . '/../runda/kartica.php'; ?>
                 </div>
             <?php endforeach; ?>
         </div>

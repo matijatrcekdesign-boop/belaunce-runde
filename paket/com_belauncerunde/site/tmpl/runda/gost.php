@@ -7,8 +7,8 @@ use Joomla\CMS\Router\Route;
 \defined('_JEXEC') or die;
 ?>
 <section class="br-gost mb-4" aria-labelledby="br-gost-naslov">
-    <h2 id="br-gost-naslov" class="h4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_NASLOV')); ?></h2>
-    <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_KONTAKT_OPIS')); ?></p>
+    <h2 id="br-gost-naslov" class="br-sec-title"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_NASLOV')); ?></h2>
+    <p class="br-lead"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_KONTAKT_OPIS')); ?></p>
     <form method="post" action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>">
         <?php foreach (['ime', 'telefon', 'email'] as $polje) : ?>
             <?php echo $this->gostObrazec->renderField($polje); ?>

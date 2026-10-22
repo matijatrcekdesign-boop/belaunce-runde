@@ -1,6 +1,6 @@
 # Navodila za uporabo — Runde Belaunce
 
-Uporabniška navodila nastajajo postopoma z nalogami. Vsaka naloga dopolni svoj razdelek.
+Navodila za člane, vodje, goste in administratorje paketa Runde Belaunce.
 
 ## Za administratorja
 
@@ -10,7 +10,7 @@ Uporabniška navodila nastajajo postopoma z nalogami. Vsaka naloga dopolni svoj 
 3. Po namestitvi preveri, da je v meniju *Komponente* viden vnos **Runde Belaunce**.
 4. V *Komponente → Runde Belaunce → Možnosti* preveri zavihek **Splošno**. Skupina članov mora biti nastavljena na **Člani**.
 
-Pri odstranitvi paket privzeto ohrani tabele s podatki. Če želiš tabele izbrisati, pred odstranitvijo v možnostih izklopi **Ohrani podatke ob odstranitvi**.
+Pri odstranitvi paket privzeto ohrani podatke (`Ohrani podatke ob odstranitvi = Da`): osem tabel in štiri poštne predloge ostanejo. Če želiš podatke izbrisati, najprej naredi varnostno kopijo, nato v možnostih nastavi **Ohrani podatke ob odstranitvi = Ne**. Skript odstrani tabele `#__belaunce_tipi`, `#__belaunce_tezavnosti`, `#__belaunce_runde`, `#__belaunce_prijave`, `#__belaunce_gostje`, `#__belaunce_zetoni`, `#__belaunce_clani` in `#__belaunce_poskusi` ter predloge `com_belauncerunde.prijava`, `com_belauncerunde.gost_potrditev`, `com_belauncerunde.runda_sprememba` in `com_belauncerunde.runda_odpoved`. Skupina **Člani** in Joomla uporabniki ostanejo v obeh primerih. Pri neuspehu odstranitve preveri kodo v dnevniku in stanje tabel; skript odstranitve ne prekine. Lastna datoteka dnevnika ostane in se po potrebi ročno odstrani po pravilih hrambe dnevnikov.
 
 ### Dnevnik brez IP-ja in čiščenje pred produkcijo
 
@@ -98,9 +98,9 @@ Razpoložljive oznake so:
 Ohrani `{POVEZAVA}`, da prejemniki lahko odprejo rundo in se prijavijo. Neznane oznake ostanejo dobesedno zapisane. Imen udeležencev ali gostov, njihovih kontaktov, opomb in trase ni mogoče vključiti z oznakami. Datum in ura uporabljata časovni pas komponente, tudi ob prehodu med poletnim in zimskim časom.
 
 ### Ko član ni več član
-Članstvo določa aktivni naročnik AcyMailinga z aktivno naročnino na listo članov. Odjava samo z liste Runde ne vpliva na dostop. Ob porabi vsake povezave se članstvo preveri znova; če je član medtem izstopil, prijava ne uspe. Dnevna sinhronizacija in blokiranje prideta z nalogo 12, zato ta verzija obstoječih sej še ne blokira samodejno.
+Članstvo določa aktivni naročnik AcyMailinga z aktivno naročnino na listo članov. Odjava samo z liste Runde ne vpliva na dostop. Ob porabi vsake povezave se članstvo preveri znova; če je član medtem izstopil, prijava ne uspe. Dnevno vzdrževalno opravilo odvzame skupino **Člani** povezanim uporabnikom, ki niso več aktivni člani; za delovanje ga mora administrator nastaviti v Schedulerju.
 
-Joomla uporabnika člana **ne briši**, temveč ga blokiraj (D47): brisanje lahko prek AcyMailingove nastavitve izbriše tudi naročnika in njegovo članstvo. Če je uporabnik spet član in se prijavi z novo povezavo, se račun odblokira. Računa zunaj skupine Člani magic link ne prevzame, tudi če ima isti email.
+Joomla uporabnika člana **ne briši in ne blokiraj** (D47). Izbris lahko prek AcyMailingove nastavitve izbriše tudi naročnika; blokada lahko ustavi pošto z drugih klubskih list. Dostop odvzemi samo z odstranitvijo skupine **Člani**. Ob vrnitvi na listo vzdrževalno opravilo skupino spet doda. Računa zunaj skupine Člani magic link ne prevzame, tudi če ima isti email.
 
 ### Šifranti: tipi in težavnosti
 Šifranti so v administraciji pod *Komponente → Runde Belaunce*:
@@ -133,7 +133,7 @@ Administrator lahko v *Komponente → Runde Belaunce → Možnosti → Trasa* iz
 1. Prijavi se kot član društva. Na seznamu ali strani runde izberi **Ustvari rundo** (`/runde/nova`).
 2. Vpiši naslov, tip, težavnost, datum in uro štarta, lokacijo ter dolžino. Lokacija je privzeto **Gorenja vas**, če je administrator ni spremenil. Začetek je prazen, **Odprto za goste** je privzeto **Ne**.
 3. Uro vpiši v časovnem pasu rund (privzeto **Europe/Ljubljana**). Poletni in zimski čas komponenta upošteva sama; v bazi shrani UTC.
-4. Po želji dodaj trajanje v minutah (1–1440), opombe kot navadno besedilo ter povezavo na traso. Če trajanje pustiš prazno, se za prikaz konca uporabi privzeto trajanje iz možnosti. Prijava gostov bo na voljo z nalogo 08.
+4. Po želji dodaj trajanje v minutah (1–1440), opombe kot navadno besedilo ter povezavo na traso. Če trajanje pustiš prazno, se za prikaz konca uporabi privzeto trajanje iz možnosti. Če izbereš **Odprto za goste**, se lahko gost prijavi na objavljeno rundo do štarta.
 5. Izberi **Shrani rundo**. Odpre se stran nove runde; si njen vodja in že šteješ kot en udeleženec. Posebna prijava ni potrebna. Ob napaki se vnos ohrani in obrazec prikaže obvestilo.
 
 Rundo urejaš in odpoveš samo kot njen vodja do štarta. Obiskovalci in prijavljeni nečlani gumba za ustvarjanje ne vidijo.
@@ -186,10 +186,7 @@ Seznam in posamezne runde so javni, tudi v zasebnem oknu brez prijave. Seznam pr
 
 Odpovedane runde ostanejo vidne z oznako **Odpovedano**. Runda izgine s seznama šele po začetku in trajanju; če trajanje ni vpisano, se uporabi privzeto trajanje iz možnosti. Njena neposredna povezava ostane dostopna tudi pozneje.
 
-Stran runde prikaže še trajanje, opombe in veljavno povezavo na traso v novem oknu. Če vodja ne obstaja več, je njegovo ime prazno. Sprememba aliasa ne pokvari stare povezave: runda se poišče po ID-ju, kanonična povezava v izvorni kodi pa kaže trenutni URL. Neobstoječa ali nejavna runda vrne 404. Od verzije 0.6.0 je na strani tudi število udeležencev; njihova imena vidijo samo člani. Nečlanom se izpiše poziv za včlanitev. Prijava gostov in njihovi kontakti pridejo z nalogo 08.
-
-## Za goste
-*(naloga 08)*
+Stran runde prikaže še trajanje, opombe in veljavno povezavo na traso v novem oknu. Če vodja ne obstaja več, je njegovo ime prazno. Sprememba aliasa ne pokvari stare povezave: runda se poišče po ID-ju, kanonična povezava v izvorni kodi pa kaže trenutni URL. Neobstoječa ali nejavna runda vrne 404. Od verzije 0.6.0 je na strani tudi število udeležencev; njihova imena vidijo samo člani. Nečlanom se izpiše poziv za včlanitev. Imena gostov vidijo člani, njihove kontakte samo vodja runde.
 
 ## Gostje
 
@@ -244,3 +241,13 @@ Na produkciji nastavi **pravi strežniški cron** za Joomlin Scheduler; samo spl
 Administrator odpre **Komponente → Runde Belaunce → Statistika**. Filtri za iskanje, tip, težavnost, stanje, vodjo in obdobje veljajo za vse tri tabele ter za gumb **Izvozi CSV**. Kazalniki štejejo objavljene in odpovedane runde; skupna in povprečna dolžina sta v kilometrih. Povprečno trajanje v minutah upošteva samo runde, ki imajo trajanje vpisano. Število udeležencev vključuje prijavljene člane, obstoječega vodjo in goste. Razčlenitvi po tipu in težavnosti prikazujeta število rund ter povprečni dolžini in števili udeležencev.
 
 **Izvozi CSV** prenese vse runde, ki ustrezajo trenutnim filtrom, ne le trenutne strani. Datoteka uporablja podpičje, UTF-8 z BOM in decimalno vejico pri dolžini, zato jo slovenski Excel razdeli v stolpce ter pravilno prikaže šumnike. Vsebuje javno ime vodje in skupno število udeležencev; imen prijavljenih, gostov in njihovih kontaktov ne vsebuje.
+
+## Zasebnost (GDPR)
+
+Članski račun je Joomla uporabnik z imenom, emailom in uporabniškim imenom, ki je enako emailu. Povezava s članstvom in čas zadnje prijave sta v `#__belaunce_clani`; članske prijave na runde so v `#__belaunce_prijave`. Ime vodje in udeležencev vidijo člani po pravilih prikaza runde, javnost vidi le ime vodje in skupno število. Kontakti gostov so vidni samo vodji njihove runde.
+
+Prijava gosta v `#__belaunce_gostje` hrani ime ter vpisani telefon in/ali email. Za omejitev prijav na omrežni naslov in rundo se shrani samo SHA-256 hash IP-ja, soljen z Joomlinim `secret`; surovi IP se v to tabelo ne zapiše. `#__belaunce_zetoni` hrani hash prijavnega žetona in od 0.14.0 krajšani, z Joomlinim `secret` soljeni hash IP-ja; `#__belaunce_poskusi` hrani hash ključa omejitve poskusov. Novi zapisi ne hranijo surovega IP-ja ali žetona. Žetoni, ustvarjeni pred posodobitvijo, lahko vsebujejo surovi IP do čiščenja po največ sedmih dneh, če dnevno opravilo teče; po potrebi jih administrator prej ročno odstrani. Lasten dnevnik piše kode in ID-je brez kontaktov in surovega IP-ja. Stare dnevniške datoteke je treba obravnavati po zgornjih navodilih.
+
+Dnevno opravilo Scheduler izbriše goste 30 dni po začetku runde, žetone po 7 dneh in poskuse po 2 dneh. Administrator mora opravilo ustvariti in zagotoviti strežniški cron. Gost se lahko z enkratno povezavo odjavi sam; za predčasen ročni izbris lahko administrator po preverjeni zahtevi izbriše ustrezno vrstico gosta neposredno iz baze. Ročni poseg v bazo naj najprej varnostno kopira in preveri pravi zapis; za individualen izbris ni uporabniškega vmesnika. Izbris runde sam ne zagotovi izbrisa gostov, ker shema nima tujega ključa s kaskadnim brisanjem.
+
+Zahtevo člana za dostop ali izbris obravnava administrator prek Joomline komponente **Privacy** in upravljanja uporabnikov. Paket v prvi izdaji nima vtičnika `plg_privacy` za samodejni izvoz ali izbris svojih tabel. Jedrni Joomla račun je v upravljanju uporabnikov, vendar odločitev D47 prepoveduje samodejno ali rutinsko brisanje in blokiranje članskih računov, ker bi AcyMailing lahko izbrisal naročnika oziroma ustavil pošto z drugih list. Zahtevo za dejanski izbris računa zato obravnava administrator posamično skupaj z upravljavcem AcyMailinga; odstranitev skupine **Člani** odvzame dostop, sama pa ni izbris osebnih podatkov. Pri izvozu ali izbrisu je treba posebej pregledati tudi zapise komponentnih tabel in AcyMailing, ker jih jedrna Privacy sama ne obdela.

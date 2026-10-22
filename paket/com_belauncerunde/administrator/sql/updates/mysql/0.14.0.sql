@@ -1,0 +1,1 @@
+-- Verzija 0.14.0 ne spreminja sheme ali podatkov.

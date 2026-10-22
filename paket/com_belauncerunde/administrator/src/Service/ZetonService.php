@@ -19,14 +19,26 @@ class ZetonService
     /** @var Registry Možnosti komponente. */
     private Registry $params;
 
-    /** Pripravi povezavo in nastavitve veljavnosti. */
+    /**
+     * Pripravi povezavo in nastavitve veljavnosti.
+     *
+     * @param  ?DatabaseInterface  $db
+     * @param  ?Registry  $params
+     */
     public function __construct(?DatabaseInterface $db = null, ?Registry $params = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
         $this->params = $params ?: ComponentHelper::getParams('com_belauncerunde');
     }
 
-    /** Razveljavi stare povezave člana in vrne nov 256-bitni surovi žeton. */
+    /**
+     * Razveljavi stare povezave člana in vrne nov 256-bitni surovi žeton.
+     *
+     * @param  int  $acymId
+     * @param  ?int  $rundaId
+     * @param  string  $ip
+     * @return  string
+     */
     public function ustvari(int $acymId, ?int $rundaId, string $ip): string
     {
         $db = $this->db;
@@ -42,6 +54,8 @@ class ZetonService
         // Naključnost varuje povezavo, hash pa omogoča indeksirano iskanje brez surovega žetona.
         $surovi = bin2hex(random_bytes(32));
         $hash = hash('sha256', $surovi);
+        // Stolpec je dolg 45 znakov; krajšani HMAC skrije surovi IP brez spremembe sheme.
+        $ipHash = substr(hash_hmac('sha256', $ip, (string) Factory::getApplication()->get('secret')), 0, 40);
         $potece = gmdate('Y-m-d H:i:s', time() + (int) $this->params->get('veljavnost_min', 15) * 60);
         $poizvedba = $db->createQuery()->insert($db->quoteName('#__belaunce_zetoni'))
             ->columns($db->quoteName(['acym_uporabnik_id', 'zeton_hash', 'runda_id', 'potece', 'ip', 'ustvarjeno']))
@@ -50,14 +64,19 @@ class ZetonService
             ->bind(':hash', $hash, ParameterType::STRING)
             ->bind(':runda', $rundaId, $rundaId === null ? ParameterType::NULL : ParameterType::INTEGER)
             ->bind(':potece', $potece, ParameterType::STRING)
-            ->bind(':ip', $ip, ParameterType::STRING)
+            ->bind(':ip', $ipHash, ParameterType::STRING)
             ->bind(':zdaj', $zdaj, ParameterType::STRING);
         $db->setQuery($poizvedba)->execute();
 
         return $surovi;
     }
 
-    /** Prebere veljaven žeton za GET, ne da bi ga porabil. */
+    /**
+     * Prebere veljaven žeton za GET, ne da bi ga porabil.
+     *
+     * @param  string  $surovi
+     * @return  ?object
+     */
     public function preveri(string $surovi): ?object
     {
         if (!preg_match('/^[0-9a-f]{64}$/D', $surovi)) {
@@ -77,7 +96,12 @@ class ZetonService
         return $db->setQuery($poizvedba)->loadObject() ?: null;
     }
 
-    /** Atomarno porabi žeton; samo ena sočasna zahteva lahko spremeni eno vrstico. */
+    /**
+     * Atomarno porabi žeton; samo ena sočasna zahteva lahko spremeni eno vrstico.
+     *
+     * @param  string  $surovi
+     * @return  ?object
+     */
     public function porabi(string $surovi): ?object
     {
         if (!preg_match('/^[0-9a-f]{64}$/D', $surovi)) {
@@ -110,7 +134,12 @@ class ZetonService
         return $db->setQuery($poizvedba)->loadObject() ?: null;
     }
 
-    /** Izbriše dovolj stare porabljene ali potekle žetone za vzdrževalno opravilo. */
+    /**
+     * Izbriše dovolj stare porabljene ali potekle žetone za vzdrževalno opravilo.
+     *
+     * @param  int  $dni
+     * @return  int
+     */
     public function pociscenje(int $dni = 7): int
     {
         $od = gmdate('Y-m-d H:i:s', time() - max(0, $dni) * 86400);

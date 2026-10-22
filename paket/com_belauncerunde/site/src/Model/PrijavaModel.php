@@ -28,13 +28,24 @@ class PrijavaModel extends FormModel
         return ['runda_id' => Factory::getApplication()->getInput()->getUint('runda_id', 0)];
     }
 
-    /** Validira na strežniku, ne da bi napake obrazca spreminjale enoten odgovor. */
+    /**
+     * Validira na strežniku, ne da bi napake obrazca spreminjale enoten odgovor.
+     *
+     * @param  array  $podatki
+     * @return  bool
+     */
     public function preveriVnos(array $podatki): bool
     {
         return $this->validate($this->getForm([], false), $podatki) !== false;
     }
 
-    /** Pošle Joomlino predlogo za pošto, ne da bi napaka razkrila obstoj člana. */
+    /**
+     * Pošle Joomlino predlogo za pošto, ne da bi napaka razkrila obstoj člana.
+     *
+     * @param  object  $clan
+     * @param  string  $surovi
+     * @return  void
+     */
     public function posljiPovezavo(object $clan, string $surovi): void
     {
         $app = Factory::getApplication();

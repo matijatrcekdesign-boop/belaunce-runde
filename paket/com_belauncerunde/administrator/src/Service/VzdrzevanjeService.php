@@ -20,14 +20,23 @@ class VzdrzevanjeService
     /** @var Registry Možnosti komponente. */
     private Registry $params;
 
-    /** Pripravi odvisnosti tudi za zagon brez prijavljenega uporabnika. */
+    /**
+     * Pripravi odvisnosti tudi za zagon brez prijavljenega uporabnika.
+     *
+     * @param  ?DatabaseInterface  $db
+     * @param  ?Registry  $params
+     */
     public function __construct(?DatabaseInterface $db = null, ?Registry $params = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
         $this->params = $params ?: ComponentHelper::getParams('com_belauncerunde');
     }
 
-    /** Uskladi povezane uporabnike s trenutno AcyMailing listo članov. */
+    /**
+     * Uskladi povezane uporabnike s trenutno AcyMailing listo članov.
+     *
+     * @return  void
+     */
     public function sinhronizacijaClanov(): void
     {
         $listaId = (int) $this->params->get('lista_clanov', 0);
@@ -76,7 +85,11 @@ class VzdrzevanjeService
         }
     }
 
-    /** Izbriše goste 30 dni po začetku runde, ne glede na njeno stanje. */
+    /**
+     * Izbriše goste 30 dni po začetku runde, ne glede na njeno stanje.
+     *
+     * @return  int
+     */
     public function izbrisGostov(): int
     {
         $db = $this->db;
@@ -92,7 +105,11 @@ class VzdrzevanjeService
         return $izbrisanih;
     }
 
-    /** Uporabi obstoječa roka za žetone in zapise poskusov. */
+    /**
+     * Uporabi obstoječa roka za žetone in zapise poskusov.
+     *
+     * @return  void
+     */
     public function ciscenje(): void
     {
         $zetoni = (new ZetonService($this->db, $this->params))->pociscenje();

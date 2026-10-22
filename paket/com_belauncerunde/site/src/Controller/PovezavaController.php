@@ -13,7 +13,11 @@ use Joomla\CMS\Router\Route;
 /** Prijavo z žetonom v celoti prepusti Joomli in avtentikacijskemu vtičniku. */
 class PovezavaController extends BaseController
 {
-    /** Preveri POST in pokliče Joomlino prijavo z možnostjo daljše seje. */
+    /**
+     * Preveri POST in pokliče Joomlino prijavo z možnostjo daljše seje.
+     *
+     * @return  void
+     */
     public function prijavi(): void
     {
         // 1. Žeton se lahko porabi samo prek POST z veljavnim CSRF žetonom.

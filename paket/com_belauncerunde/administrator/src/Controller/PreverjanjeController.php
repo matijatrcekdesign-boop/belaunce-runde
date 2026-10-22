@@ -32,6 +32,10 @@ class PreverjanjeController extends BaseController
      */
     public function preveri(): void
     {
+        if ($this->input->server->getString('REQUEST_METHOD') !== 'POST') {
+            throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+        }
+
         $this->checkToken();
 
         $app = Factory::getApplication();

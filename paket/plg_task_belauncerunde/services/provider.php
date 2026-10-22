@@ -11,7 +11,12 @@ use Joomla\DI\ServiceProviderInterface;
 
 /** Ponudnik vtičnika po vzoru jedrnega task/requests. */
 return new class () implements ServiceProviderInterface {
-    /** Registrira vtičnik Schedulerja in trenutno aplikacijo. */
+    /**
+     * Registrira vtičnik Schedulerja in trenutno aplikacijo.
+     *
+     * @param  Container  $container
+     * @return  void
+     */
     public function register(Container $container): void
     {
         $container->set(

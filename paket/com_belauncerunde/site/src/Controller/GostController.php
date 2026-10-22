@@ -11,7 +11,11 @@ use Joomla\CMS\Router\Route;
 /** POST vstopni točki za prijavo gosta in potrditev odjave brez računa. */
 class GostController extends BaseController
 {
-    /** Preveri POST, CSRF in pravila runde še pred modelom, ki jih ponovi ob zapisu. */
+    /**
+     * Preveri POST, CSRF in pravila runde še pred modelom, ki jih ponovi ob zapisu.
+     *
+     * @return  void
+     */
     public function prijava(): void
     {
         $rundaId = $this->input->post->getUint('id', 0);
@@ -41,7 +45,11 @@ class GostController extends BaseController
         $this->setRedirect(Route::_('index.php?option=com_belauncerunde&' . $pot . '&stanje=' . $stanje, false));
     }
 
-    /** Porabi samo strežniško shranjen hash za izziv potrditvene strani. */
+    /**
+     * Porabi samo strežniško shranjen hash za izziv potrditvene strani.
+     *
+     * @return  void
+     */
     public function odjava(): void
     {
         $stanje = 'koncano';

@@ -36,7 +36,11 @@ class HtmlView extends BaseHtmlView
     /** @var array|null Prevedeno obvestilo in varen Bootstrap razred. */
     public ?array $obvestilo = null;
 
-    /** Preveri dostop pred branjem seznamov ter pripravi čas, gumbe in povezave brez N+1. */
+    /**
+     * Preveri dostop pred branjem seznamov ter pripravi čas, gumbe in povezave brez N+1.
+     *
+     * @return  void
+     */
     public function display($tpl = null): void
     {
         $app = Factory::getApplication();

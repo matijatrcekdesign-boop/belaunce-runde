@@ -17,7 +17,11 @@ use Joomla\CMS\Router\Route;
 /** Sprejema zahteve za povezavo brez razkrivanja obstoja člana. */
 class PrijavaController extends BaseController
 {
-    /** Zabeleži poskus, preveri omejitve in članu pošlje enkratno povezavo. */
+    /**
+     * Zabeleži poskus, preveri omejitve in članu pošlje enkratno povezavo.
+     *
+     * @return  void
+     */
     public function poslji(): void
     {
         // 1. Akcija sprejema izključno POST z veljavnim Joomlinim CSRF žetonom.

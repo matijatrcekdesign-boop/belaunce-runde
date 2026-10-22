@@ -11,7 +11,12 @@ use Joomla\DI\ServiceProviderInterface;
 
 /** Ponudnik vtičnika po vzoru jedra authentication/cookie. */
 return new class () implements ServiceProviderInterface {
-    /** Registrira vtičnik in mu nastavi trenutno aplikacijo. */
+    /**
+     * Registrira vtičnik in mu nastavi trenutno aplikacijo.
+     *
+     * @param  Container  $container
+     * @return  void
+     */
     public function register(Container $container): void
     {
         $container->set(

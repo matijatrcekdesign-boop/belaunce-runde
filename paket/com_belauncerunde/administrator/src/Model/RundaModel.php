@@ -127,48 +127,34 @@ class RundaModel extends AdminModel
         $isNew = $id === 0;
 
         if ($isNew && !$user->authorise('core.create', 'com_belauncerunde')) {
-            $this->setError(Text::_('JLIB_APPLICATION_ERROR_CREATE_RECORD_NOT_PERMITTED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('JLIB_APPLICATION_ERROR_CREATE_RECORD_NOT_PERMITTED'));
         }
 
         if (!$isNew && !$user->authorise('core.edit', 'com_belauncerunde')) {
-            $this->setError(Text::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'));
         }
 
         if (isset($data['stanje']) && !$user->authorise('core.edit.state', 'com_belauncerunde')) {
-            $this->setError(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
         }
 
         if (!$this->obstajaSifrant('#__belaunce_tipi', (int) ($data['tip_id'] ?? 0))) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_TIP_INVALID'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_TIP_INVALID'));
         }
 
         if (!$this->obstajaSifrant('#__belaunce_tezavnosti', (int) ($data['tezavnost_id'] ?? 0))) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_TEZAVNOST_INVALID'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_TEZAVNOST_INVALID'));
         }
 
         if (!$this->obstajaVodja((int) ($data['vodja_id'] ?? 0))) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_VODJA_INVALID'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_VODJA_INVALID'));
         }
 
         if (!empty($data['trasa_url'])) {
             $scheme = strtolower((string) parse_url((string) $data['trasa_url'], PHP_URL_SCHEME));
 
             if (!\in_array($scheme, ['http', 'https'], true)) {
-                $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_TRASA_URL_INVALID'));
-
-                return false;
+                throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_TRASA_URL_INVALID'));
             }
         }
 
@@ -206,40 +192,30 @@ class RundaModel extends AdminModel
     public function nastaviStanje(array $pks, int $stanje): bool
     {
         if (!Factory::getApplication()->getIdentity()->authorise('core.edit.state', 'com_belauncerunde')) {
-            $this->setError(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
         }
 
         if (!\in_array($stanje, [1, 2], true)) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_STANJE_INVALID'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_STANJE_INVALID'));
         }
 
         $pks = array_values(array_filter(array_map('intval', $pks)));
 
         if ($pks === []) {
-            $this->setError(Text::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST'));
-
-            return false;
+            throw new \RuntimeException(Text::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST'));
         }
 
         $table = $this->getTable();
 
         foreach ($pks as $pk) {
             if (!$table->load($pk)) {
-                $this->setError($table->getError());
-
-                return false;
+                throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_NAPAKA_ZAPISA'));
             }
 
             $table->stanje = $stanje;
 
             if (!$table->check() || !$table->store()) {
-                $this->setError($table->getError());
-
-                return false;
+                throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_NAPAKA_ZAPISA'));
             }
 
             $this->obvestiPoZapisu($table);

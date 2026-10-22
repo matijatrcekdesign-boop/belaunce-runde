@@ -89,14 +89,10 @@ class Com_BelauncerundeInstallerScript
 
         try {
             $db      = Factory::getContainer()->get(DatabaseInterface::class);
-            MailTemplate::deleteTemplate('com_belauncerunde.prijava');
-            MailTemplate::deleteTemplate('com_belauncerunde.gost_potrditev');
-            MailTemplate::deleteTemplate('com_belauncerunde.runda_sprememba');
-            MailTemplate::deleteTemplate('com_belauncerunde.runda_odpoved');
             $sqlPath = __DIR__ . '/sql/uninstall.mysql.utf8.sql';
 
             if (!is_file($sqlPath)) {
-                Log::add(Text::sprintf('COM_BELAUNCERUNDE_INSTALL_UNINSTALL_SQL_MISSING', $sqlPath), Log::ERROR, 'com_belauncerunde');
+                Log::add('ODSTRANITEV_SQL_MANJKA', Log::ERROR, 'com_belauncerunde');
 
                 return true;
             }
@@ -105,7 +101,17 @@ class Com_BelauncerundeInstallerScript
 
             foreach ($queries as $query) {
                 $db->setQuery($query);
-                $db->execute();
+                if (!$db->execute()) {
+                    throw new \RuntimeException('ODSTRANITEV_SQL_NAPAKA');
+                }
+            }
+
+            // Poštne predloge odstranimo šele, ko je potrjena pot do odstranitvenega SQL.
+            foreach (['com_belauncerunde.prijava', 'com_belauncerunde.gost_potrditev',
+                'com_belauncerunde.runda_sprememba', 'com_belauncerunde.runda_odpoved'] as $predloga) {
+                if (!MailTemplate::deleteTemplate($predloga)) {
+                    Log::add('ODSTRANITEV_MAIL_NAPAKA', Log::ERROR, 'com_belauncerunde');
+                }
             }
         } catch (\Throwable $exception) {
             Log::add('ODSTRANITEV_PODATKI_NAPAKA', Log::ERROR, 'com_belauncerunde');
@@ -149,7 +155,7 @@ class Com_BelauncerundeInstallerScript
         );
 
         if (!$table->check() || !$table->store()) {
-            throw new \RuntimeException((string) $table->getError());
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_INSTALL_GROUP_FAILED'));
         }
 
         return (int) $table->id;

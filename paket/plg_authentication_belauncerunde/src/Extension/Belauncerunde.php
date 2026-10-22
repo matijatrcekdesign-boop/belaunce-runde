@@ -20,13 +20,22 @@ use Joomla\Event\SubscriberInterface;
 /** Avtenticira izključno prijavo z žetonom komponente na strani. */
 final class Belauncerunde extends CMSPlugin implements SubscriberInterface
 {
-    /** Prijavi samo dogodek avtentikacije. */
+    /**
+     * Prijavi samo dogodek avtentikacije.
+     *
+     * @return  array
+     */
     public static function getSubscribedEvents(): array
     {
         return ['onUserAuthenticate' => 'onUserAuthenticate'];
     }
 
-    /** Porabi žeton, ponovno preveri članstvo in pripravi odgovor Joomlini prijavi. */
+    /**
+     * Porabi žeton, ponovno preveri članstvo in pripravi odgovor Joomlini prijavi.
+     *
+     * @param  AuthenticationEvent  $event
+     * @return  void
+     */
     public function onUserAuthenticate(AuthenticationEvent $event): void
     {
         // 1. Administratorskih prijav ne spreminjamo.

@@ -25,13 +25,25 @@ class GostModel extends FormModel
         return $this->loadForm('com_belauncerunde.gost', 'gost', ['control' => 'jform', 'load_data' => false]);
     }
 
-    /** Seja po rundah prepreči ponarejanje časa s skritim poljem. */
+    /**
+     * Seja po rundah prepreči ponarejanje časa s skritim poljem.
+     *
+     * @param  int  $rundaId
+     * @return  string
+     */
     public function kljucCasa(int $rundaId): string
     {
         return 'com_belauncerunde.gost.cas.' . $rundaId;
     }
 
-    /** Preveri članstvo in odprtost po UTC uri baze; zaklep uporabi samo transakcija. */
+    /**
+     * Preveri članstvo in odprtost po UTC uri baze; zaklep uporabi samo transakcija.
+     *
+     * @param  int  $rundaId
+     * @param  User  $uporabnik
+     * @param  bool  $zakleni
+     * @return  string
+     */
     public function dovoljenje(int $rundaId, User $uporabnik, bool $zakleni = false): string
     {
         $prijave = Factory::getApplication()->bootComponent('com_belauncerunde')
@@ -54,7 +66,14 @@ class GostModel extends FormModel
         return '';
     }
 
-    /** Preveri zaščito in vnos ter pod zaklepom runde atomarno uveljavi kvoto. */
+    /**
+     * Preveri zaščito in vnos ter pod zaklepom runde atomarno uveljavi kvoto.
+     *
+     * @param  int  $rundaId
+     * @param  array  $vnos
+     * @param  User  $uporabnik
+     * @return  string
+     */
     public function prijava(int $rundaId, array $vnos, User $uporabnik): string
     {
         $stanje = $this->dovoljenje($rundaId, $uporabnik);
@@ -216,7 +235,12 @@ class GostModel extends FormModel
         return false;
     }
 
-    /** GET preveri samo hash; ne prebere imena, kontaktov ali surovega IP-ja. */
+    /**
+     * GET preveri samo hash; ne prebere imena, kontaktov ali surovega IP-ja.
+     *
+     * @param  string  $hash
+     * @return  ?int
+     */
     public function preveriOdjavo(string $hash): ?int
     {
         if (!preg_match('/^[a-f0-9]{64}$/D', $hash)) {
@@ -231,7 +255,12 @@ class GostModel extends FormModel
         return $id === null ? null : (int) $id;
     }
 
-    /** Samo potrjeni POST izbriše vrstico; pogojni DELETE porabi žeton natanko enkrat. */
+    /**
+     * Samo potrjeni POST izbriše vrstico; pogojni DELETE porabi žeton natanko enkrat.
+     *
+     * @param  string  $hash
+     * @return  void
+     */
     public function odjava(string $hash): void
     {
         $rundaId = $this->preveriOdjavo($hash);

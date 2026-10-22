@@ -9,6 +9,7 @@
 
 namespace Belaunce\Component\Belauncerunde\Administrator\Controller;
 
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
 
 \defined('_JEXEC') or die;
@@ -35,4 +36,25 @@ class TezavnostController extends FormController
      * @since  0.1.0
      */
     protected $view_list = 'tezavnosti';
+    /**
+     * Jedrno shranjevanje dovoli samo s potrjenim obrazcem POST.
+     *
+     * @param   string|null  $key     Ime primarnega ključa.
+     * @param   string|null  $urlVar  Ime spremenljivke v URL-ju.
+     *
+     * @return  bool
+     *
+     * @since   0.14.0
+     */
+    public function save($key = null, $urlVar = null)
+    {
+        if ($this->input->server->getString('REQUEST_METHOD') !== 'POST') {
+            throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+        }
+
+        $this->checkToken();
+
+        return parent::save($key, $urlVar);
+    }
+
 }

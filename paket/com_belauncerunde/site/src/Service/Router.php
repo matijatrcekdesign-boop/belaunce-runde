@@ -24,7 +24,12 @@ class Router extends RouterView
     /** @var array<int, string> Aliasi iz že prebranih seznamov, samo za trenutno zahtevo. */
     private static array $aliasi = [];
 
-    /** Prevzame aliase iz baze, da povezave kartic ne sprožijo poizvedb v zanki. */
+    /**
+     * Prevzame aliase iz baze, da povezave kartic ne sprožijo poizvedb v zanki.
+     *
+     * @param  array  $runde
+     * @return  void
+     */
     public static function predpomniAliase(array $runde): void
     {
         foreach ($runde as $runda) {
@@ -111,7 +116,11 @@ class Router extends RouterView
         return ctype_digit($segment) ? (int) $segment : 0;
     }
 
-    /** Sestavi novo ali urejevalno pot brez spremembe obstoječih URL-jev rund. */
+    /**
+     * Sestavi novo ali urejevalno pot brez spremembe obstoječih URL-jev rund.
+     *
+     * @return  array
+     */
     public function getObrazecSegment($id, $query): array
     {
         $id = (int) $id;
@@ -125,7 +134,11 @@ class Router extends RouterView
         return [$id => 'uredi-' . $segment[$id]];
     }
 
-    /** Razbere prvo številko za uredi-, nova ima ID 0; druge poti ne pripadajo obrazcu. */
+    /**
+     * Razbere prvo številko za uredi-, nova ima ID 0; druge poti ne pripadajo obrazcu.
+     *
+     * @return  int
+     */
     public function getObrazecId($segment, $query): int
     {
         return preg_match('/^uredi-([1-9][0-9]*)(?:-.*)?$/D', $segment, $ujemanje) ? (int) $ujemanje[1] : 0;

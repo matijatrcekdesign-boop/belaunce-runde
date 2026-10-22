@@ -2,6 +2,10 @@
 
 Navodila za člane, vodje, goste in administratorje paketa Runde Belaunce.
 
+## Videz rund
+
+Kartice na seznamu in v pogledu **Moje runde** imajo barvni pas glede na tip (Gravel, MTB, Cestno); novi tipi dobijo nevtralno barvo. Tip, težavnost in odpoved so vedno navedeni tudi z besedilom. Merilnik težavnosti prikazuje objavljene ravni po vrstnem redu v šifrantu. Stran runde pokaže dolžino, trajanje in težavnost v ploščicah; dolžina uporablja decimalno vejico in nima odvečne ničle. Na telefonu se kartice zložijo v en stolpec, tipke pa imajo povečano območje za dotik.
+
 ## Za administratorja
 
 ### Namestitev in posodobitev

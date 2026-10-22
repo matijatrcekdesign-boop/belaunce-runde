@@ -6,6 +6,13 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.0] - 2026-10-22
+### Spremenjeno
+- Javni pogledi uporabljajo enoten topel slog s karticami, značkami tipa, merilnikom težavnosti in ploščicami statistike.
+- Obrazci in gumbi imajo vidno stanje fokusa ter primernejšo velikost na mobilnih zaslonih.
+- Dolžina je v javnih prikazih in deljenju zapisana z decimalno vejico brez odvečne ničle.
+- Dodana je posodobitvena datoteka brez sprememb sheme.
+
 ## [0.14.0] - 2026-10-22
 ### Spremenjeno
 - Zastarele klice `getError()` in `setError()` v lastni kodi so zamenjale prevedene izjeme in varna sporočila ob napakah.

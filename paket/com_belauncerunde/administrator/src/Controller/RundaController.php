@@ -41,6 +41,28 @@ class RundaController extends FormController
     protected $view_list = 'runde';
 
     /**
+     * Odklep ob preklicu urejanja dovoli samo s potrjenim obrazcem POST.
+     *
+     * @param   string  $task  Ime opravila.
+     *
+     * @return  mixed
+     *
+     * @since   0.14.0
+     */
+    public function execute($task)
+    {
+        if (strtolower((string) $task) === 'cancel') {
+            if ($this->input->server->getString('REQUEST_METHOD') !== 'POST') {
+                throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+            }
+
+            $this->checkToken();
+        }
+
+        return parent::execute($task);
+    }
+
+    /**
      * Vrne model runde prek MVC tovarne.
      *
      * @param   string  $name    Ime modela.

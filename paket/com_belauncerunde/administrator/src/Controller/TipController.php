@@ -36,6 +36,29 @@ class TipController extends FormController
      * @since  0.1.0
      */
     protected $view_list = 'tipi';
+
+    /**
+     * Odklep ob preklicu urejanja dovoli samo s potrjenim obrazcem POST.
+     *
+     * @param   string  $task  Ime opravila.
+     *
+     * @return  mixed
+     *
+     * @since   0.14.0
+     */
+    public function execute($task)
+    {
+        if (strtolower((string) $task) === 'cancel') {
+            if ($this->input->server->getString('REQUEST_METHOD') !== 'POST') {
+                throw new \RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+            }
+
+            $this->checkToken();
+        }
+
+        return parent::execute($task);
+    }
+
     /**
      * Jedrno shranjevanje dovoli samo s potrjenim obrazcem POST.
      *

@@ -39,7 +39,11 @@ class HtmlView extends BaseHtmlView
     /** @var array Aktivni filtri. */
     public $activeFilters;
 
-    /** Prikaže agregate filtriranih rund. */
+    /**
+     * Prikaže agregate filtriranih rund.
+     *
+     * @return  void
+     */
     public function display($tpl = null): void
     {
         $model = $this->getModel();
@@ -58,7 +62,11 @@ class HtmlView extends BaseHtmlView
         parent::display($tpl);
     }
 
-    /** Doda naslov, povezavo za izvoz in standardne možnosti. */
+    /**
+     * Doda naslov, povezavo za izvoz in standardne možnosti.
+     *
+     * @return  void
+     */
     protected function addToolbar(): void
     {
         $user = Factory::getApplication()->getIdentity();

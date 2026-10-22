@@ -6,6 +6,14 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.14.0] - 2026-10-22
+### Spremenjeno
+- Zastarele klice `getError()` in `setError()` v lastni kodi so zamenjale prevedene izjeme in varna sporočila ob napakah.
+- Preverjeni sta pot odstranitve podatkov in kontrola POST, CSRF ter ACL; dopolnjena je zaščita skrbniških akcij.
+- Novi prijavni žetoni hranijo soljen hash IP-ja namesto surovega naslova; navodila opisujejo hrambo in obravnavo osebnih podatkov ter oba načina odstranitve paketa.
+- Dodana posodobitvena datoteka 0.14.0 brez sprememb sheme.
+- Dnevno vzdrževanje pobriše tudi osirotele goste in članske prijave po administratorskem izbrisu runde.
+
 ## [0.13.0] - 2026-10-22
 ### Dodano
 - Administratorski pogled Statistika s skupnimi kazalniki in razčlenitvijo po tipu ter težavnosti.

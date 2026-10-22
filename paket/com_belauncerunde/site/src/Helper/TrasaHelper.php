@@ -10,7 +10,12 @@ use Joomla\Registry\Registry;
 /** Preveri povezavo in sestavi samo opis vdelave, nikoli uporabnikovega HTML-ja. */
 abstract class TrasaHelper
 {
-    /** Dovoli absolutni HTTP/HTTPS URL brez prijavnih podatkov in kontrolnih znakov. */
+    /**
+     * Dovoli absolutni HTTP/HTTPS URL brez prijavnih podatkov in kontrolnih znakov.
+     *
+     * @param  string  $url
+     * @return  bool
+     */
     public static function preveriUrl(string $url): bool
     {
         $deli = parse_url($url);
@@ -21,7 +26,13 @@ abstract class TrasaHelper
             && \in_array(strtolower($deli['scheme'] ?? ''), ['http', 'https'], true);
     }
 
-    /** Iz zaprtega seznama gostiteljev in poti vrne varen src ter ključ naslova. */
+    /**
+     * Iz zaprtega seznama gostiteljev in poti vrne varen src ter ključ naslova.
+     *
+     * @param  string  $url
+     * @param  ?Registry  $parametri
+     * @return  ?array
+     */
     public static function vdelava(string $url, ?Registry $parametri = null): ?array
     {
         if (!self::preveriUrl($url)) {

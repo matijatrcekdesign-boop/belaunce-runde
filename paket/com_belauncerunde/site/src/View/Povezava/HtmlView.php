@@ -19,7 +19,11 @@ class HtmlView extends BaseHtmlView
     /** @var bool Ali je uporabnik že prijavljen. */
     public bool $prijavljen = false;
 
-    /** Preveri veljavnost brez porabe; GET zato ne sproži avtentikacije. */
+    /**
+     * Preveri veljavnost brez porabe; GET zato ne sproži avtentikacije.
+     *
+     * @return  void
+     */
     public function display($tpl = null): void
     {
         $app = Factory::getApplication();

@@ -29,7 +29,11 @@ class HtmlView extends BaseHtmlView
     /** @var bool Ali je obiskovalec že prijavljen. */
     public bool $prijavljen = false;
 
-    /** Pripravi obrazec z informativnim ID runde. */
+    /**
+     * Pripravi obrazec z informativnim ID runde.
+     *
+     * @return  void
+     */
     public function display($tpl = null): void
     {
         $app = Factory::getApplication();

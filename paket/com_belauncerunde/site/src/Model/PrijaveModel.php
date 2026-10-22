@@ -13,7 +13,12 @@ use Joomla\Database\ParameterType;
 /** Enotna pravila članske udeležbe za gumba na rundi in tok D40. */
 class PrijaveModel extends BaseDatabaseModel
 {
-    /** Preveri prijavo in nastavljeno člansko skupino, tudi pri neposrednem POST. */
+    /**
+     * Preveri prijavo in nastavljeno člansko skupino, tudi pri neposrednem POST.
+     *
+     * @param  User  $uporabnik
+     * @return  bool
+     */
     public function jeClan(User $uporabnik): bool
     {
         $skupina = (int) ComponentHelper::getParams('com_belauncerunde')->get('skupina_clani', 0);
@@ -22,19 +27,36 @@ class PrijaveModel extends BaseDatabaseModel
             && \in_array($skupina, array_map('intval', $uporabnik->getAuthorisedGroups()), true);
     }
 
-    /** Potrdi udeležbo idempotentno; vodji nikoli ne vstavi vrstice (D54). */
+    /**
+     * Potrdi udeležbo idempotentno; vodji nikoli ne vstavi vrstice (D54).
+     *
+     * @param  int  $rundaId
+     * @param  User  $uporabnik
+     * @return  string
+     */
     public function pridem(int $rundaId, User $uporabnik): string
     {
         return $this->spremeniUdelezbo($rundaId, $uporabnik, true);
     }
 
-    /** Izbriše samo lastno prijavo; ponovljena odjava je prav tako uspešna. */
+    /**
+     * Izbriše samo lastno prijavo; ponovljena odjava je prav tako uspešna.
+     *
+     * @param  int  $rundaId
+     * @param  User  $uporabnik
+     * @return  string
+     */
     public function odjava(int $rundaId, User $uporabnik): string
     {
         return $this->spremeniUdelezbo($rundaId, $uporabnik, false);
     }
 
-    /** Vrne skupni SQL izraz brez poizvedbe; vzdevek je izključno SQL identifikator. */
+    /**
+     * Vrne skupni SQL izraz brez poizvedbe; vzdevek je izključno SQL identifikator.
+     *
+     * @param  string  $vzdevek
+     * @return  string
+     */
     public function izrazStevilaUdelezencev(string $vzdevek): string
     {
         if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/D', $vzdevek)) {
@@ -50,7 +72,12 @@ class PrijaveModel extends BaseDatabaseModel
             . ' + (SELECT COUNT(*) FROM #__belaunce_gostje AS br_g WHERE br_g.runda_id = ' . $id . ')';
     }
 
-    /** Prebere skupno število z istim SQL izrazom kot članski seznam. */
+    /**
+     * Prebere skupno število z istim SQL izrazom kot članski seznam.
+     *
+     * @param  int  $rundaId
+     * @return  int
+     */
     public function steviloUdelezencev(int $rundaId): int
     {
         $baza = $this->getDatabase();
@@ -63,7 +90,13 @@ class PrijaveModel extends BaseDatabaseModel
         return (int) $baza->setQuery($poizvedba)->loadResult();
     }
 
-    /** Imena bere samo članu; najprej vodja, nato prijave po času in ID-ju. */
+    /**
+     * Imena bere samo članu; najprej vodja, nato prijave po času in ID-ju.
+     *
+     * @param  int  $rundaId
+     * @param  User  $uporabnik
+     * @return  array
+     */
     public function udelezenci(int $rundaId, User $uporabnik): array
     {
         if (!$this->jeClan($uporabnik)) {
@@ -130,7 +163,13 @@ class PrijaveModel extends BaseDatabaseModel
         return $seznam;
     }
 
-    /** Preveri samo lastno udeležbo; ID uporabnika vedno pride iz Joomline identitete. */
+    /**
+     * Preveri samo lastno udeležbo; ID uporabnika vedno pride iz Joomline identitete.
+     *
+     * @param  int  $rundaId
+     * @param  User  $uporabnik
+     * @return  bool
+     */
     public function jePrijavljen(int $rundaId, User $uporabnik): bool
     {
         if (!$this->jeClan($uporabnik)) {

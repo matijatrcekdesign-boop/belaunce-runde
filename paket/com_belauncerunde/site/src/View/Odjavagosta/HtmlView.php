@@ -17,7 +17,11 @@ class HtmlView extends BaseHtmlView
     /** @var string Jezikovni ključ iz zaprtega seznama. */
     public string $obvestilo = 'COM_BELAUNCERUNDE_GOST_ODJAVA_KONCANO';
 
-    /** Pripravi nevtralno stran in omeji razkrivanje žetona prek predpomnilnika ali refererja. */
+    /**
+     * Pripravi nevtralno stran in omeji razkrivanje žetona prek predpomnilnika ali refererja.
+     *
+     * @return  void
+     */
     public function display($tpl = null): void
     {
         $app = Factory::getApplication();

@@ -23,7 +23,11 @@ class HtmlView extends BaseHtmlView
     /** @var string|null Zaprt jezikovni ključ povratnega obvestila. */
     public ?string $obvestilo = null;
 
-    /** Pred branjem vnosa preveri pravico in ob zavrnitvi preusmeri s kodo stanja. */
+    /**
+     * Pred branjem vnosa preveri pravico in ob zavrnitvi preusmeri s kodo stanja.
+     *
+     * @return  void
+     */
     public function display($tpl = null): void
     {
         $app = Factory::getApplication();

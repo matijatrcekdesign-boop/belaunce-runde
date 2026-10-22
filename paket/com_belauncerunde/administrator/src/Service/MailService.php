@@ -18,7 +18,12 @@ use Joomla\Database\ParameterType;
 /** Transakcijska obvestila po potrjenem zapisu, brez razkrivanja naslovov ali žetonov. */
 class MailService
 {
-    /** Porabi zaznavo iste tabele enkrat; odpoved ima prednost pred spremembo. */
+    /**
+     * Porabi zaznavo iste tabele enkrat; odpoved ima prednost pred spremembo.
+     *
+     * @param  RundaTable  $tabela
+     * @return  bool
+     */
     public static function poZapisu(RundaTable $tabela): bool
     {
         $odpoved = $tabela->_pravkarOdpovedana;
@@ -35,7 +40,15 @@ class MailService
         return (new self())->poslji((int) $tabela->id, $odpoved ? 'odpoved' : 'sprememba', $polja, $prvotni);
     }
 
-    /** Pošlje vsakemu naslovu svojo predlogo; neuspeh ne prekine drugih prejemnikov. */
+    /**
+     * Pošlje vsakemu naslovu svojo predlogo; neuspeh ne prekine drugih prejemnikov.
+     *
+     * @param  int  $rundaId
+     * @param  string  $dogodek
+     * @param  array  $polja
+     * @param  string  $prvotniZacetek
+     * @return  bool
+     */
     public function poslji(int $rundaId, string $dogodek, array $polja, string $prvotniZacetek = ''): bool
     {
         $stevilo = 0;

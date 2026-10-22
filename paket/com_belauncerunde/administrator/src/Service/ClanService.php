@@ -25,7 +25,13 @@ class ClanService
     /** @var UserFactoryInterface Tovarna Joomlinih uporabnikov. */
     private UserFactoryInterface $tovarna;
 
-    /** Pripravi odvisnosti za povezavo, ustvarjanje in zagotavljanje skupine člana. */
+    /**
+     * Pripravi odvisnosti za povezavo, ustvarjanje in zagotavljanje skupine člana.
+     *
+     * @param  ?DatabaseInterface  $db
+     * @param  ?Registry  $params
+     * @param  ?UserFactoryInterface  $tovarna
+     */
     public function __construct(?DatabaseInterface $db = null, ?Registry $params = null, ?UserFactoryInterface $tovarna = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
@@ -33,7 +39,13 @@ class ClanService
         $this->tovarna = $tovarna ?: Factory::getContainer()->get(UserFactoryInterface::class);
     }
 
-    /** Uskladi samo skupino Člani in vrne zaprto kodo dejanske spremembe. */
+    /**
+     * Uskladi samo skupino Člani in vrne zaprto kodo dejanske spremembe.
+     *
+     * @param  int  $uporabnikId
+     * @param  bool  $najBoClan
+     * @return  string
+     */
     public function uskladiSkupino(int $uporabnikId, bool $najBoClan): string
     {
         $skupinaClani = (int) $this->params->get('skupina_clani', 0);
@@ -88,7 +100,12 @@ class ClanService
         return $najBoClan ? 'VRNJENA' : 'ODVZETA';
     }
 
-    /** Vrne ID računa člana; klicatelj mora predhodno ponovno preveriti članstvo. */
+    /**
+     * Vrne ID računa člana; klicatelj mora predhodno ponovno preveriti članstvo.
+     *
+     * @param  object  $acymZapis
+     * @return  int
+     */
     public function zagotoviUporabnika(object $acymZapis): int
     {
         $db = $this->db;
@@ -170,8 +187,8 @@ class ClanService
         ];
 
         if (!$uporabnik->bind($podatkiUporabnika) || !$uporabnik->save()) {
-            // getError() lahko vsebuje email ali SQL; surovega besedila zato ne beležimo.
-            $koda = $uporabnik->getError() ? 'COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE' : 'COM_BELAUNCERUNDE_NAPAKA_UPORABNIK';
+            // Napaka računa lahko vsebuje osebne podatke, zato uporabimo zaprt prevodni ključ.
+            $koda = 'COM_BELAUNCERUNDE_NAPAKA_SHRANJEVANJE';
             $this->napaka($koda, $acymId);
         }
 

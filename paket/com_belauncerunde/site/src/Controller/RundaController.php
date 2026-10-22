@@ -12,13 +12,21 @@ use Joomla\CMS\Router\Route;
 /** Sprejema zaščitene POST akcije udeležbe in ustvarjanja, urejanja ter odpovedi. */
 class RundaController extends BaseController
 {
-    /** Shrani dovoljena polja in ob napaki ohrani lokalni vnos v seji. */
+    /**
+     * Shrani dovoljena polja in ob napaki ohrani lokalni vnos v seji.
+     *
+     * @return  void
+     */
     public function shrani(): void
     {
         $this->spremeniRundo(false);
     }
 
-    /** Odpove rundo šele po POST potrditvi in ponovnem preverjanju lastništva. */
+    /**
+     * Odpove rundo šele po POST potrditvi in ponovnem preverjanju lastništva.
+     *
+     * @return  void
+     */
     public function odpovej(): void
     {
         $this->spremeniRundo(true);
@@ -56,9 +64,8 @@ class RundaController extends BaseController
                             $id = $rezultat['id'];
                             $obrazec = false;
                         } else {
-                            $napake = array_map(static function ($napaka): string {
-                                return $napaka instanceof \Throwable ? $napaka->getMessage() : (string) $napaka;
-                            }, $model->getErrors());
+                            // Joomline validacijske napake lahko vsebujejo vnos; v sejo gre le naš prevod.
+                            $napake = [Text::_($rezultat['napaka'] ?? 'COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNO')];
                             $this->app->setUserState($model->kljucSeje($id) . '.napake', $napake);
                         }
                     }
@@ -86,13 +93,21 @@ class RundaController extends BaseController
             \in_array($stanje, ['ustvarjena', 'shranjena', 'odpovedana'], true) ? 'message' : 'warning');
     }
 
-    /** Potrdi udeležbo prek iste metode, ki jo po prijavi uporabi tok D40. */
+    /**
+     * Potrdi udeležbo prek iste metode, ki jo po prijavi uporabi tok D40.
+     *
+     * @return  void
+     */
     public function pridem(): void
     {
         $this->spremeniUdelezbo(true);
     }
 
-    /** Odjavi člana samo z njegove prijave, nikoli drugega uporabnika. */
+    /**
+     * Odjavi člana samo z njegove prijave, nikoli drugega uporabnika.
+     *
+     * @return  void
+     */
     public function odjava(): void
     {
         $this->spremeniUdelezbo(false);

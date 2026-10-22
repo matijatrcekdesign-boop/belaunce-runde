@@ -59,9 +59,7 @@ class TezavnostTable extends Table
     public function check(): bool
     {
         if (trim((string) $this->naziv) === '') {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_NAZIV_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_NAZIV_REQUIRED'));
         }
 
         // Alias je obvezen za stabilne povezave kasnejših pogledov; prazen se ustvari iz naziva.
@@ -74,9 +72,7 @@ class TezavnostTable extends Table
         $this->alias = substr((string) $this->alias, 0, 100);
 
         if ($this->alias === '') {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_ALIAS_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_ALIAS_REQUIRED'));
         }
 
         $this->alias = $this->ustvariUnikatenAlias($this->alias);

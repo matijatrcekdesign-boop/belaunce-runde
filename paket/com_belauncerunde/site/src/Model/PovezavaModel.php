@@ -12,7 +12,12 @@ use Joomla\Database\ParameterType;
 /** Pripravi veljavnost povezave in informativni naslov runde brez porabe žetona. */
 class PovezavaModel extends BaseDatabaseModel
 {
-    /** Vrne podatke za prikaz; ne ustvari uporabnika, seje ali prijave na rundo. */
+    /**
+     * Vrne podatke za prikaz; ne ustvari uporabnika, seje ali prijave na rundo.
+     *
+     * @param  string  $surovi
+     * @return  ?object
+     */
     public function podatkiPovezave(string $surovi): ?object
     {
         try {

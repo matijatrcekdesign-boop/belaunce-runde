@@ -20,14 +20,23 @@ class VzdrzevanjeService
     /** @var Registry Možnosti komponente. */
     private Registry $params;
 
-    /** Pripravi odvisnosti tudi za zagon brez prijavljenega uporabnika. */
+    /**
+     * Pripravi odvisnosti tudi za zagon brez prijavljenega uporabnika.
+     *
+     * @param  ?DatabaseInterface  $db
+     * @param  ?Registry  $params
+     */
     public function __construct(?DatabaseInterface $db = null, ?Registry $params = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
         $this->params = $params ?: ComponentHelper::getParams('com_belauncerunde');
     }
 
-    /** Uskladi povezane uporabnike s trenutno AcyMailing listo članov. */
+    /**
+     * Uskladi povezane uporabnike s trenutno AcyMailing listo članov.
+     *
+     * @return  void
+     */
     public function sinhronizacijaClanov(): void
     {
         $listaId = (int) $this->params->get('lista_clanov', 0);
@@ -76,7 +85,11 @@ class VzdrzevanjeService
         }
     }
 
-    /** Izbriše goste 30 dni po začetku runde, ne glede na njeno stanje. */
+    /**
+     * Izbriše stare goste ter goste in prijave brez obstoječe runde.
+     *
+     * @return  int Število gostov, izbrisanih po 30-dnevnem pravilu.
+     */
     public function izbrisGostov(): int
     {
         $db = $this->db;
@@ -89,10 +102,34 @@ class VzdrzevanjeService
         $izbrisanih = $db->getAffectedRows();
         Log::add('GOSTJE_IZBRIS izbrisanih=' . $izbrisanih, Log::INFO, 'com_belauncerunde');
 
+        // Runda, izbrisana v administraciji, nima več datuma za 30-dnevni pogoj.
+        $rundaGosta = $db->createQuery()->select('1')
+            ->from($db->quoteName('#__belaunce_runde', 'r'))
+            ->where($db->quoteName('r.id') . ' = ' . $db->quoteName('#__belaunce_gostje.runda_id'));
+        $poizvedba = $db->createQuery()->delete($db->quoteName('#__belaunce_gostje'))
+            ->where('NOT EXISTS (' . $rundaGosta . ')');
+        $db->setQuery($poizvedba)->execute();
+        $siroteGostje = $db->getAffectedRows();
+        Log::add('SIROTE_GOSTJE izbrisanih=' . $siroteGostje, Log::INFO, 'com_belauncerunde');
+
+        // Isto preverjanje odstrani še članske prijave brez runde, ostalih prijav pa se ne dotakne.
+        $rundaPrijave = $db->createQuery()->select('1')
+            ->from($db->quoteName('#__belaunce_runde', 'r'))
+            ->where($db->quoteName('r.id') . ' = ' . $db->quoteName('#__belaunce_prijave.runda_id'));
+        $poizvedba = $db->createQuery()->delete($db->quoteName('#__belaunce_prijave'))
+            ->where('NOT EXISTS (' . $rundaPrijave . ')');
+        $db->setQuery($poizvedba)->execute();
+        $sirotePrijave = $db->getAffectedRows();
+        Log::add('SIROTE_PRIJAVE izbrisanih=' . $sirotePrijave, Log::INFO, 'com_belauncerunde');
+
         return $izbrisanih;
     }
 
-    /** Uporabi obstoječa roka za žetone in zapise poskusov. */
+    /**
+     * Uporabi obstoječa roka za žetone in zapise poskusov.
+     *
+     * @return  void
+     */
     public function ciscenje(): void
     {
         $zetoni = (new ZetonService($this->db, $this->params))->pociscenje();

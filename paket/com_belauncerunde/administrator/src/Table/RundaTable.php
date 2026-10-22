@@ -68,45 +68,31 @@ class RundaTable extends Table
     public function check(): bool
     {
         if (trim((string) $this->naslov) === '') {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_NASLOV_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_NASLOV_REQUIRED'));
         }
 
         if (trim((string) $this->lokacija) === '') {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_LOKACIJA_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_LOKACIJA_REQUIRED'));
         }
 
         if ((int) $this->tip_id <= 0 || (int) $this->tezavnost_id <= 0 || (int) $this->vodja_id <= 0) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_REQUIRED_RELATIONS'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_REQUIRED_RELATIONS'));
         }
 
         if (trim((string) $this->zacetek) === '') {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_ZACETEK_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_ZACETEK_REQUIRED'));
         }
 
         if ((float) $this->dolzina_km <= 0) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_DOLZINA_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_DOLZINA_REQUIRED'));
         }
 
         if ((float) $this->dolzina_km > 999.9) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_DOLZINA_MAX'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_DOLZINA_MAX'));
         }
 
         if (!\in_array((int) $this->stanje, [1, 2], true)) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_STANJE_INVALID'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_STANJE_INVALID'));
         }
 
         if (trim((string) $this->alias) === '') {
@@ -118,18 +104,14 @@ class RundaTable extends Table
         $this->alias = substr((string) $this->alias, 0, 255);
 
         if ($this->alias === '') {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_ALIAS_REQUIRED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_ALIAS_REQUIRED'));
         }
 
         if ($this->trasa_url !== null && trim((string) $this->trasa_url) !== '') {
             $scheme = strtolower((string) parse_url((string) $this->trasa_url, PHP_URL_SCHEME));
 
             if (!\in_array($scheme, ['http', 'https'], true)) {
-                $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_TRASA_URL_INVALID'));
-
-                return false;
+                throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_TRASA_URL_INVALID'));
             }
         }
 

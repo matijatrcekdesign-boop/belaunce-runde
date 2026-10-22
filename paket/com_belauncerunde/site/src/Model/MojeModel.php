@@ -13,7 +13,12 @@ use Joomla\Database\QueryInterface;
 /** Zasebni seznami člana; bere samo izbrani zavihek in nikoli imen udeležencev. */
 class MojeModel extends BaseDatabaseModel
 {
-    /** Preveri članstvo tudi v modelu in vrne sezname z največ dvema poizvedbama. */
+    /**
+     * Preveri članstvo tudi v modelu in vrne sezname z največ dvema poizvedbama.
+     *
+     * @param  string  $pogled
+     * @return  array
+     */
     public function podatki(string $pogled): array
     {
         $app = Factory::getApplication();

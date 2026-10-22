@@ -22,7 +22,11 @@ use Joomla\CMS\Session\Session;
 /** Izvoz filtrirane statistike v CSV. */
 class StatistikaController extends BaseController
 {
-    /** Preveri GET žeton in pravico ter izpiše vse filtrirane runde. */
+    /**
+     * Preveri GET žeton in pravico ter izpiše vse filtrirane runde.
+     *
+     * @return  void
+     */
     public function izvoz(): void
     {
         $app = Factory::getApplication();

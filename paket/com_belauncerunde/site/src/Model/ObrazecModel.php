@@ -7,7 +7,6 @@ use Belaunce\Component\Belauncerunde\Administrator\Service\MailService;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Model\FormModel;
 use Joomla\CMS\User\User;
@@ -43,7 +42,13 @@ class ObrazecModel extends FormModel
         return $obrazec;
     }
 
-    /** Pravico vsakokrat določi iz identitete in baze, z mejo štarta po UTC uri baze. */
+    /**
+     * Pravico vsakokrat določi iz identitete in baze, z mejo štarta po UTC uri baze.
+     *
+     * @param  int  $id
+     * @param  User  $uporabnik
+     * @return  string
+     */
     public function dovoljenje(int $id, User $uporabnik): string
     {
         if ($id === 0) {
@@ -69,7 +74,11 @@ class ObrazecModel extends FormModel
         return (int) $runda->stanje === 1 && (bool) $runda->pred_startom ? '' : 'zaklenjena';
     }
 
-    /** Vrne dovoljeno število novih rund v 24 urah, z varnim privzetkom po D38. */
+    /**
+     * Vrne dovoljeno število novih rund v 24 urah, z varnim privzetkom po D38.
+     *
+     * @return  int
+     */
     public function omejitevRundNaDan(): int
     {
         $omejitev = (int) ComponentHelper::getParams('com_belauncerunde')->get('omejitev_runde_dan', 5);
@@ -98,7 +107,12 @@ class ObrazecModel extends FormModel
         return '';
     }
 
-    /** Hrani sejo ločeno za vsak obrazec, da napaka ne napolni druge runde. */
+    /**
+     * Hrani sejo ločeno za vsak obrazec, da napaka ne napolni druge runde.
+     *
+     * @param  int  $id
+     * @return  string
+     */
     public function kljucSeje(int $id): string
     {
         return 'com_belauncerunde.obrazec.' . $id . '.data';
@@ -136,7 +150,12 @@ class ObrazecModel extends FormModel
         return $podatki;
     }
 
-    /** Omeji sejo in zapis na dovoljena skalarna polja, brez lastništva iz zahtevka. */
+    /**
+     * Omeji sejo in zapis na dovoljena skalarna polja, brez lastništva iz zahtevka.
+     *
+     * @param  array  $podatki
+     * @return  array
+     */
     public function podatkiObrazca(array $podatki): array
     {
         $podatki = array_intersect_key($podatki, array_flip(self::POLJA));
@@ -148,7 +167,14 @@ class ObrazecModel extends FormModel
         return $podatki;
     }
 
-    /** Validira site obrazec in meje neobveznega trajanja ter shrani prek RundaTable. */
+    /**
+     * Validira site obrazec in meje neobveznega trajanja ter shrani prek RundaTable.
+     *
+     * @param  int  $id
+     * @param  array  $vnos
+     * @param  User  $uporabnik
+     * @return  array
+     */
     public function shrani(int $id, array $vnos, User $uporabnik): array
     {
         $dovoljenje = $this->dovoljenje($id, $uporabnik);
@@ -171,9 +197,7 @@ class ObrazecModel extends FormModel
             || !\in_array((int) ($podatki['odprto_za_goste'] ?? 0), [0, 1], true)
             || !$this->objavljenSifrant('#__belaunce_tipi', (int) ($podatki['tip_id'] ?? 0))
             || !$this->objavljenSifrant('#__belaunce_tezavnosti', (int) ($podatki['tezavnost_id'] ?? 0))) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNO'));
-
-            return ['stanje' => 'neveljavno', 'id' => $id];
+            return ['stanje' => 'neveljavno', 'id' => $id, 'napaka' => 'COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNO'];
         }
 
         // Calendar ne uporablja Joomlinega časovnega pasu. Stroga oblika in povratna
@@ -191,9 +215,7 @@ class ObrazecModel extends FormModel
                 throw new \InvalidArgumentException();
             }
         } catch (\Exception $napaka) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_OBRAZEC_NAPAKA_CAS'));
-
-            return ['stanje' => 'neveljavno', 'id' => $id];
+            return ['stanje' => 'neveljavno', 'id' => $id, 'napaka' => 'COM_BELAUNCERUNDE_OBRAZEC_NAPAKA_CAS'];
         }
 
         $podatki['trajanje_min'] = $trajanje === '' ? null : (int) $trajanje;
@@ -213,10 +235,13 @@ class ObrazecModel extends FormModel
         }
 
         // Pri urejanju ostanejo lastništvo, stanje in prvotni revizijski podatki iz tabele.
-        if (!$tabela->bind($podatki) || !$tabela->check()) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNO'));
-
-            return ['stanje' => 'neveljavno', 'id' => $id];
+        try {
+            if (!$tabela->bind($podatki) || !$tabela->check()) {
+                return ['stanje' => 'neveljavno', 'id' => $id, 'napaka' => 'COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNO'];
+            }
+        } catch (\RuntimeException $napaka) {
+            // Tabela uporablja prevedene razloge, a obrazec izpiše le svojo zaprto kodo.
+            return ['stanje' => 'neveljavno', 'id' => $id, 'napaka' => 'COM_BELAUNCERUNDE_OBRAZEC_NEVELJAVNO'];
         }
 
         // Neposredno pred zapisom ponovno preštejemo kvoto nove runde, da druga
@@ -236,7 +261,13 @@ class ObrazecModel extends FormModel
         return ['stanje' => $id === 0 ? 'ustvarjena' : ($posta ? 'shranjena' : 'shranjena_mail'), 'id' => (int) $tabela->id];
     }
 
-    /** Odpove samo lastno objavljeno rundo pred štartom; prijav se ne dotika. */
+    /**
+     * Odpove samo lastno objavljeno rundo pred štartom; prijav se ne dotika.
+     *
+     * @param  int  $id
+     * @param  User  $uporabnik
+     * @return  string
+     */
     public function odpovej(int $id, User $uporabnik): string
     {
         if ($id <= 0) {
@@ -257,7 +288,13 @@ class ObrazecModel extends FormModel
 
         $tabela->stanje = 2;
 
-        if (!$tabela->check()) {
+        try {
+            $veljavna = $tabela->check();
+        } catch (\RuntimeException $napaka) {
+            return 'napaka_zapisa';
+        }
+
+        if (!$veljavna) {
             return 'napaka_zapisa';
         }
 

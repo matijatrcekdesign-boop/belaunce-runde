@@ -21,14 +21,22 @@ class StatistikaModel extends ListModel
 {
     use RundeFiltriTrait;
 
-    /** Dovoli istih šest filtrov kot seznam rund; razvrščanja tu ni. */
+    /**
+     * Dovoli istih šest filtrov kot seznam rund; razvrščanja tu ni.
+     *
+     * @param  ?MVCFactoryInterface  $factory
+     */
     public function __construct($config = [], ?MVCFactoryInterface $factory = null)
     {
         $config['filter_fields'] = ['search', 'tip_id', 'tezavnost_id', 'stanje', 'vodja_id', 'obdobje'];
         parent::__construct($config, $factory);
     }
 
-    /** Prebere skupne kazalnike z eno poizvedbo. */
+    /**
+     * Prebere skupne kazalnike z eno poizvedbo.
+     *
+     * @return  object
+     */
     public function povzetek(): object
     {
         $db = $this->getDatabase();
@@ -48,19 +56,31 @@ class StatistikaModel extends ListModel
         return $db->setQuery($query)->loadObject();
     }
 
-    /** Združi filtrirane runde po tipu brez poizvedbe za vsako vrstico. */
+    /**
+     * Združi filtrirane runde po tipu brez poizvedbe za vsako vrstico.
+     *
+     * @return  array
+     */
     public function poTipu(): array
     {
         return $this->poSifrantu('tipi', 'tip_id');
     }
 
-    /** Združi filtrirane runde po težavnosti brez poizvedbe za vsako vrstico. */
+    /**
+     * Združi filtrirane runde po težavnosti brez poizvedbe za vsako vrstico.
+     *
+     * @return  array
+     */
     public function poTezavnosti(): array
     {
         return $this->poSifrantu('tezavnosti', 'tezavnost_id');
     }
 
-    /** Vrne vse filtrirane runde za CSV, brez paginacije in zasebnih podatkov. */
+    /**
+     * Vrne vse filtrirane runde za CSV, brez paginacije in zasebnih podatkov.
+     *
+     * @return  array
+     */
     public function vrsticeIzvoza(): array
     {
         $db = $this->getDatabase();

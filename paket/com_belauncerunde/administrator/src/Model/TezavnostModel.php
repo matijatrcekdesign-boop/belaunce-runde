@@ -106,9 +106,7 @@ class TezavnostModel extends AdminModel
         }
 
         if ($brisanje === []) {
-            $this->setError(Text::_('COM_BELAUNCERUNDE_ERROR_NO_TEZAVNOSTI_DELETED'));
-
-            return false;
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_NO_TEZAVNOSTI_DELETED'));
         }
 
         $pks = $brisanje;

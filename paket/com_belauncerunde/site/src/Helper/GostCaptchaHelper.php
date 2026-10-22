@@ -13,7 +13,12 @@ use Joomla\CMS\Plugin\PluginHelper;
 /** Izbirna captcha uporablja izključno globalno nastavljen Joomlin vtičnik. */
 abstract class GostCaptchaHelper
 {
-    /** Manjkajoča nastavitev ali vtičnik ne smeta onemogočiti obrazca za goste. */
+    /**
+     * Manjkajoča nastavitev ali vtičnik ne smeta onemogočiti obrazca za goste.
+     *
+     * @param  int  $rundaId
+     * @return  ?Captcha
+     */
     public static function pridobi(int $rundaId): ?Captcha
     {
         if (!(bool) ComponentHelper::getParams('com_belauncerunde')->get('gostje_captcha', 0)) {

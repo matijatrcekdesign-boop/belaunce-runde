@@ -28,7 +28,11 @@ final class Belauncerunde extends CMSPlugin implements SubscriberInterface
     /** @var bool Registracija dnevnika v eni izvedbi rutine. */
     private bool $dnevnikRegistriran = false;
 
-    /** Vrne dogodka za prikaz opravila in njegov zagon. */
+    /**
+     * Vrne dogodka za prikaz opravila in njegov zagon.
+     *
+     * @return  array
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -37,7 +41,12 @@ final class Belauncerunde extends CMSPlugin implements SubscriberInterface
         ];
     }
 
-    /** Izvede neodvisne dele; ob napaki posameznega dela nadaljuje z naslednjim. */
+    /**
+     * Izvede neodvisne dele; ob napaki posameznega dela nadaljuje z naslednjim.
+     *
+     * @param  ExecuteTaskEvent  $event
+     * @return  int
+     */
     protected function opraviVzdrzevanje(ExecuteTaskEvent $event): int
     {
         try {

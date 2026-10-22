@@ -17,13 +17,23 @@ class OmejitevHelper
     /** @var DatabaseInterface Povezava do baze. */
     private DatabaseInterface $db;
 
-    /** Pripravi povezavo do baze za beleženje poskusov. */
+    /**
+     * Pripravi povezavo do baze za beleženje poskusov.
+     *
+     * @param  ?DatabaseInterface  $db
+     */
     public function __construct(?DatabaseInterface $db = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
     }
 
-    /** Zabeleži vsak poskus s SHA-256 ključem in časom UTC. */
+    /**
+     * Zabeleži vsak poskus s SHA-256 ključem in časom UTC.
+     *
+     * @param  string  $tip
+     * @param  string  $surovKljuc
+     * @return  void
+     */
     public function zabelezi(string $tip, string $surovKljuc): void
     {
         $this->preveriTip($tip);
@@ -40,7 +50,13 @@ class OmejitevHelper
         $db->setQuery($poizvedba)->execute();
     }
 
-    /** Prešteje vse poskuse za ključ v drsečem oknu zadnjih 60 minut. */
+    /**
+     * Prešteje vse poskuse za ključ v drsečem oknu zadnjih 60 minut.
+     *
+     * @param  string  $tip
+     * @param  string  $surovKljuc
+     * @return  int
+     */
     public function steviloZadnjaUra(string $tip, string $surovKljuc): int
     {
         $this->preveriTip($tip);
@@ -59,7 +75,14 @@ class OmejitevHelper
         return (int) $db->setQuery($poizvedba)->loadResult();
     }
 
-    /** Preveri mejo po beleženju, zato je dovoljen tudi zadnji poskus do meje. */
+    /**
+     * Preveri mejo po beleženju, zato je dovoljen tudi zadnji poskus do meje.
+     *
+     * @param  string  $tip
+     * @param  string  $surovKljuc
+     * @param  int  $meja
+     * @return  bool
+     */
     public function presezeno(string $tip, string $surovKljuc, int $meja): bool
     {
         $this->preveriTip($tip);
@@ -67,7 +90,12 @@ class OmejitevHelper
         return $meja > 0 && $this->steviloZadnjaUra($tip, $surovKljuc) > $meja;
     }
 
-    /** Izbriše stare poskuse za vzdrževalno opravilo. */
+    /**
+     * Izbriše stare poskuse za vzdrževalno opravilo.
+     *
+     * @param  int  $dni
+     * @return  int
+     */
     public function pociscenje(int $dni = 2): int
     {
         $od = gmdate('Y-m-d H:i:s', time() - max(0, $dni) * 86400);

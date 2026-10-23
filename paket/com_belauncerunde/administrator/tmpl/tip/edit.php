@@ -27,6 +27,7 @@ $this->useCoreUI = true;
         <?php echo $this->form->renderField('naziv'); ?>
         <?php echo $this->form->renderField('alias'); ?>
         <?php echo $this->form->renderField('opis'); ?>
+        <?php echo $this->form->renderField('barva'); ?>
         <?php echo $this->form->renderField('stanje'); ?>
     </div>
     <?php echo HTMLHelper::_('uitab.endTab'); ?>

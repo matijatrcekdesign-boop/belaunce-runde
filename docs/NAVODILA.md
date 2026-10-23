@@ -4,9 +4,13 @@ Navodila za člane, vodje, goste in administratorje paketa Runde Belaunce.
 
 ## Videz rund
 
-Kartice na seznamu in v pogledu **Moje runde** imajo barvni pas glede na tip (Gravel, MTB, Cestno); novi tipi dobijo nevtralno barvo. Tip, težavnost in odpoved so vedno navedeni tudi z besedilom. Merilnik težavnosti prikazuje objavljene ravni po vrstnem redu v šifrantu. Stran runde pokaže dolžino, trajanje in težavnost v ploščicah; dolžina uporablja decimalno vejico in nima odvečne ničle. Na telefonu se kartice zložijo v en stolpec, tipke pa imajo povečano območje za dotik.
+Kartice na seznamu in v pogledu **Moje runde** imajo barvno zgornjo črto, čip tipa in krogec z začetnico vodje. Barvo določi šifrant tipov v administraciji; tip brez barve dobi nevtralno barvo. Tip, težavnost in odpoved so vedno navedeni tudi z besedilom. Modri merilnik težavnosti prikazuje objavljene ravni po vrstnem redu v šifrantu. Stran runde pokaže dolžino, trajanje in težavnost v ploščicah; dolžina uporablja decimalno vejico in nima odvečne ničle. Na telefonu se kartice zložijo v en stolpec, tipke pa imajo povečano območje za dotik.
 
 ## Za administratorja
+
+### Barva tipa
+
+V *Komponente → Runde Belaunce → Tipi* odpri tip in izberi **Barva tipa**. Shrani in preveri barvni kvadratek ter hex vrednost na seznamu tipov. Barva se uporabi na vseh karticah in podstraneh rund tega tipa. Prazna barva pomeni nevtralno sivo. Začetne barve so MTB `#2a76e0`, Cestno `#f2b974` in Gravel `#8f592f`.
 
 ### Namestitev in posodobitev
 1. V repozitoriju zaženi `bash orodja/gradnja.sh`.

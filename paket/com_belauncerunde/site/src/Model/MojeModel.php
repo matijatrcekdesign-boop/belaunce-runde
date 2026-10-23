@@ -73,6 +73,7 @@ class MojeModel extends BaseDatabaseModel
             ->select($baza->quoteName(['a.id', 'a.naslov', 'a.alias', 'a.zacetek', 'a.lokacija', 'a.dolzina_km', 'a.trajanje_min', 'a.stanje', 'a.vodja_id']))
             ->select($baza->quoteName('t.naziv', 'tip_naziv'))
             ->select($baza->quoteName('t.alias', 'tip_alias'))
+            ->select($baza->quoteName('t.barva', 'tip_barva'))
             ->select($baza->quoteName('tz.naziv', 'tezavnost_naziv'))
             ->select($baza->quoteName('tz.id', 'tezavnost_id'))
             ->select($baza->quoteName('u.name', 'vodja_ime'))

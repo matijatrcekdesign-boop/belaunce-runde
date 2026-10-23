@@ -67,15 +67,19 @@ class RundeModel extends ListModel
         $privzetoTrajanje = (int) $this->getState('params')->get('privzeto_trajanje_min', 180);
         $tip = (int) $this->getState('filter.tip');
         $tezavnost = (int) $this->getState('filter.tezavnost');
+        $prijave = Factory::getApplication()->bootComponent('com_belauncerunde')
+            ->getMVCFactory()->createModel('Prijave', 'Site', []);
         $poizvedba = $baza->createQuery()
             ->select($baza->quoteName(['a.id', 'a.naslov', 'a.alias', 'a.zacetek', 'a.lokacija', 'a.dolzina_km', 'a.stanje']))
             ->select($baza->quoteName('t.naziv', 'tip_naziv'))
             ->select($baza->quoteName('t.alias', 'tip_alias'))
+            ->select($baza->quoteName('t.barva', 'tip_barva'))
             ->select($baza->quoteName('tz.naziv', 'tezavnost_naziv'))
             ->select($baza->quoteName('tz.id', 'tezavnost_id'))
             ->select($baza->quoteName('a.trajanje_min'))
             ->select($baza->quoteName('u.name', 'vodja_ime'))
             ->select($baza->quoteName('a.vodja_id'))
+            ->select('(' . $prijave->izrazStevilaUdelezencev('a') . ') AS stevilo_udelezencev')
             ->select('a.zacetek <= UTC_TIMESTAMP() AS startala')
             ->from($baza->quoteName('#__belaunce_runde', 'a'))
             ->join('LEFT', $baza->quoteName('#__belaunce_tipi', 't') . ' ON t.id = a.tip_id')

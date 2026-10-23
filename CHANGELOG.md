@@ -6,12 +6,13 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
-## [0.15.0] - 2026-10-22
+## [0.15.0] - 2026-10-23
 ### Spremenjeno
-- Javni pogledi uporabljajo enoten topel slog s karticami, značkami tipa, merilnikom težavnosti in ploščicami statistike.
+- Barva tipa se nastavi v administraciji in se varno uporabi na karticah ter strani runde; posodobitev doda stolpec `barva` v šifrant tipov.
+- Javni pogledi uporabljajo slog smeri C s pisavama Lexend in Archivo, čipi, podpisom vodje ter modrim merilnikom težavnosti.
 - Obrazci in gumbi imajo vidno stanje fokusa ter primernejšo velikost na mobilnih zaslonih.
 - Dolžina je v javnih prikazih in deljenju zapisana z decimalno vejico brez odvečne ničle.
-- Dodana je posodobitvena datoteka brez sprememb sheme.
+- Posodobitvena datoteka 0.15.0 doda barvo tipa in začetne barve obstoječim tipom, če jih še nimajo.
 
 ## [0.14.0] - 2026-10-22
 ### Spremenjeno

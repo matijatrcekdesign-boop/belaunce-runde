@@ -28,6 +28,14 @@
 			filter="safehtml"
 		/>
 		<field
+			name="barva"
+			type="color"
+			format="hex"
+			default="#6c757d"
+			label="COM_BELAUNCERUNDE_FIELD_BARVA_LABEL"
+			description="COM_BELAUNCERUNDE_FIELD_BARVA_DESC"
+		/>
+		<field
 			name="stanje"
 			type="list"
 			label="JSTATUS"

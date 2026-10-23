@@ -62,6 +62,22 @@ class TipTable extends Table
             throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_NAZIV_REQUIRED'));
         }
 
+        // Joomlin barvni izbirnik za prazno polje vrne tudi "none"; v bazi ostane NULL.
+        $barva = trim((string) ($this->barva ?? ''));
+
+        if ($barva === '' || strtolower($barva) === 'none') {
+            $this->barva = null;
+        } elseif (preg_match('/^#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?$/D', $barva)) {
+            // Kratko obliko razširimo pred zapisom v CHAR(7).
+            if (strlen($barva) === 4) {
+                $barva = '#' . $barva[1] . $barva[1] . $barva[2] . $barva[2] . $barva[3] . $barva[3];
+            }
+
+            $this->barva = strtolower($barva);
+        } else {
+            throw new \RuntimeException(Text::_('COM_BELAUNCERUNDE_ERROR_BARVA_INVALID'));
+        }
+
         // Alias je obvezen za stabilne povezave kasnejših pogledov; prazen se ustvari iz naziva.
         if (trim((string) $this->alias) === '') {
             $this->alias = ApplicationHelper::stringURLSafe((string) $this->naziv);

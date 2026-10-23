@@ -6,34 +6,35 @@ use Joomla\CMS\Router\Route;
 
 \defined('_JEXEC') or die;
 
-// Razred je iz zaprtega seznama aliasov; predloga nikoli ne izpiše CSS iz baze.
-$razredTipa = VidezHelper::razredTipa($runda->tip_alias ?? null);
+// V CSS spremenljivki gresta samo preverjena barva in izračunano kontrastno besedilo.
+$barvaTipa = VidezHelper::barvaTipa($runda->tip_barva ?? null);
+$kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
 $povezava = $runda->povezava ?? Route::_('index.php?option=com_belauncerunde&view=runda&id=' . (int) $runda->id, false);
 $tipOznaka = (string) ($runda->tip_naziv ?? '');
 $tipOznaka = $tipOznaka !== '' ? $tipOznaka : Text::_('COM_BELAUNCERUNDE_NI_PODATKA');
 ?>
-<article class="br-card h-100 <?php echo $this->escape($razredTipa); ?>">
-    <div class="br-card__band">
-        <span class="br-tag"><?php echo $this->escape($tipOznaka); ?></span>
-        <?php if ((int) $runda->stanje === 2) : ?>
-            <span class="br-card__cancelled"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPOVEDANO')); ?></span>
-        <?php endif; ?>
-    </div>
+<article class="br-card h-100" style="--br-type: <?php echo $this->escape($barvaTipa); ?>; --br-type-text: <?php echo $this->escape($kontrastTipa); ?>">
     <div class="br-card__body">
-        <<?php echo $naslovNivo; ?> class="br-card__title"><a href="<?php echo $this->escape($povezava); ?>"><?php echo $this->escape($runda->naslov); ?></a></<?php echo $naslovNivo; ?>>
-        <p class="br-card__date"><?php echo $this->escape($runda->zacetek_prikaz); ?></p>
-        <div class="br-stats">
-            <span><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOLZINA') . ': ' . Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', VidezHelper::dolzina($runda->dolzina_km))); ?></span>
-            <span><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TRAJANJE') . ': ' . ($runda->trajanje_min === null ? Text::_('COM_BELAUNCERUNDE_NI_PODATKA') : Text::sprintf('COM_BELAUNCERUNDE_TRAJANJE_MIN', $runda->trajanje_min))); ?></span>
+        <div class="br-card__chips">
+            <span class="br-tag"><?php echo $this->escape($tipOznaka); ?></span>
+            <?php require __DIR__ . '/tezavnost.php'; ?>
+            <span class="br-chip"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', VidezHelper::dolzina($runda->dolzina_km))); ?></span>
+            <span class="br-chip"><?php echo $runda->trajanje_min === null ? $this->escape(Text::_('COM_BELAUNCERUNDE_NI_PODATKA')) : $this->escape(Text::sprintf('COM_BELAUNCERUNDE_TRAJANJE_MIN', $runda->trajanje_min)); ?></span>
+            <?php if ((int) $runda->stanje === 2) : ?>
+                <span class="br-card__cancelled"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPOVEDANO')); ?></span>
+            <?php endif; ?>
         </div>
-        <?php require __DIR__ . '/tezavnost.php'; ?>
-        <p class="br-card__meta"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_LOKACIJA') . ': ' . $runda->lokacija); ?><br><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA') . ': ' . (string) ($runda->vodja_ime ?? '')); ?></p>
-        <?php if (isset($runda->stevilo_udelezencev)) : ?>
-            <p class="br-card__meta"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $runda->stevilo_udelezencev)); ?></p>
-        <?php endif; ?>
+        <<?php echo $naslovNivo; ?> class="br-card__title"><a href="<?php echo $this->escape($povezava); ?>"><?php echo $this->escape($runda->naslov); ?></a></<?php echo $naslovNivo; ?>>
+        <p class="br-card__meta"><?php echo $this->escape($runda->zacetek_prikaz . ' · ' . $runda->lokacija); ?></p>
         <?php if (isset($runda->je_vodja) && $this->pogled === 'pretekle') : ?>
             <p class="br-card__meta"><?php echo $this->escape(Text::_($runda->je_vodja ? 'COM_BELAUNCERUNDE_MOJE_VODIL' : 'COM_BELAUNCERUNDE_MOJE_UDELEZEN')); ?></p>
         <?php endif; ?>
+        <div class="br-card__footer">
+            <span class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></span>
+            <?php if (isset($runda->stevilo_udelezencev)) : ?>
+                <span class="br-card__count"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $runda->stevilo_udelezencev)); ?></span>
+            <?php endif; ?>
+        </div>
         <?php if ($runda->urejanje || !empty($runda->odjava) || !empty($runda->deljiva)) : ?>
             <div class="br-card__actions d-flex gap-2 flex-wrap">
                 <?php if ($runda->urejanje) : ?>

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_tipi` (
   `naziv` VARCHAR(100) NOT NULL,
   `alias` VARCHAR(100) NOT NULL,
   `opis` TEXT NULL,
+  `barva` CHAR(7) NULL,
   `stanje` TINYINT NOT NULL DEFAULT 1,
   `ordering` INT NOT NULL DEFAULT 0,
   `checked_out` INT UNSIGNED NULL,
@@ -56,10 +57,10 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_runde` (
   KEY `idx_tezavnost` (`tezavnost_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT IGNORE INTO `#__belaunce_tipi` (`naziv`, `alias`, `opis`, `stanje`, `ordering`) VALUES
-('MTB', 'mtb', NULL, 1, 1),
-('Cestno', 'cestno', NULL, 1, 2),
-('Gravel', 'gravel', NULL, 1, 3);
+INSERT IGNORE INTO `#__belaunce_tipi` (`naziv`, `alias`, `opis`, `barva`, `stanje`, `ordering`) VALUES
+('MTB', 'mtb', NULL, '#2a76e0', 1, 1),
+('Cestno', 'cestno', NULL, '#f2b974', 1, 2),
+('Gravel', 'gravel', NULL, '#8f592f', 1, 3);
 
 INSERT IGNORE INTO `#__belaunce_tezavnosti` (`naziv`, `alias`, `opis`, `stanje`, `ordering`) VALUES
 ('Berlingo', 'berlingo', NULL, 1, 1),

@@ -65,6 +65,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setTitle(Text::_($this->rundaId === 0 ? 'COM_BELAUNCERUNDE_USTVARI_RUNDO' : 'COM_BELAUNCERUNDE_UREDI_RUNDO'));
         $this->getDocument()->setMetaData('robots', 'noindex, nofollow');
         $this->getDocument()->getWebAssetManager()->useScript('form.validate')->useScript('keepalive')
+            ->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
         parent::display($tpl);
     }

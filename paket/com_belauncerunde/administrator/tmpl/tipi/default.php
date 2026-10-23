@@ -64,6 +64,9 @@ if ($saveOrder && !empty($this->items)) {
                                 <th scope="col">
                                     <?php echo HTMLHelper::_('searchtools.sort', 'COM_BELAUNCERUNDE_HEADING_NAZIV', 'a.naziv', $listDirn, $listOrder); ?>
                                 </th>
+                                <th scope="col" class="d-none d-md-table-cell">
+                                    <?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_HEADING_BARVA')); ?>
+                                </th>
                                 <th scope="col" class="w-5 d-none d-md-table-cell">
                                     <?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
                                 </th>
@@ -74,6 +77,10 @@ if ($saveOrder && !empty($this->items)) {
                             $canEdit    = $user->authorise('core.edit', 'com_belauncerunde');
                             $canCheckin = $user->authorise('core.manage', 'com_checkin') || (int) $item->checked_out === $userId || empty($item->checked_out);
                             $canChange  = $user->authorise('core.edit.state', 'com_belauncerunde') && $canCheckin;
+                            // Barvo iz baze še enkrat preverimo pred vstavljanjem v atribut style.
+                            $barva = (string) ($item->barva ?? '');
+                            $imaBarvo = (bool) preg_match('/^#[0-9a-fA-F]{6}$/D', $barva);
+                            $barvaPrikaz = $imaBarvo ? strtolower($barva) : '#6c757d';
                             ?>
                             <tr class="row<?php echo $i % 2; ?>" data-draggable-group="1">
                                 <td class="text-center">
@@ -115,6 +122,10 @@ if ($saveOrder && !empty($this->items)) {
                                         </div>
                                     </div>
                                 </th>
+                                <td class="d-none d-md-table-cell">
+                                    <span class="d-inline-block border align-middle me-2" aria-hidden="true" style="width:1.2rem;height:1.2rem;background-color:<?php echo $this->escape($barvaPrikaz); ?>"></span>
+                                    <span><?php echo $this->escape($barvaPrikaz); ?><?php echo $imaBarvo ? '' : ' (' . $this->escape(Text::_('COM_BELAUNCERUNDE_BARVA_PRIVZETO')) . ')'; ?></span>
+                                </td>
                                 <td class="d-none d-md-table-cell">
                                     <?php echo (int) $item->id; ?>
                                 </td>

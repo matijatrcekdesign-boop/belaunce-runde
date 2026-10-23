@@ -104,7 +104,8 @@ class HtmlView extends BaseHtmlView
         }
 
         $this->getDocument()->setTitle(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV'));
-        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.site');
+        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
+            ->useStyle('com_belauncerunde.site');
         parent::display($tpl);
     }
 }

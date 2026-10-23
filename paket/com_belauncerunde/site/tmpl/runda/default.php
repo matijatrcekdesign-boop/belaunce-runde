@@ -8,7 +8,12 @@ use Belaunce\Component\Belauncerunde\Site\Helper\VidezHelper;
 \defined('_JEXEC') or die;
 $runda = $this->runda;
 ?>
-<article class="br-runda <?php echo $this->escape(VidezHelper::razredTipa($runda->tip_alias ?? null)); ?>">
+<?php
+// Podstran uporablja isti preverjeni barvi kot kartice tega tipa.
+$barvaTipa = VidezHelper::barvaTipa($runda->tip_barva ?? null);
+$kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
+?>
+<article class="br-runda" style="--br-type: <?php echo $this->escape($barvaTipa); ?>; --br-type-text: <?php echo $this->escape($kontrastTipa); ?>">
     <h1><?php echo $this->escape($runda->naslov); ?></h1>
     <div class="br-runda__badges">
         <span class="br-tag"><?php echo $this->escape((string) ($runda->tip_naziv ?: Text::_('COM_BELAUNCERUNDE_NI_PODATKA'))); ?></span>
@@ -42,7 +47,7 @@ $runda = $this->runda;
     <dl class="br-runda__facts">
         <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZACETEK')); ?></dt><dd><?php echo $this->escape($this->zacetek); ?></dd></div>
         <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_LOKACIJA')); ?></dt><dd><?php echo $this->escape($runda->lokacija); ?></dd></div>
-        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt><dd><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></dd></div>
+        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt><dd class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></dd></div>
     </dl>
     <?php if ((string) ($runda->opombe ?? '') !== '') : ?>
         <h2 class="br-sec-title"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OPOMBE')); ?></h2>

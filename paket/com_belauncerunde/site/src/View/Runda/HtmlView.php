@@ -181,7 +181,8 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setMetaData('og:url', $kanonicna, 'property');
         $this->getDocument()->setMetaData('og:type', 'article', 'property');
         $this->getDocument()->setMetaData('og:site_name', (string) $app->get('sitename'), 'property');
-        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.site');
+        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
+            ->useStyle('com_belauncerunde.site');
         if ($this->vodja && $this->odprta) {
             $this->getDocument()->getWebAssetManager()->useScript('bootstrap.modal');
         }

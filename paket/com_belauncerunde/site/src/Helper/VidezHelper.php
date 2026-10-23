@@ -29,11 +29,11 @@ final class VidezHelper
     public static function kontrastBesedila(string $hex): string
     {
         $svetlost = self::svetlost(self::barvaTipa($hex));
-        $temna = self::svetlost('#1d1a16');
+        $temna = self::svetlost('#000000');
         $kontrastSvetla = 1.05 / ($svetlost + 0.05);
         $kontrastTemna = (max($svetlost, $temna) + 0.05) / (min($svetlost, $temna) + 0.05);
 
-        return $kontrastTemna > $kontrastSvetla ? '#1d1a16' : '#ffffff';
+        return $kontrastTemna > $kontrastSvetla ? '#000000' : '#ffffff';
     }
 
     /** Izračuna relativno svetlost treh lineariziranih kanalov sRGB. */

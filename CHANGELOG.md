@@ -13,6 +13,7 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Obrazci in gumbi imajo vidno stanje fokusa ter primernejšo velikost na mobilnih zaslonih.
 - Dolžina je v javnih prikazih in deljenju zapisana z decimalno vejico brez odvečne ničle.
 - Posodobitvena datoteka 0.15.0 doda barvo tipa in začetne barve obstoječim tipom, če jih še nimajo.
+- Ponovna namestitev 0.15.0 zagotovi stolpec barve in manjkajoče začetne barve tudi, ko se SQL posodobitev ne ponovi.
 
 ## [0.14.0] - 2026-10-22
 ### Spremenjeno

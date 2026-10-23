@@ -3,7 +3,6 @@
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;
 
 \defined('_JEXEC') or die;
 ?>
@@ -11,7 +10,7 @@ use Joomla\CMS\Uri\Uri;
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_NASLOV')); ?></h1>
     <?php if ($this->prijavljen) : ?>
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_ZE_PRIJAVLJEN')); ?></p>
-        <a href="<?php echo $this->escape(Uri::root()); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOMOV')); ?></a>
+        <a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runde', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_NA_SEZNAM_RUND')); ?></a>
     <?php elseif (!$this->podatki) : ?>
         <p class="alert alert-warning" role="alert"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POVEZAVA_NEVELJAVNA')); ?></p>
         <a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava')); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POVEZAVA_NOVA')); ?></a>

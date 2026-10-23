@@ -37,6 +37,15 @@
 			filter="string"
 		/>
 		<field
+			name="clanstvo_url"
+			type="url"
+			relative="true"
+			filter="url"
+			default=""
+			label="COM_BELAUNCERUNDE_CONFIG_CLANSTVO_URL_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_CLANSTVO_URL_DESC"
+		/>
+		<field
 			name="privzeto_trajanje_min"
 			type="list"
 			label="COM_BELAUNCERUNDE_CONFIG_PRIVZETO_TRAJANJE_LABEL"

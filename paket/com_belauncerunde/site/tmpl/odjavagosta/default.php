@@ -9,7 +9,7 @@ use Joomla\CMS\Router\Route;
 <div class="br-odjava-gosta container py-4">
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_ODJAVA_NASLOV')); ?></h1>
     <?php if ($this->potrditev !== '') : ?>
-        <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_ODJAVA_OPIS')); ?></p>
+        <p class="br-lead"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_ODJAVA_OPIS')); ?></p>
         <form method="post" action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>">
             <input type="hidden" name="task" value="gost.odjava">
             <input type="hidden" name="potrditev" value="<?php echo $this->escape($this->potrditev); ?>">

@@ -6,6 +6,8 @@ use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\VidezHelper;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -34,6 +36,8 @@ class HtmlView extends BaseHtmlView
 
     /** @var object Javni podatki runde. */
     public object $runda;
+    /** @var array Objavljene težavnosti za merilnik po vrstnem redu. */
+    public array $tezavnosti = [];
     /** @var string Lokalni začetek za prikaz. */
     public string $zacetek;
     /** @var string Preverjena povezava na traso ali prazen niz. */
@@ -42,6 +46,8 @@ class HtmlView extends BaseHtmlView
     public ?array $vdelava = null;
     /** @var bool Prijavljena identiteta ima nastavljeno člansko skupino. */
     public bool $clan = false;
+    /** @var array|null Preverjena povezava za članstvo in podatek o zunanjem gostitelju. */
+    public ?array $povezavaClanstva = null;
     /** @var bool Obiskovalec ni prijavljen v Joomlo. */
     public bool $neprijavljen = true;
     /** @var bool Trenutna identiteta je vodja te runde. */
@@ -83,9 +89,21 @@ class HtmlView extends BaseHtmlView
 
         $this->runda = $runda;
         $app = Factory::getApplication();
+        $this->tezavnosti = $app->bootComponent('com_belauncerunde')->getMVCFactory()
+            ->createModel('Runde', 'Site', [])->tezavnosti();
         $uporabnik = $app->getIdentity();
         $prijave = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Prijave', 'Site', []);
         $this->clan = $prijave->jeClan($uporabnik);
+        if (!$this->clan) {
+            $povezavaClanstva = VidezHelper::povezavaClanstva((string) ComponentHelper::getParams('com_belauncerunde')->get('clanstvo_url', ''));
+
+            if ($povezavaClanstva !== null && $povezavaClanstva['relativna']) {
+                // Notranjo pot usmeri Joomla; predloga izpiše samo preverjeno in escapirano vrednost.
+                $povezavaClanstva['href'] = Route::_($povezavaClanstva['href'], false);
+            }
+
+            $this->povezavaClanstva = $povezavaClanstva;
+        }
         $this->neprijavljen = (bool) $uporabnik->guest;
         $this->vodja = !$this->neprijavljen && (int) $runda->vodja_id === (int) $uporabnik->id;
         $this->odprta = (int) $runda->stanje === 1 && !(bool) $runda->startala;
@@ -170,13 +188,14 @@ class HtmlView extends BaseHtmlView
         // da se narekovaji in ampersandi ne kodirajo dvakrat. Opomb ali imen tu ni.
         $opis = Text::sprintf('COM_BELAUNCERUNDE_OG_OPIS', $this->zacetek,
             (string) ($runda->tip_naziv ?? ''), (string) ($runda->tezavnost_naziv ?? ''),
-            Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', $runda->dolzina_km));
+            Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', VidezHelper::dolzina($runda->dolzina_km)));
         $this->getDocument()->setMetaData('og:title', $runda->naslov, 'property');
         $this->getDocument()->setMetaData('og:description', $opis, 'property');
         $this->getDocument()->setMetaData('og:url', $kanonicna, 'property');
         $this->getDocument()->setMetaData('og:type', 'article', 'property');
         $this->getDocument()->setMetaData('og:site_name', (string) $app->get('sitename'), 'property');
-        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.site');
+        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
+            ->useStyle('com_belauncerunde.site');
         if ($this->vodja && $this->odprta) {
             $this->getDocument()->getWebAssetManager()->useScript('bootstrap.modal');
         }

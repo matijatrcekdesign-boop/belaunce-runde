@@ -1,12 +1,19 @@
 {
   "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
   "name": "com_belauncerunde",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "assets": [
+    {
+      "name": "com_belauncerunde.pisave",
+      "type": "style",
+      "uri": "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Lexend:wght@400;500;700;800&display=swap",
+      "attributes": {"crossorigin": "anonymous"}
+    },
     {
       "name": "com_belauncerunde.site",
       "type": "style",
-      "uri": "com_belauncerunde/site.css"
+      "uri": "com_belauncerunde/site.css",
+      "dependencies": ["com_belauncerunde.pisave"]
     },
     {
       "name": "com_belauncerunde.deli",

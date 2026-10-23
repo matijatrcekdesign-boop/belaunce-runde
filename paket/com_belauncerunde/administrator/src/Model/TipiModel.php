@@ -97,6 +97,7 @@ class TipiModel extends ListModel
                 $db->quoteName('a.naziv'),
                 $db->quoteName('a.alias'),
                 $db->quoteName('a.opis'),
+                $db->quoteName('a.barva'),
                 $db->quoteName('a.stanje'),
                 $db->quoteName('a.stanje', 'published'),
                 $db->quoteName('a.ordering'),

@@ -1,20 +1,330 @@
-/* Opombe ostanejo navadno besedilo, vendar ohranijo prelome vrstic. */
-.br-opombe {
-    white-space: pre-wrap;
+/* Vsi žetoni so omejeni na komponente poglede, ne na predlogo strani. */
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) {
+    --br-dark: #1d1a16;
+    --br-fg: #1d1a16;
+    --br-bg: #fff;
+    --br-primary-hover: #100e0c;
+    --br-muted: #6f6a63;
+    --br-border: #e2dace;
+    --br-line: #ede6dd;
+    --br-card: #fff;
+    --br-panel: #f8f5f0;
+    --br-diff: #2560c4;
+    --br-diff-soft: #e8eefb;
+    --br-danger: #a12732;
+    --br-radius: 8px;
+    --br-chip-radius: 7px;
+    --br-page: transparent;
+    --br-focus: #2560c4;
+    color: var(--br-dark);
+    background: var(--br-page);
+    font-family: "Archivo", system-ui, -apple-system, sans-serif;
     overflow-wrap: anywhere;
+    min-width: 0;
 }
 
-/* Dolgi naslovi in lokacije ne smejo razširiti mobilnega zaslona. */
-.br-runde,
-.br-runda {
-    overflow-wrap: anywhere;
+@media (prefers-color-scheme: dark) {
+    :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+        .br-povezava, .br-odjava-gosta) {
+        --br-dark: #f7f2ea;
+        --br-fg: #f7f2ea;
+        --br-bg: #171512;
+        --br-primary-hover: #fff;
+        --br-muted: #b8afa4;
+        --br-border: #534b41;
+        --br-line: #433c34;
+        --br-card: #221f1b;
+        --br-panel: #2b2722;
+        --br-diff: #7aa7ef;
+        --br-diff-soft: #172234;
+        --br-danger: #ff9099;
+        --br-page: #171512;
+        --br-focus: #7aa7ef;
+    }
 }
 
-/* Honeypot ostane navadno polje, vendar je zunaj vidnega dela obrazca. */
-.br-gost-dodatek {
-    position: absolute;
-    left: -10000px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
+[data-theme="light"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
+    .br-prijava, .br-povezava, .br-odjava-gosta) {
+    --br-dark: #1d1a16;
+    --br-fg: #1d1a16;
+    --br-bg: #fff;
+    --br-primary-hover: #100e0c;
+    --br-muted: #6f6a63;
+    --br-border: #e2dace;
+    --br-line: #ede6dd;
+    --br-card: #fff;
+    --br-panel: #f8f5f0;
+    --br-diff: #2560c4;
+    --br-diff-soft: #e8eefb;
+    --br-danger: #a12732;
+    --br-page: transparent;
+    --br-focus: #2560c4;
+}
+
+[data-theme="dark"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
+    .br-prijava, .br-povezava, .br-odjava-gosta) {
+    --br-dark: #f7f2ea;
+    --br-fg: #f7f2ea;
+    --br-bg: #171512;
+    --br-primary-hover: #fff;
+    --br-muted: #b8afa4;
+    --br-border: #534b41;
+    --br-line: #433c34;
+    --br-card: #221f1b;
+    --br-panel: #2b2722;
+    --br-diff: #7aa7ef;
+    --br-diff-soft: #172234;
+    --br-danger: #ff9099;
+    --br-page: #171512;
+    --br-focus: #7aa7ef;
+}
+
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(h1, h2, h3) {
+    font-family: "Lexend", system-ui, sans-serif;
+}
+
+/* Skupna kartica: barva tipa je samo poudarek, vse druge površine so mirne. */
+.br-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--br-card);
+    border: 1px solid var(--br-border);
+    border-top: 3px solid var(--br-type, #6c757d);
+    border-radius: var(--br-radius);
+    box-shadow: 0 8px 22px rgba(37, 31, 24, .07);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.br-card:hover, .br-card:focus-within {
+    box-shadow: 0 12px 28px rgba(37, 31, 24, .14);
+}
+.br-card:hover:not(:has(.modal.show)), .br-card:focus-within:not(:has(.modal.show)) {
+    transform: translateY(-2px);
+}
+.br-card__body { display: flex; flex-direction: column; padding: 1.2rem; flex: 1; }
+.br-card__chips, .br-runda__badges {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    flex-wrap: wrap;
+}
+.br-card__chips { margin-bottom: 1rem; }
+.br-tag, .br-chip, .br-diff, .br-card__cancelled {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.9rem;
+    padding: .32rem .55rem;
+    border-radius: var(--br-chip-radius);
+    font-size: .78rem;
+    line-height: 1.2;
+    font-weight: 700;
+}
+.br-tag {
+    background: var(--br-type, #6c757d);
+    color: var(--br-type-text, #fff);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+}
+.br-chip { background: var(--br-panel); color: var(--br-dark); border: 1px solid var(--br-border); }
+.br-card__cancelled { color: var(--br-danger); border: 1px solid currentColor; font-weight: 800; }
+.br-card__title { margin: 0 0 .5rem; font-size: 1.3rem; line-height: 1.3; font-weight: 800; }
+.br-card__title a { color: var(--br-dark); text-decoration: none; }
+.br-card__title a:hover { text-decoration: underline; }
+.br-card__meta { margin: 0 0 1rem; color: var(--br-muted); }
+.br-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: .85rem;
+    border-top: 1px solid var(--br-line);
+}
+.br-card__count { color: var(--br-muted); font-size: .85rem; }
+.br-card__actions { margin-top: 1rem; }
+.br-filtri.row {
+    margin: 0 0 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--br-border);
+    border-radius: var(--br-radius);
+    background: var(--br-panel);
+}
+.br-filtri .form-label {
+    color: var(--br-muted);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .045em;
+    text-transform: uppercase;
+}
+.br-leader { display: inline-flex; align-items: center; gap: .55rem; min-width: 0; font-weight: 700; }
+.br-leader__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    border-radius: 50%;
+    background: var(--br-type, #6c757d);
+    color: var(--br-type-text, #fff);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-size: .85rem;
+    font-weight: 800;
+}
+
+/* Merilnik je moder in ni odvisen od barve tipa; oznaka ostane besedilna. */
+.br-diff { gap: .45rem; background: var(--br-diff-soft); color: var(--br-diff); }
+.br-diff__bars { display: inline-flex; align-items: end; gap: 3px; flex: none; height: 1.1rem; }
+.br-diff__bar { width: 5px; min-height: 4px; height: 5px; background: #b9c7e1; }
+.br-diff__bar:nth-child(2) { height: 7px; }
+.br-diff__bar:nth-child(3) { height: 9px; }
+.br-diff__bar:nth-child(4) { height: 11px; }
+.br-diff__bar:nth-child(5) { height: 13px; }
+.br-diff__bar:nth-child(6) { height: 15px; }
+.br-diff__bar:nth-child(n+7) { height: 17px; }
+.br-diff__bar--on { background: var(--br-diff); }
+.br-diff__label { color: inherit; }
+
+/* Podstran runde uporablja isti poudarek pri ploščicah in podpisu vodje. */
+.br-runda { border-top: 3px solid var(--br-type, #6c757d); padding-top: 1rem; }
+.br-nazaj { margin: 0 0 1rem; }
+.br-nazaj a { color: var(--br-muted); text-decoration: none; font-weight: 700; }
+.br-nazaj a:hover { color: var(--br-fg); text-decoration: underline; }
+.br-runda__badges { margin: .75rem 0 1.25rem; }
+.br-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin: 1.25rem 0; }
+.br-stat {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid var(--br-border);
+    border-top: 2px solid var(--br-type, #6c757d);
+    border-radius: var(--br-radius);
+    background: var(--br-card);
+}
+.br-stat .v { font-family: "Lexend", system-ui, sans-serif; font-size: clamp(1.2rem, 2.5vw, 1.8rem); line-height: 1.2; font-weight: 800; }
+.br-stat .l { color: var(--br-muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+.br-runda__facts { display: flex; flex-wrap: wrap; gap: .75rem 2rem; margin: 0 0 1.5rem; }
+.br-runda__facts div { min-width: 0; }
+.br-runda__facts dt { color: var(--br-muted); font-size: .82rem; text-transform: uppercase; }
+.br-runda__facts dd { margin: 0; font-weight: 700; }
+.br-sec-title { margin: 1.5rem 0 .8rem; color: var(--br-dark); font-size: 1.1rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.br-lead, .br-prose { color: var(--br-dark); font-size: 1.08rem; line-height: 1.65; }
+.br-opombe { white-space: pre-wrap; overflow-wrap: anywhere; }
+.br-clanstvo { margin: 1.25rem 0; }
+.br-clanstvo p { margin-bottom: .75rem; }
+
+/* Obrazci ohranijo Joomline oznake in Bootstrap, komponenta določa le ovoj. */
+.br-obrazec, .br-prijava, .br-povezava, .br-odjava-gosta { max-width: 58rem; }
+.br-obrazec form, .br-prijava form, .br-povezava form, .br-odjava-gosta form,
+.br-gost, .br-deli {
+    padding: 1.25rem;
+    border: 1px solid var(--br-border);
+    border-radius: var(--br-radius);
+    background: var(--br-card);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .6rem 1rem;
+    border-radius: var(--br-radius);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    transition: background-color .18s ease, border-color .18s ease;
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-sm {
+    padding: .45rem .85rem;
+    font-size: .85rem;
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-primary {
+    color: var(--br-bg);
+    background: var(--br-fg);
+    border-color: var(--br-fg);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-primary:hover {
+    color: var(--br-bg);
+    background: var(--br-primary-hover);
+    border-color: var(--br-primary-hover);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(.btn-outline-secondary, .btn-outline-primary) {
+    color: var(--br-fg);
+    background: transparent;
+    border: 1px solid var(--br-border);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(.btn-outline-secondary, .btn-outline-primary):hover {
+    color: var(--br-fg);
+    background: var(--br-panel);
+    border-color: var(--br-border);
+}
+.br-runde :focus-visible, .br-runda :focus-visible, .br-moje :focus-visible,
+.br-obrazec :focus-visible, .br-prijava :focus-visible, .br-povezava :focus-visible,
+.br-odjava-gosta :focus-visible { outline: 3px solid var(--br-focus); outline-offset: 3px; }
+.br-runde .form-label, .br-runda .form-label, .br-obrazec .form-label,
+.br-prijava .form-label { font-weight: 700; }
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(.form-control, .form-select) {
+    min-height: 44px;
+    color: var(--br-fg);
+    background-color: var(--br-bg);
+    border: 1px solid var(--br-border);
+    border-radius: var(--br-chip-radius);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .form-select {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%236f6a63' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-position: right .75rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+}
+@media (prefers-color-scheme: dark) {
+    :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+        .br-povezava, .br-odjava-gosta) .form-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%23b8afa4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+}
+[data-theme="light"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
+    .br-prijava, .br-povezava, .br-odjava-gosta) .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%236f6a63' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
+    .br-prijava, .br-povezava, .br-odjava-gosta) .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%23b8afa4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.br-runda iframe { border: 0; }
+.br-runda .ratio { border: 1px solid var(--br-border); border-radius: var(--br-radius); overflow: hidden; }
+
+/* Honeypot ostane v POST, vendar zunaj vidnega in tipkovniškega toka. */
+.br-gost-dodatek { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+@media (max-width: 575.98px) {
+    .br-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .br-card__body, .br-gost, .br-deli,
+    .br-obrazec form, .br-prijava form, .br-povezava form, .br-odjava-gosta form { padding: 1rem; }
+    .br-runde .btn, .br-runda .btn, .br-moje .btn, .br-obrazec .btn,
+    .br-prijava .btn, .br-povezava .btn, .br-odjava-gosta .btn { white-space: normal; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .br-card { transition: none; }
+    .br-card:hover, .br-card:focus-within { transform: none; }
+    :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+        .br-povezava, .br-odjava-gosta) .btn { transition: none; }
 }

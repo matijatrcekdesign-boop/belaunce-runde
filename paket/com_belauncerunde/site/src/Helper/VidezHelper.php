@@ -2,6 +2,8 @@
 
 namespace Belaunce\Component\Belauncerunde\Site\Helper;
 
+use Joomla\CMS\Uri\Uri;
+
 \defined('_JEXEC') or die;
 
 /** Skupno oblikovanje javnih vrednosti za predloge rund. */
@@ -53,6 +55,46 @@ final class VidezHelper
         $ime = trim((string) $ime);
 
         return $ime === '' ? '?' : mb_strtoupper(mb_substr($ime, 0, 1, 'UTF-8'), 'UTF-8');
+    }
+
+    /**
+     * Za poziv članstva sprejme le spletni URL ali notranjo pot brez krmilnih znakov.
+     *
+     * @return array{href: string, zunanja: bool, relativna: bool}|null
+     */
+    public static function povezavaClanstva(?string $vrednost): ?array
+    {
+        $povezava = trim((string) $vrednost);
+
+        if ($povezava === '' || preg_match('/[\x00-\x20\x7f]/', $povezava) || str_contains($povezava, '\\')) {
+            return null;
+        }
+
+        // Dvojni začetni poševnici pomenita zunanjo povezavo brez sheme, ki ni dovoljena.
+        if (str_starts_with($povezava, '/') && !str_starts_with($povezava, '//')) {
+            return ['href' => $povezava, 'zunanja' => false, 'relativna' => true];
+        }
+
+        if (preg_match('/^index\.php(?:$|[\/?#])/', $povezava)) {
+            return ['href' => $povezava, 'zunanja' => false, 'relativna' => true];
+        }
+
+        $shema = parse_url($povezava, PHP_URL_SCHEME);
+        $gostitelj = parse_url($povezava, PHP_URL_HOST);
+
+        if (!\in_array(strtolower((string) $shema), ['http', 'https'], true)
+            || !is_string($gostitelj) || $gostitelj === ''
+            || filter_var($povezava, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
+        $domaciGostitelj = (string) parse_url(Uri::root(), PHP_URL_HOST);
+
+        return [
+            'href' => $povezava,
+            'zunanja' => strcasecmp($gostitelj, $domaciGostitelj) !== 0,
+            'relativna' => false,
+        ];
     }
 
     /** Oblikuje shranjeno decimalno dolžino brez odvečne ničle. */

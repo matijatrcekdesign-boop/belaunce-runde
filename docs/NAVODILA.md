@@ -12,6 +12,10 @@ Kartice na seznamu in v pogledu **Moje runde** imajo barvno zgornjo črto, čip 
 
 V *Komponente → Runde Belaunce → Tipi* odpri tip in izberi **Barva tipa**. Shrani in preveri barvni kvadratek ter hex vrednost na seznamu tipov. Barva se uporabi na vseh karticah in podstraneh rund tega tipa. Prazna barva pomeni nevtralno sivo. Začetne barve so MTB `#2a76e0`, Cestno `#f2b974` in Gravel `#8f592f`.
 
+### Povezava za članstvo
+
+V *Komponente → Runde Belaunce → Možnosti* nastavi **Povezava za članstvo** na notranjo pot ali celotno povezavo `https://…`. Nečlan na strani runde ob pozivu vidi gumb **Postani član**. Če je polje prazno, ostane samo besedilo poziva.
+
 ### Namestitev in posodobitev
 1. V repozitoriju zaženi `bash orodja/gradnja.sh`.
 2. Nastali ZIP iz mape `dist/` namesti v Joomli prek *Sistem → Namesti → Razširitve → Naloži paket* ali prek CLI.

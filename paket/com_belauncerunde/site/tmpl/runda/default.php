@@ -14,6 +14,7 @@ $barvaTipa = VidezHelper::barvaTipa($runda->tip_barva ?? null);
 $kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
 ?>
 <article class="br-runda" style="--br-type: <?php echo $this->escape($barvaTipa); ?>; --br-type-text: <?php echo $this->escape($kontrastTipa); ?>">
+    <p class="br-nazaj"><a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runde', false)); ?>"><span aria-hidden="true">← </span><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_NAZAJ_NA_RUNDE')); ?></a></p>
     <h1><?php echo $this->escape($runda->naslov); ?></h1>
     <div class="br-runda__badges">
         <span class="br-tag"><?php echo $this->escape((string) ($runda->tip_naziv ?: Text::_('COM_BELAUNCERUNDE_NI_PODATKA'))); ?></span>
@@ -106,7 +107,11 @@ $kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
         <?php require __DIR__ . '/deli.php'; ?>
     <?php endif; ?>
     <?php if (!$this->clan) : ?>
-        <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>
+        <div class="br-clanstvo">
+            <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>
+            <?php if ($this->povezavaClanstva !== null) : ?>
+                <a class="btn btn-primary btn-sm" href="<?php echo $this->escape($this->povezavaClanstva['href']); ?>"<?php if ($this->povezavaClanstva['zunanja']) : ?> target="_blank" rel="noopener noreferrer"<?php endif; ?>><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POSTANI_CLAN')); ?></a>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
-    <p><a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runde', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_NAZAJ_NA_RUNDE')); ?></a></p>
 </article>

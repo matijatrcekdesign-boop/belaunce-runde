@@ -2,6 +2,9 @@
 :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
     .br-povezava, .br-odjava-gosta) {
     --br-dark: #1d1a16;
+    --br-fg: #1d1a16;
+    --br-bg: #fff;
+    --br-primary-hover: #100e0c;
     --br-muted: #6f6a63;
     --br-border: #e2dace;
     --br-line: #ede6dd;
@@ -25,6 +28,9 @@
     :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
         .br-povezava, .br-odjava-gosta) {
         --br-dark: #f7f2ea;
+        --br-fg: #f7f2ea;
+        --br-bg: #171512;
+        --br-primary-hover: #fff;
         --br-muted: #b8afa4;
         --br-border: #534b41;
         --br-line: #433c34;
@@ -41,6 +47,9 @@
 [data-theme="light"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
     .br-prijava, .br-povezava, .br-odjava-gosta) {
     --br-dark: #1d1a16;
+    --br-fg: #1d1a16;
+    --br-bg: #fff;
+    --br-primary-hover: #100e0c;
     --br-muted: #6f6a63;
     --br-border: #e2dace;
     --br-line: #ede6dd;
@@ -56,6 +65,9 @@
 [data-theme="dark"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
     .br-prijava, .br-povezava, .br-odjava-gosta) {
     --br-dark: #f7f2ea;
+    --br-fg: #f7f2ea;
+    --br-bg: #171512;
+    --br-primary-hover: #fff;
     --br-muted: #b8afa4;
     --br-border: #534b41;
     --br-line: #433c34;
@@ -135,6 +147,21 @@
 }
 .br-card__count { color: var(--br-muted); font-size: .85rem; }
 .br-card__actions { margin-top: 1rem; }
+.br-filtri.row {
+    margin: 0 0 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--br-border);
+    border-radius: var(--br-radius);
+    background: var(--br-panel);
+}
+.br-filtri .form-label {
+    color: var(--br-muted);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .045em;
+    text-transform: uppercase;
+}
 .br-leader { display: inline-flex; align-items: center; gap: .55rem; min-width: 0; font-weight: 700; }
 .br-leader__avatar {
     display: inline-flex;
@@ -166,6 +193,9 @@
 
 /* Podstran runde uporablja isti poudarek pri ploščicah in podpisu vodje. */
 .br-runda { border-top: 3px solid var(--br-type, #6c757d); padding-top: 1rem; }
+.br-nazaj { margin: 0 0 1rem; }
+.br-nazaj a { color: var(--br-muted); text-decoration: none; font-weight: 700; }
+.br-nazaj a:hover { color: var(--br-fg); text-decoration: underline; }
 .br-runda__badges { margin: .75rem 0 1.25rem; }
 .br-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin: 1.25rem 0; }
 .br-stat {
@@ -188,6 +218,8 @@
 .br-sec-title { margin: 1.5rem 0 .8rem; color: var(--br-dark); font-size: 1.1rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .br-lead, .br-prose { color: var(--br-dark); font-size: 1.08rem; line-height: 1.65; }
 .br-opombe { white-space: pre-wrap; overflow-wrap: anywhere; }
+.br-clanstvo { margin: 1.25rem 0; }
+.br-clanstvo p { margin-bottom: .75rem; }
 
 /* Obrazci ohranijo Joomline oznake in Bootstrap, komponenta določa le ovoj. */
 .br-obrazec, .br-prijava, .br-povezava, .br-odjava-gosta { max-width: 58rem; }
@@ -198,20 +230,84 @@
     border-radius: var(--br-radius);
     background: var(--br-card);
 }
-.br-runde .btn, .br-runda .btn, .br-moje .btn, .br-obrazec .btn,
-.br-prijava .btn, .br-povezava .btn, .br-odjava-gosta .btn {
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: .6rem 1rem;
+    border-radius: var(--br-radius);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    transition: background-color .18s ease, border-color .18s ease;
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-sm {
+    padding: .45rem .85rem;
+    font-size: .85rem;
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-primary {
+    color: var(--br-bg);
+    background: var(--br-fg);
+    border-color: var(--br-fg);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-primary:hover {
+    color: var(--br-bg);
+    background: var(--br-primary-hover);
+    border-color: var(--br-primary-hover);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(.btn-outline-secondary, .btn-outline-primary) {
+    color: var(--br-fg);
+    background: transparent;
+    border: 1px solid var(--br-border);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(.btn-outline-secondary, .btn-outline-primary):hover {
+    color: var(--br-fg);
+    background: var(--br-panel);
+    border-color: var(--br-border);
 }
 .br-runde :focus-visible, .br-runda :focus-visible, .br-moje :focus-visible,
 .br-obrazec :focus-visible, .br-prijava :focus-visible, .br-povezava :focus-visible,
 .br-odjava-gosta :focus-visible { outline: 3px solid var(--br-focus); outline-offset: 3px; }
 .br-runde .form-label, .br-runda .form-label, .br-obrazec .form-label,
 .br-prijava .form-label { font-weight: 700; }
-.br-runde .form-control, .br-runde .form-select, .br-runda .form-control,
-.br-obrazec .form-control, .br-obrazec .form-select, .br-prijava .form-control { min-height: 44px; }
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) :is(.form-control, .form-select) {
+    min-height: 44px;
+    color: var(--br-fg);
+    background-color: var(--br-bg);
+    border: 1px solid var(--br-border);
+    border-radius: var(--br-chip-radius);
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .form-select {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%236f6a63' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-position: right .75rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+}
+@media (prefers-color-scheme: dark) {
+    :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+        .br-povezava, .br-odjava-gosta) .form-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%23b8afa4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+}
+[data-theme="light"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
+    .br-prijava, .br-povezava, .br-odjava-gosta) .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%236f6a63' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] :is(.br-runde, .br-runda, .br-moje, .br-obrazec,
+    .br-prijava, .br-povezava, .br-odjava-gosta) .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%23b8afa4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 .br-runda iframe { border: 0; }
 .br-runda .ratio { border: 1px solid var(--br-border); border-radius: var(--br-radius); overflow: hidden; }
 
@@ -229,4 +325,6 @@
 @media (prefers-reduced-motion: reduce) {
     .br-card { transition: none; }
     .br-card:hover, .br-card:focus-within { transform: none; }
+    :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+        .br-povezava, .br-odjava-gosta) .btn { transition: none; }
 }

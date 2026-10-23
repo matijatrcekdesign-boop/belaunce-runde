@@ -7,6 +7,7 @@ use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\VidezHelper;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -45,6 +46,8 @@ class HtmlView extends BaseHtmlView
     public ?array $vdelava = null;
     /** @var bool Prijavljena identiteta ima nastavljeno člansko skupino. */
     public bool $clan = false;
+    /** @var array|null Preverjena povezava za članstvo in podatek o zunanjem gostitelju. */
+    public ?array $povezavaClanstva = null;
     /** @var bool Obiskovalec ni prijavljen v Joomlo. */
     public bool $neprijavljen = true;
     /** @var bool Trenutna identiteta je vodja te runde. */
@@ -91,6 +94,16 @@ class HtmlView extends BaseHtmlView
         $uporabnik = $app->getIdentity();
         $prijave = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Prijave', 'Site', []);
         $this->clan = $prijave->jeClan($uporabnik);
+        if (!$this->clan) {
+            $povezavaClanstva = VidezHelper::povezavaClanstva((string) ComponentHelper::getParams('com_belauncerunde')->get('clanstvo_url', ''));
+
+            if ($povezavaClanstva !== null && $povezavaClanstva['relativna']) {
+                // Notranjo pot usmeri Joomla; predloga izpiše samo preverjeno in escapirano vrednost.
+                $povezavaClanstva['href'] = Route::_($povezavaClanstva['href'], false);
+            }
+
+            $this->povezavaClanstva = $povezavaClanstva;
+        }
         $this->neprijavljen = (bool) $uporabnik->guest;
         $this->vodja = !$this->neprijavljen && (int) $runda->vodja_id === (int) $uporabnik->id;
         $this->odprta = (int) $runda->stanje === 1 && !(bool) $runda->startala;

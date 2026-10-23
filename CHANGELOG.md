@@ -14,6 +14,7 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - Dolžina je v javnih prikazih in deljenju zapisana z decimalno vejico brez odvečne ničle.
 - Posodobitvena datoteka 0.15.0 doda barvo tipa in začetne barve obstoječim tipom, če jih še nimajo.
 - Ponovna namestitev 0.15.0 zagotovi stolpec barve in manjkajoče začetne barve tudi, ko se SQL posodobitev ne ponovi.
+- Filtri in gumbi na javnih pogledih so poenoteni; kartice imajo gumb »Odpri rundo«, povezava nazaj je nad naslovom, poziv za članstvo pa lahko vodi na nastavljeno stran.
 
 ## [0.14.0] - 2026-10-22
 ### Spremenjeno

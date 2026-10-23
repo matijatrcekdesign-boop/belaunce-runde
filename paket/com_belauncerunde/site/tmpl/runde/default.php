@@ -16,7 +16,7 @@ use Joomla\CMS\Router\Route;
     <?php endif; ?>
 
     <?php if ((int) $this->parametri->get('prikazi_filtre', 1) === 1) : ?>
-        <form method="get" action="<?php echo $this->escape($this->povezavaSeznama); ?>" class="row g-3 align-items-end mb-4">
+        <form method="get" action="<?php echo $this->escape($this->povezavaSeznama); ?>" class="br-filtri row g-3 align-items-end mb-4">
             <div class="col-12 col-sm-6 col-lg-4">
                 <label for="br-filter-tip" class="form-label"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TIP')); ?></label>
                 <select id="br-filter-tip" name="filter_tip" class="form-select">

@@ -37,6 +37,8 @@ class HtmlView extends BaseHtmlView
             $this->podatki = $this->getModel()->podatkiPovezave($this->zeton);
         }
 
+        $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
+            ->useStyle('com_belauncerunde.site');
         parent::display($tpl);
     }
 }

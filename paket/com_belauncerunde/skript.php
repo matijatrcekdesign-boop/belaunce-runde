@@ -44,6 +44,16 @@ class Com_BelauncerundeInstallerScript
         }
 
         try {
+            $this->zagotoviBarvoTipa(Factory::getContainer()->get(DatabaseInterface::class));
+        } catch (\Throwable $napaka) {
+            // Brez stolpca javne poizvedbe ne delujejo, zato namestitve ne potrdimo.
+            Log::add('BARVA_STOLPEC_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_BARVA_NAPAKA'), 'error');
+
+            return false;
+        }
+
+        try {
             $db = Factory::getContainer()->get(DatabaseInterface::class);
             $id = $this->pripraviSkupinoClani($db);
             $this->shraniParameter($db, 'skupina_clani', $id);
@@ -68,6 +78,42 @@ class Com_BelauncerundeInstallerScript
         }
 
         return true;
+    }
+
+    /**
+     * Ob vsaki namestitvi zagotovi stolpec barve in manjkajoče začetne barve tipov.
+     *
+     * @param   DatabaseInterface  $db  Povezava z bazo.
+     *
+     * @return  void
+     */
+    private function zagotoviBarvoTipa(DatabaseInterface $db): void
+    {
+        $tabela = $db->getPrefix() . 'belaunce_tipi';
+        $stolpec = 'barva';
+        $poizvedba = $db->createQuery()->select('COUNT(*)')->from('information_schema.COLUMNS')
+            ->where('TABLE_SCHEMA = DATABASE()')
+            ->where('TABLE_NAME = :tabela')
+            ->where('COLUMN_NAME = :stolpec')
+            ->bind(':tabela', $tabela, ParameterType::STRING)
+            ->bind(':stolpec', $stolpec, ParameterType::STRING);
+
+        if ((int) $db->setQuery($poizvedba)->loadResult() === 0) {
+            // Imena v DDL so stalna; nadomestitev #__ izvede gonilnik baze.
+            $db->setQuery('ALTER TABLE `#__belaunce_tipi` ADD COLUMN `barva` CHAR(7) NULL AFTER `opis`')->execute();
+            Log::add('BARVA_STOLPEC_DODAN', Log::INFO, 'com_belauncerunde');
+        }
+
+        // Ponovna namestitev ne povozi ročno nastavljenih barv.
+        foreach (['mtb' => '#2a76e0', 'cestno' => '#f2b974', 'gravel' => '#8f592f'] as $alias => $barva) {
+            $poizvedba = $db->createQuery()->update($db->quoteName('#__belaunce_tipi'))
+                ->set($db->quoteName('barva') . ' = :barva')
+                ->where($db->quoteName('alias') . ' = :alias')
+                ->where($db->quoteName('barva') . ' IS NULL')
+                ->bind(':barva', $barva, ParameterType::STRING)
+                ->bind(':alias', $alias, ParameterType::STRING);
+            $db->setQuery($poizvedba)->execute();
+        }
     }
 
     /**

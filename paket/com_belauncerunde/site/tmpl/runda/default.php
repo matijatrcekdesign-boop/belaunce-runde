@@ -3,15 +3,45 @@
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use Belaunce\Component\Belauncerunde\Site\Helper\VidezHelper;
 
 \defined('_JEXEC') or die;
 $runda = $this->runda;
 ?>
-<article class="br-runda">
+<?php
+// Podstran uporablja isti preverjeni barvi kot kartice tega tipa.
+$barvaTipa = VidezHelper::barvaTipa($runda->tip_barva ?? null);
+$kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
+$mobilnaUdelezba = $this->odprta && !$this->vodja && ($this->clan || $this->neprijavljen);
+?>
+<article class="br-runda<?php echo $mobilnaUdelezba ? ' br-runda--mobile-action' : ''; ?>" style="--br-type: <?php echo $this->escape($barvaTipa); ?>; --br-type-text: <?php echo $this->escape($kontrastTipa); ?>">
+    <p class="br-nazaj"><a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runde', false)); ?>"><span aria-hidden="true">← </span><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_NAZAJ_NA_RUNDE')); ?></a></p>
     <h1><?php echo $this->escape($runda->naslov); ?></h1>
+    <div class="br-runda__badges">
+        <span class="br-tag"><?php echo $this->escape((string) ($runda->tip_naziv ?: Text::_('COM_BELAUNCERUNDE_NI_PODATKA'))); ?></span>
+        <?php require __DIR__ . '/tezavnost.php'; ?>
+    </div>
+    <?php if ($mobilnaUdelezba) : ?>
+        <div class="br-runda__mobile-actions d-md-none">
+            <div class="br-runda__badges">
+                <span class="br-tag"><?php echo $this->escape((string) ($runda->tip_naziv ?: Text::_('COM_BELAUNCERUNDE_NI_PODATKA'))); ?></span>
+                <?php require __DIR__ . '/tezavnost.php'; ?>
+            </div>
+            <?php if ($this->clan) : ?>
+                <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>" method="post">
+                    <input type="hidden" name="task" value="<?php echo $this->escape($this->udelezen ? 'runda.odjava' : 'runda.pridem'); ?>">
+                    <input type="hidden" name="id" value="<?php echo $this->escape((string) $runda->id); ?>">
+                    <?php echo HTMLHelper::_('form.token'); ?>
+                    <button type="submit" class="btn <?php echo $this->escape($this->udelezen ? 'btn-outline-secondary' : 'btn-secondary'); ?>"><?php echo $this->escape(Text::_($this->udelezen ? 'COM_BELAUNCERUNDE_ODJAVA' : 'COM_BELAUNCERUNDE_PRIDEM')); ?></button>
+                </form>
+            <?php else : ?>
+                <a class="btn btn-secondary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava&runda_id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
     <div class="d-flex gap-2 flex-wrap mb-3">
         <?php if ($this->clan) : ?>
-            <a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a>
+            <a class="btn btn-secondary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a>
         <?php endif; ?>
         <?php if ($this->vodja && $this->odprta) : ?>
             <?php require __DIR__ . '/upravljanje.php'; ?>
@@ -29,27 +59,22 @@ $runda = $this->runda;
     <?php elseif ((bool) $runda->startala) : ?>
         <p class="alert alert-info"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_RUNDA_STARTALA')); ?></p>
     <?php endif; ?>
-    <dl class="row">
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZACETEK')); ?></dt>
-        <dd class="col-sm-8"><?php echo $this->escape($this->zacetek); ?></dd>
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TIP')); ?></dt>
-        <dd class="col-sm-8"><?php echo $this->escape((string) ($runda->tip_naziv ?? '')); ?></dd>
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TEZAVNOST')); ?></dt>
-        <dd class="col-sm-8"><?php echo $this->escape((string) ($runda->tezavnost_naziv ?? '')); ?></dd>
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_LOKACIJA')); ?></dt>
-        <dd class="col-sm-8"><?php echo $this->escape($runda->lokacija); ?></dd>
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOLZINA')); ?></dt>
-        <dd class="col-sm-8"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', $runda->dolzina_km)); ?></dd>
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TRAJANJE')); ?></dt>
-        <dd class="col-sm-8"><?php echo $runda->trajanje_min === null ? $this->escape(Text::_('COM_BELAUNCERUNDE_NI_PODATKA')) : $this->escape(Text::sprintf('COM_BELAUNCERUNDE_TRAJANJE_MIN', $runda->trajanje_min)); ?></dd>
-        <dt class="col-sm-4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt>
-        <dd class="col-sm-8"><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></dd>
+    <div class="br-stat-grid">
+        <div class="br-stat"><span class="v"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', VidezHelper::dolzina($runda->dolzina_km))); ?></span><span class="l"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DOLZINA')); ?></span></div>
+        <div class="br-stat"><span class="v"><?php echo $this->escape((string) ($runda->tezavnost_naziv ?? '')); ?></span><span class="l"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TEZAVNOST')); ?></span></div>
+        <div class="br-stat br-stat--leader"><span class="v br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></span><span class="l"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></span></div>
+    </div>
+    <dl class="br-runda__facts">
+        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZACETEK')); ?></dt><dd><?php echo $this->escape($this->zacetek); ?></dd></div>
+        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_LOKACIJA')); ?></dt><dd><?php echo $this->escape($runda->lokacija); ?></dd></div>
+        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TRAJANJE')); ?></dt><dd><?php echo $runda->trajanje_min === null ? $this->escape(Text::_('COM_BELAUNCERUNDE_NI_PODATKA')) : $this->escape(Text::sprintf('COM_BELAUNCERUNDE_TRAJANJE_MIN', $runda->trajanje_min)); ?></dd></div>
     </dl>
     <?php if ((string) ($runda->opombe ?? '') !== '') : ?>
-        <h2 class="h4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OPOMBE')); ?></h2>
-        <p class="br-opombe"><?php echo $this->escape($runda->opombe); ?></p>
+        <h2 class="br-sec-title"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OPOMBE')); ?></h2>
+        <p class="br-opombe br-prose"><?php echo $this->escape($runda->opombe); ?></p>
     <?php endif; ?>
     <?php if ($this->trasa !== '') : ?>
+        <h2 class="br-sec-title"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TRASA')); ?></h2>
         <?php if ($this->vdelava !== null) : ?>
             <div class="ratio ratio-4x3 mb-3">
                 <iframe src="<?php echo $this->escape(Route::_($this->vdelava['src'], false)); ?>" loading="lazy" referrerpolicy="no-referrer" title="<?php echo $this->escape(Text::_($this->vdelava['naslov'])); ?>" allowfullscreen></iframe>
@@ -57,7 +82,7 @@ $runda = $this->runda;
         <?php endif; ?>
         <p><a href="<?php echo $this->escape(Route::_($this->trasa, false)); ?>" rel="noopener noreferrer" target="_blank"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TRASA')); ?></a></p>
     <?php endif; ?>
-    <h2 class="h4"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_UDELEZENCI')); ?></h2>
+    <h2 class="br-sec-title"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_UDELEZENCI')); ?></h2>
     <p><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $this->steviloUdelezencev)); ?></p>
     <?php if ($this->clan && $this->udelezenci !== []) : ?>
         <ul>
@@ -85,14 +110,14 @@ $runda = $this->runda;
     <?php if ($this->vodja) : ?>
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA_UDELEZEN')); ?></p>
     <?php elseif ($this->odprta && $this->clan) : ?>
-        <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>" method="post" class="mb-3">
+        <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde', false)); ?>" method="post" class="br-runda__udelezba mb-3">
             <input type="hidden" name="task" value="<?php echo $this->escape($this->udelezen ? 'runda.odjava' : 'runda.pridem'); ?>">
             <input type="hidden" name="id" value="<?php echo $this->escape((string) $runda->id); ?>">
             <?php echo HTMLHelper::_('form.token'); ?>
-            <button type="submit" class="btn <?php echo $this->escape($this->udelezen ? 'btn-outline-primary' : 'btn-primary'); ?>"><?php echo $this->escape(Text::_($this->udelezen ? 'COM_BELAUNCERUNDE_ODJAVA' : 'COM_BELAUNCERUNDE_PRIDEM')); ?></button>
+            <button type="submit" class="btn <?php echo $this->escape($this->udelezen ? 'btn-outline-secondary' : 'btn-secondary'); ?>"><?php echo $this->escape(Text::_($this->udelezen ? 'COM_BELAUNCERUNDE_ODJAVA' : 'COM_BELAUNCERUNDE_PRIDEM')); ?></button>
         </form>
     <?php elseif ($this->odprta && $this->neprijavljen) : ?>
-        <p><a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava&runda_id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a></p>
+        <p class="br-runda__udelezba"><a class="btn btn-secondary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava&runda_id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a></p>
     <?php endif; ?>
     <?php if ($this->gostObrazec !== null) : ?>
         <?php require __DIR__ . '/gost.php'; ?>
@@ -101,7 +126,11 @@ $runda = $this->runda;
         <?php require __DIR__ . '/deli.php'; ?>
     <?php endif; ?>
     <?php if (!$this->clan) : ?>
-        <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>
+        <div class="br-clanstvo">
+            <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>
+            <?php if ($this->povezavaClanstva !== null) : ?>
+                <a class="btn btn-secondary btn-sm" href="<?php echo $this->escape($this->povezavaClanstva['href']); ?>"<?php if ($this->povezavaClanstva['zunanja']) : ?> target="_blank" rel="noopener noreferrer"<?php endif; ?>><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POSTANI_CLAN')); ?></a>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
-    <p><a href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=runde', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_NAZAJ_NA_RUNDE')); ?></a></p>
 </article>

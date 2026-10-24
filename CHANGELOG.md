@@ -6,6 +6,47 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.6] - 2026-10-24
+### Spremenjeno
+- Na mobilni podstrani odprte runde je ob spodnjem robu stalno vidna vrstica s tipom, težavnostjo in trenutno akcijo »Pridem« oziroma »Odjava«; namizni prikaz ostane nespremenjen.
+
+## [0.15.5] - 2026-10-24
+### Popravljeno
+- Mobilna plošča filtrov ima izrecen položaj, vidnost in višji sloj tudi med prehodi, zato se prikaže pred zatemnitvijo; sprožilni gumb je zaobljen in ima ikono filtra.
+- Prijava gosta ima enako rahlo zaobljene vogale kot deljenje, gumbi na podstrani runde pa uporabljajo sekundarne barve aktivne predloge.
+
+## [0.15.4] - 2026-10-24
+### Popravljeno
+- Mobilni filter uporablja navadno Joomlino stransko ploščo, na namizju pa je s CSS ponastavitvijo viden na svojem mestu brez praznega prostora tudi v predlogi brez odzivnega razreda za stransko ploščo.
+
+## [0.15.3] - 2026-10-24
+### Spremenjeno
+- Vodja je ob ploščicah dolžine in težavnosti; začetek, lokacija in trajanje so v isti vrstici.
+- Okvir za deljenje ima manj zaobljene vogale.
+- Na mobilnih zaslonih gumb odpre filtre v stranski plošči; namizni obrazec ostane viden, izbirniki so bolj zgoščeni in gumba imata več odmika.
+
+## [0.15.2] - 2026-10-24
+### Spremenjeno
+- Sekundarni gumbi ponovno uporabljajo barve aktivne predloge strani.
+- Filtrirni obrazec in izbira tipa ter težavnosti imajo manj notranjega odmika.
+- Podatki na podstrani runde so razvrščeni: vodja, začetek, lokacija, trajanje.
+
+## [0.15.1] - 2026-10-24
+### Spremenjeno
+- Seznama rund imata več razmika med karticami, manjše filtre in kompaktnejše dno kartice z gumbom »Odpri rundo« ob podatkih o vodji.
+- Podstran runde prikazuje težavnost ob dolžini in trajanje med podatki; deljenje je nežno ločeno z barvo ozadja.
+- Obrazec za prijavo članov ima več vodoravnega odmika, nežno obarvano vnosno polje in sekundarni gumb.
+
+## [0.15.0] - 2026-10-23
+### Spremenjeno
+- Barva tipa se nastavi v administraciji in se varno uporabi na karticah ter strani runde; posodobitev doda stolpec `barva` v šifrant tipov.
+- Javni pogledi uporabljajo slog smeri C s pisavama Lexend in Archivo, čipi, podpisom vodje ter modrim merilnikom težavnosti.
+- Obrazci in gumbi imajo vidno stanje fokusa ter primernejšo velikost na mobilnih zaslonih.
+- Dolžina je v javnih prikazih in deljenju zapisana z decimalno vejico brez odvečne ničle.
+- Posodobitvena datoteka 0.15.0 doda barvo tipa in začetne barve obstoječim tipom, če jih še nimajo.
+- Ponovna namestitev 0.15.0 zagotovi stolpec barve in manjkajoče začetne barve tudi, ko se SQL posodobitev ne ponovi.
+- Filtri in gumbi na javnih pogledih so poenoteni; kartice imajo gumb »Odpri rundo«, povezava nazaj je nad naslovom, poziv za članstvo pa lahko vodi na nastavljeno stran.
+
 ## [0.14.0] - 2026-10-22
 ### Spremenjeno
 - Zastarele klice `getError()` in `setError()` v lastni kodi so zamenjale prevedene izjeme in varna sporočila ob napakah.

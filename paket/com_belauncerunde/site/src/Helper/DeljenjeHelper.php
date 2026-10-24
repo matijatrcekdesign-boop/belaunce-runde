@@ -42,7 +42,7 @@ abstract class DeljenjeHelper
             '{LOKACIJA}' => (string) $runda->lokacija,
             '{TIP}' => (string) ($runda->tip_naziv ?? ''),
             '{TEZAVNOST}' => (string) ($runda->tezavnost_naziv ?? ''),
-            '{DOLZINA}' => Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', $runda->dolzina_km),
+            '{DOLZINA}' => Text::sprintf('COM_BELAUNCERUNDE_DOLZINA_KM', VidezHelper::dolzina($runda->dolzina_km)),
             '{TRAJANJE}' => isset($runda->trajanje_min)
                 ? Text::sprintf('COM_BELAUNCERUNDE_TRAJANJE_MIN', $runda->trajanje_min) : '',
             '{VODJA}' => (string) ($runda->vodja_ime ?? ''),

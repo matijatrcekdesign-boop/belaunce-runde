@@ -151,13 +151,13 @@
 .br-filtri.row {
     margin: 0 0 1.5rem;
     max-width: 58rem;
-    padding: .75rem;
+    padding: .5rem;
     border: 1px solid var(--br-border);
     border-radius: var(--br-radius);
     background: var(--br-panel);
 }
 .br-filtri .form-label {
-    margin-bottom: .25rem;
+    margin-bottom: .125rem;
     color: var(--br-muted);
     font-family: "Lexend", system-ui, sans-serif;
     font-size: .78rem;
@@ -265,18 +265,6 @@
     background: var(--br-primary-hover);
     border-color: var(--br-primary-hover);
 }
-:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
-    .br-povezava, .br-odjava-gosta) .btn-secondary {
-    color: var(--br-fg);
-    background: var(--br-panel);
-    border-color: var(--br-border);
-}
-:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
-    .br-povezava, .br-odjava-gosta) .btn-secondary:hover {
-    color: var(--br-fg);
-    background: var(--br-border);
-    border-color: var(--br-border);
-}
 .br-runde .br-filtri .btn { padding: .4rem .75rem; font-size: .85rem; }
 :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
     .br-povezava, .br-odjava-gosta) :is(.btn-outline-secondary, .btn-outline-primary) {
@@ -313,6 +301,15 @@
     background-position: right .75rem center;
     background-repeat: no-repeat;
     background-size: 1rem 1rem;
+}
+.br-runde .br-filtri .form-select {
+    padding-block: .2rem;
+    font-size: .875rem;
+}
+.br-runde .br-filtri .form-select option {
+    padding-block: 0;
+    font-size: .875rem;
+    line-height: 1.1;
 }
 .br-prijava .form-control { background-color: var(--br-panel); }
 @media (prefers-color-scheme: dark) {

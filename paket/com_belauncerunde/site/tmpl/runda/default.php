@@ -45,10 +45,10 @@ $kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
         <div class="br-stat"><span class="v"><?php echo $this->escape((string) ($runda->tezavnost_naziv ?? '')); ?></span><span class="l"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TEZAVNOST')); ?></span></div>
     </div>
     <dl class="br-runda__facts">
+        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt><dd class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></dd></div>
         <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZACETEK')); ?></dt><dd><?php echo $this->escape($this->zacetek); ?></dd></div>
         <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_LOKACIJA')); ?></dt><dd><?php echo $this->escape($runda->lokacija); ?></dd></div>
         <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TRAJANJE')); ?></dt><dd><?php echo $runda->trajanje_min === null ? $this->escape(Text::_('COM_BELAUNCERUNDE_NI_PODATKA')) : $this->escape(Text::sprintf('COM_BELAUNCERUNDE_TRAJANJE_MIN', $runda->trajanje_min)); ?></dd></div>
-        <div><dt><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VODJA')); ?></dt><dd class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></dd></div>
     </dl>
     <?php if ((string) ($runda->opombe ?? '') !== '') : ?>
         <h2 class="br-sec-title"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OPOMBE')); ?></h2>

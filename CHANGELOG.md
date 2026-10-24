@@ -6,6 +6,12 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.2] - 2026-10-24
+### Spremenjeno
+- Sekundarni gumbi ponovno uporabljajo barve aktivne predloge strani.
+- Filtrirni obrazec in izbira tipa ter težavnosti imajo manj notranjega odmika.
+- Podatki na podstrani runde so razvrščeni: vodja, začetek, lokacija, trajanje.
+
 ## [0.15.1] - 2026-10-24
 ### Spremenjeno
 - Seznama rund imata več razmika med karticami, manjše filtre in kompaktnejše dno kartice z gumbom »Odpri rundo« ob podatkih o vodji.

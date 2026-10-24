@@ -326,7 +326,6 @@ class Com_BelauncerundeInstallerScript
     private function pripraviPostnoPredlogo(): void
     {
         $this->pripraviPredlogiRunde();
-        $this->pripraviPredlogoNovePrijave();
 
         if (MailTemplate::getTemplate('com_belauncerunde.gost_potrditev', '') === null) {
             if (!MailTemplate::createTemplate(
@@ -349,6 +348,8 @@ class Com_BelauncerundeInstallerScript
                 throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
             }
         }
+
+        $this->pripraviPredlogoNovePrijave();
     }
 
     /** Registrira predlogo nove prijave in manjkajoča jezika brez prepisovanja sprememb. */

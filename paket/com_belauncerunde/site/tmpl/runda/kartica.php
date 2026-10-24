@@ -30,13 +30,16 @@ $tipOznaka = $tipOznaka !== '' ? $tipOznaka : Text::_('COM_BELAUNCERUNDE_NI_PODA
             <p class="br-card__meta"><?php echo $this->escape(Text::_($runda->je_vodja ? 'COM_BELAUNCERUNDE_MOJE_VODIL' : 'COM_BELAUNCERUNDE_MOJE_UDELEZEN')); ?></p>
         <?php endif; ?>
         <div class="br-card__footer">
-            <span class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></span>
-            <?php if (isset($runda->stevilo_udelezencev)) : ?>
-                <span class="br-card__count"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $runda->stevilo_udelezencev)); ?></span>
-            <?php endif; ?>
+            <div class="br-card__footer-info">
+                <span class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></span>
+                <?php if (isset($runda->stevilo_udelezencev)) : ?>
+                    <span class="br-card__count"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $runda->stevilo_udelezencev)); ?></span>
+                <?php endif; ?>
+            </div>
+            <a class="btn btn-secondary" href="<?php echo $this->escape($povezava); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPRI_RUNDO')); ?></a>
         </div>
+        <?php if ($runda->urejanje || !empty($runda->odjava) || !empty($runda->deljiva)) : ?>
         <div class="br-card__actions d-flex gap-2 flex-wrap">
-            <a class="btn <?php echo (int) $runda->stanje === 2 ? 'btn-outline-secondary' : 'btn-primary'; ?>" href="<?php echo $this->escape($povezava); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPRI_RUNDO')); ?></a>
             <?php if ($runda->urejanje) : ?>
                 <?php require __DIR__ . '/upravljanje.php'; ?>
             <?php elseif (!empty($runda->odjava)) : ?>
@@ -52,5 +55,6 @@ $tipOznaka = $tipOznaka !== '' ? $tipOznaka : Text::_('COM_BELAUNCERUNDE_NI_PODA
                 <a class="btn btn-outline-primary" href="<?php echo $this->escape($runda->deli_viber); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_DELI_VIBER')); ?></a>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
     </div>
 </article>

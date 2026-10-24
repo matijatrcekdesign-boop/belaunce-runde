@@ -6,6 +6,12 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.1] - 2026-10-24
+### Spremenjeno
+- Seznama rund imata več razmika med karticami, manjše filtre in kompaktnejše dno kartice z gumbom »Odpri rundo« ob podatkih o vodji.
+- Podstran runde prikazuje težavnost ob dolžini in trajanje med podatki; deljenje je nežno ločeno z barvo ozadja.
+- Obrazec za prijavo članov ima več vodoravnega odmika, nežno obarvano vnosno polje in sekundarni gumb.
+
 ## [0.15.0] - 2026-10-23
 ### Spremenjeno
 - Barva tipa se nastavi v administraciji in se varno uporabi na karticah ter strani runde; posodobitev doda stolpec `barva` v šifrant tipov.

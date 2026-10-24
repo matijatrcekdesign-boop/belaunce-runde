@@ -28,7 +28,7 @@ use Joomla\CMS\Router\Route;
             <?php else : ?>
                 <div class="row g-3">
                     <?php foreach ($runde as $runda) : ?>
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
                             <?php $naslovNivo = 'h3'; require __DIR__ . '/../runda/kartica.php'; ?>
                         </div>
                     <?php endforeach; ?>

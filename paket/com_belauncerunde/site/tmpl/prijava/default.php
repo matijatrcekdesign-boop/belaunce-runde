@@ -21,7 +21,7 @@ use Joomla\CMS\Router\Route;
         <form action="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&task=prijava.poslji')); ?>" method="post">
             <?php echo $this->form->renderField('email'); ?>
             <?php echo $this->form->renderField('runda_id'); ?>
-            <button class="btn btn-primary" type="submit"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_POSLJI')); ?></button>
+            <button class="btn btn-secondary mt-3" type="submit"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIJAVA_POSLJI')); ?></button>
             <?php echo HTMLHelper::_('form.token'); ?>
         </form>
     <?php endif; ?>

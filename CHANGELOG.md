@@ -6,6 +6,10 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.6] - 2026-10-24
+### Spremenjeno
+- Na mobilni podstrani odprte runde je ob spodnjem robu stalno vidna vrstica s tipom, težavnostjo in trenutno akcijo »Pridem« oziroma »Odjava«; namizni prikaz ostane nespremenjen.
+
 ## [0.15.5] - 2026-10-24
 ### Popravljeno
 - Mobilna plošča filtrov ima izrecen položaj, vidnost in višji sloj tudi med prehodi, zato se prikaže pred zatemnitvijo; sprožilni gumb je zaobljen in ima ikono filtra.

@@ -10,7 +10,7 @@ use Joomla\CMS\Router\Route;
 // ID modala je za vsako rundo drugačen, da je potrjevanje pravilno tudi na seznamu.
 $modalId = 'br-odpoved-' . (int) $runda->id;
 ?>
-<a class="btn btn-outline-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_UREDI_RUNDO')); ?></a>
+<a class="btn btn-outline-secondary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_UREDI_RUNDO')); ?></a>
 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#<?php echo $this->escape($modalId); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPOVEJ_RUNDO')); ?></button>
 <div class="modal fade" id="<?php echo $this->escape($modalId); ?>" tabindex="-1" aria-labelledby="<?php echo $this->escape($modalId . '-naslov'); ?>" aria-hidden="true">
     <div class="modal-dialog"><div class="modal-content">

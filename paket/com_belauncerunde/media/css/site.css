@@ -237,7 +237,8 @@
     border-radius: var(--br-radius);
     background: var(--br-card);
 }
-.br-deli { background: var(--br-panel); border-radius: calc(var(--br-radius) / 2); }
+.br-gost, .br-deli { border-radius: calc(var(--br-radius) / 2); }
+.br-deli { background: var(--br-panel); }
 :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
     .br-povezava, .br-odjava-gosta) .btn {
     min-height: 44px;
@@ -269,6 +270,21 @@
     border-color: var(--br-primary-hover);
 }
 .br-runde .br-filtri .btn { padding: .4rem .75rem; font-size: .85rem; }
+.br-runde .br-filtri__toggle {
+    gap: .5rem;
+    padding-inline: 1rem;
+    border-radius: 50rem;
+    box-shadow: none;
+}
+.br-runde .br-filtri__toggle::after {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 1rem;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 3h12L9.5 8.2V12l-3 1V8.2L2 3Z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 3h12L9.5 8.2V12l-3 1V8.2L2 3Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
     .br-povezava, .br-odjava-gosta) :is(.btn-outline-secondary, .btn-outline-primary) {
     color: var(--br-fg);
@@ -353,6 +369,24 @@
     .br-runda__facts { gap: .5rem; }
     .br-runda__facts dt { font-size: .7rem; }
     .br-runda__facts dd { font-size: .9rem; }
+    .br-runde .br-filtri-panel.offcanvas {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(28rem, 100vw);
+        max-width: 100%;
+        height: 100vh;
+        visibility: hidden;
+        z-index: 1060;
+        background: var(--br-bg);
+        transform: translateX(-100%);
+        overflow-x: hidden;
+    }
+    .br-runde .br-filtri-panel.offcanvas.show,
+    .br-runde .br-filtri-panel.offcanvas.showing {
+        visibility: visible;
+        transform: none;
+    }
+    .br-runde .br-filtri-panel.offcanvas.hiding { visibility: visible; }
     .br-runde .br-filtri-panel .offcanvas-body { padding: .75rem; }
     .br-runde .br-filtri-panel .br-filtri.row { margin: 0; padding: 0; border: 0; background: transparent; }
     .br-filtri__actions { margin-top: .75rem; }

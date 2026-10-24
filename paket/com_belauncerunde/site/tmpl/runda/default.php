@@ -22,7 +22,7 @@ $kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
     </div>
     <div class="d-flex gap-2 flex-wrap mb-3">
         <?php if ($this->clan) : ?>
-            <a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a>
+            <a class="btn btn-secondary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a>
         <?php endif; ?>
         <?php if ($this->vodja && $this->odprta) : ?>
             <?php require __DIR__ . '/upravljanje.php'; ?>
@@ -95,10 +95,10 @@ $kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
             <input type="hidden" name="task" value="<?php echo $this->escape($this->udelezen ? 'runda.odjava' : 'runda.pridem'); ?>">
             <input type="hidden" name="id" value="<?php echo $this->escape((string) $runda->id); ?>">
             <?php echo HTMLHelper::_('form.token'); ?>
-            <button type="submit" class="btn <?php echo $this->escape($this->udelezen ? 'btn-outline-primary' : 'btn-primary'); ?>"><?php echo $this->escape(Text::_($this->udelezen ? 'COM_BELAUNCERUNDE_ODJAVA' : 'COM_BELAUNCERUNDE_PRIDEM')); ?></button>
+            <button type="submit" class="btn <?php echo $this->escape($this->udelezen ? 'btn-outline-secondary' : 'btn-secondary'); ?>"><?php echo $this->escape(Text::_($this->udelezen ? 'COM_BELAUNCERUNDE_ODJAVA' : 'COM_BELAUNCERUNDE_PRIDEM')); ?></button>
         </form>
     <?php elseif ($this->odprta && $this->neprijavljen) : ?>
-        <p><a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava&runda_id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a></p>
+        <p><a class="btn btn-secondary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=prijava&runda_id=' . (int) $runda->id, false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a></p>
     <?php endif; ?>
     <?php if ($this->gostObrazec !== null) : ?>
         <?php require __DIR__ . '/gost.php'; ?>
@@ -110,7 +110,7 @@ $kontrastTipa = VidezHelper::kontrastBesedila($barvaTipa);
         <div class="br-clanstvo">
             <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POZIV_CLANSTVO')); ?></p>
             <?php if ($this->povezavaClanstva !== null) : ?>
-                <a class="btn btn-primary btn-sm" href="<?php echo $this->escape($this->povezavaClanstva['href']); ?>"<?php if ($this->povezavaClanstva['zunanja']) : ?> target="_blank" rel="noopener noreferrer"<?php endif; ?>><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POSTANI_CLAN')); ?></a>
+                <a class="btn btn-secondary btn-sm" href="<?php echo $this->escape($this->povezavaClanstva['href']); ?>"<?php if ($this->povezavaClanstva['zunanja']) : ?> target="_blank" rel="noopener noreferrer"<?php endif; ?>><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POSTANI_CLAN')); ?></a>
             <?php endif; ?>
         </div>
     <?php endif; ?>

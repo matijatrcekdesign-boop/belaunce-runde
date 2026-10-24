@@ -21,6 +21,6 @@ use Joomla\CMS\Router\Route;
         <?php echo $this->gostObrazec->renderControlFields(); ?>
         <?php echo HTMLHelper::_('form.token'); ?>
         <p><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_ODGOVORNOST')); ?></p>
-        <button type="submit" class="btn btn-primary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_PRIJAVA_GUMB')); ?></button>
+        <button type="submit" class="btn btn-secondary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_GOST_PRIJAVA_GUMB')); ?></button>
     </form>
 </section>

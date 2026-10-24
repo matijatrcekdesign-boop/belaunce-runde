@@ -6,6 +6,11 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.5] - 2026-10-24
+### Popravljeno
+- Mobilna plošča filtrov ima izrecen položaj, vidnost in višji sloj tudi med prehodi, zato se prikaže pred zatemnitvijo; sprožilni gumb je zaobljen in ima ikono filtra.
+- Prijava gosta ima enako rahlo zaobljene vogale kot deljenje, gumbi na podstrani runde pa uporabljajo sekundarne barve aktivne predloge.
+
 ## [0.15.4] - 2026-10-24
 ### Popravljeno
 - Mobilni filter uporablja navadno Joomlino stransko ploščo, na namizju pa je s CSS ponastavitvijo viden na svojem mestu brez praznega prostora tudi v predlogi brez odzivnega razreda za stransko ploščo.

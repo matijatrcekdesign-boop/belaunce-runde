@@ -81,6 +81,10 @@ class HtmlView extends BaseHtmlView
         $this->tip = (int) $model->getState('filter.tip');
         $this->tezavnost = (int) $model->getState('filter.tezavnost');
         $this->parametri = $model->getState('params');
+        if ((int) $this->parametri->get('prikazi_filtre', 1) === 1) {
+            // Mobilni filter uporablja Joomlino vgrajeno skripto za stransko ploščo.
+            $this->getDocument()->getWebAssetManager()->useScript('bootstrap.offcanvas');
+        }
         $this->paginacija = $model->getPagination();
         $this->povezavaSeznama = Route::_('index.php?option=com_belauncerunde&view=runde', false);
         $this->menijskaPostavka = (int) (new Uri($this->povezavaSeznama))->getVar('Itemid', 0);

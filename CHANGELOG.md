@@ -6,6 +6,12 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.3] - 2026-10-24
+### Spremenjeno
+- Vodja je ob ploščicah dolžine in težavnosti; začetek, lokacija in trajanje so v isti vrstici.
+- Okvir za deljenje ima manj zaobljene vogale.
+- Na mobilnih zaslonih gumb odpre filtre v stranski plošči; namizni obrazec ostane viden, izbirniki so bolj zgoščeni in gumba imata več odmika.
+
 ## [0.15.2] - 2026-10-24
 ### Spremenjeno
 - Sekundarni gumbi ponovno uporabljajo barve aktivne predloge strani.

@@ -156,6 +156,8 @@
     border-radius: var(--br-radius);
     background: var(--br-panel);
 }
+.br-runde .br-filtri-panel .offcanvas-body { display: block; padding: 0; }
+.br-runde .br-filtri-panel { --bs-offcanvas-width: min(28rem, 100vw); --bs-offcanvas-bg: var(--br-bg); color: var(--br-fg); }
 .br-filtri .form-label {
     margin-bottom: .125rem;
     color: var(--br-muted);
@@ -200,7 +202,7 @@
 .br-nazaj a { color: var(--br-muted); text-decoration: none; font-weight: 700; }
 .br-nazaj a:hover { color: var(--br-fg); text-decoration: underline; }
 .br-runda__badges { margin: .75rem 0 1.25rem; }
-.br-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1.25rem 0; }
+.br-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin: 1.25rem 0; }
 .br-stat {
     display: flex;
     flex-direction: column;
@@ -213,8 +215,9 @@
     background: var(--br-card);
 }
 .br-stat .v { font-family: "Lexend", system-ui, sans-serif; font-size: clamp(1.2rem, 2.5vw, 1.8rem); line-height: 1.2; font-weight: 800; }
+.br-stat--leader .v { font-size: 1.2rem; }
 .br-stat .l { color: var(--br-muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
-.br-runda__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem 2rem; margin: 0 0 1.5rem; }
+.br-runda__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem 1rem; margin: 0 0 1.5rem; }
 .br-runda__facts div { min-width: 0; }
 .br-runda__facts dt { color: var(--br-muted); font-size: .82rem; text-transform: uppercase; }
 .br-runda__facts dd { margin: 0; font-weight: 700; }
@@ -234,7 +237,7 @@
     border-radius: var(--br-radius);
     background: var(--br-card);
 }
-.br-deli { background: var(--br-panel); }
+.br-deli { background: var(--br-panel); border-radius: calc(var(--br-radius) / 2); }
 :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
     .br-povezava, .br-odjava-gosta) .btn {
     min-height: 44px;
@@ -303,7 +306,8 @@
     background-size: 1rem 1rem;
 }
 .br-runde .br-filtri .form-select {
-    padding-block: .2rem;
+    padding-block: .125rem;
+    padding-left: .5rem;
     font-size: .875rem;
 }
 .br-runde .br-filtri .form-select option {
@@ -333,10 +337,25 @@
 .br-gost-dodatek { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 
 @media (max-width: 575.98px) {
+    .br-stat-grid { gap: .35rem; }
+    .br-stat { padding: .55rem; }
+    .br-stat .v { font-size: 1rem; }
+    .br-stat .l { font-size: .75rem; }
+    .br-stat--leader .v { font-size: .9rem; flex-wrap: wrap; gap: .25rem; }
+    .br-stat--leader .br-leader__avatar { width: 1.5rem; height: 1.5rem; flex-basis: 1.5rem; font-size: .7rem; }
     .br-card__body, .br-gost, .br-deli,
     .br-obrazec form, .br-prijava form, .br-povezava form, .br-odjava-gosta form { padding: 1rem; }
     .br-runde .btn, .br-runda .btn, .br-moje .btn, .br-obrazec .btn,
     .br-prijava .btn, .br-povezava .btn, .br-odjava-gosta .btn { white-space: normal; }
+}
+
+@media (max-width: 767.98px) {
+    .br-runda__facts { gap: .5rem; }
+    .br-runda__facts dt { font-size: .7rem; }
+    .br-runda__facts dd { font-size: .9rem; }
+    .br-runde .br-filtri-panel .offcanvas-body { padding: .75rem; }
+    .br-runde .br-filtri-panel .br-filtri.row { margin: 0; padding: 0; border: 0; background: transparent; }
+    .br-filtri__actions { margin-top: .75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

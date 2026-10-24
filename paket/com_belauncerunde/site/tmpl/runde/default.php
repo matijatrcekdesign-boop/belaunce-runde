@@ -16,36 +16,45 @@ use Joomla\CMS\Router\Route;
     <?php endif; ?>
 
     <?php if ((int) $this->parametri->get('prikazi_filtre', 1) === 1) : ?>
-        <form method="get" action="<?php echo $this->escape($this->povezavaSeznama); ?>" class="br-filtri row g-1 align-items-end mb-4">
-            <div class="col-12 col-sm-6 col-lg-4">
-                <label for="br-filter-tip" class="form-label"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TIP')); ?></label>
-                <select id="br-filter-tip" name="filter_tip" class="form-select">
-                    <option value="0"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VSI_TIPI')); ?></option>
-                    <?php foreach ($this->tipi as $tip) : ?>
-                        <option value="<?php echo $this->escape((string) $tip->id); ?>"<?php echo (int) $tip->id === $this->tip ? ' selected' : ''; ?>><?php echo $this->escape($tip->naziv); ?></option>
-                    <?php endforeach; ?>
-                </select>
+        <button type="button" class="btn btn-primary br-filtri__toggle d-md-none mb-3" data-bs-toggle="offcanvas" data-bs-target="#br-runde-filtri" aria-controls="br-runde-filtri"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?></button>
+        <div class="br-filtri-panel offcanvas-md offcanvas-start" tabindex="-1" id="br-runde-filtri" aria-labelledby="br-runde-filtri-naslov">
+            <div class="offcanvas-header d-md-none">
+                <h2 class="offcanvas-title h5" id="br-runde-filtri-naslov"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?></h2>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" data-bs-target="#br-runde-filtri"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZAPRI_FILTRE')); ?></button>
             </div>
-            <div class="col-12 col-sm-6 col-lg-4">
-                <label for="br-filter-tezavnost" class="form-label"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TEZAVNOST')); ?></label>
-                <select id="br-filter-tezavnost" name="filter_tezavnost" class="form-select">
-                    <option value="0"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VSE_TEZAVNOSTI')); ?></option>
-                    <?php foreach ($this->tezavnosti as $tezavnost) : ?>
-                        <option value="<?php echo $this->escape((string) $tezavnost->id); ?>"<?php echo (int) $tezavnost->id === $this->tezavnost ? ' selected' : ''; ?>><?php echo $this->escape($tezavnost->naziv); ?></option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="offcanvas-body">
+                <form method="get" action="<?php echo $this->escape($this->povezavaSeznama); ?>" class="br-filtri row g-1 align-items-end mb-4">
+                    <div class="col-12 col-md-4">
+                        <label for="br-filter-tip" class="form-label"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TIP')); ?></label>
+                        <select id="br-filter-tip" name="filter_tip" class="form-select">
+                            <option value="0"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VSI_TIPI')); ?></option>
+                            <?php foreach ($this->tipi as $tip) : ?>
+                                <option value="<?php echo $this->escape((string) $tip->id); ?>"<?php echo (int) $tip->id === $this->tip ? ' selected' : ''; ?>><?php echo $this->escape($tip->naziv); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="br-filter-tezavnost" class="form-label"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_TEZAVNOST')); ?></label>
+                        <select id="br-filter-tezavnost" name="filter_tezavnost" class="form-select">
+                            <option value="0"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VSE_TEZAVNOSTI')); ?></option>
+                            <?php foreach ($this->tezavnosti as $tezavnost) : ?>
+                                <option value="<?php echo $this->escape((string) $tezavnost->id); ?>"<?php echo (int) $tezavnost->id === $this->tezavnost ? ' selected' : ''; ?>><?php echo $this->escape($tezavnost->naziv); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="br-filtri__actions col-12 col-md-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?></button>
+                        <a href="<?php echo $this->escape($this->povezavaSeznama); ?>" class="btn btn-outline-secondary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POCISTI')); ?></a>
+                    </div>
+                    <?php // GET obrazec ohrani usmerjanje tudi, ko brskalnik nadomesti query iz action. ?>
+                    <input type="hidden" name="option" value="com_belauncerunde">
+                    <input type="hidden" name="view" value="runde">
+                    <?php if ($this->menijskaPostavka > 0) : ?>
+                        <input type="hidden" name="Itemid" value="<?php echo $this->escape((string) $this->menijskaPostavka); ?>">
+                    <?php endif; ?>
+                </form>
             </div>
-            <div class="col-12 col-lg-4 d-flex gap-2">
-                <button type="submit" class="btn btn-primary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?></button>
-                <a href="<?php echo $this->escape($this->povezavaSeznama); ?>" class="btn btn-outline-secondary"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_POCISTI')); ?></a>
-            </div>
-            <?php // GET obrazec ohrani usmerjanje tudi, ko brskalnik nadomesti query iz action. ?>
-            <input type="hidden" name="option" value="com_belauncerunde">
-            <input type="hidden" name="view" value="runde">
-            <?php if ($this->menijskaPostavka > 0) : ?>
-                <input type="hidden" name="Itemid" value="<?php echo $this->escape((string) $this->menijskaPostavka); ?>">
-            <?php endif; ?>
-        </form>
+        </div>
     <?php endif; ?>
 
     <?php if (!$this->runde) : ?>

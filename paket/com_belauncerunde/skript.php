@@ -154,7 +154,8 @@ class Com_BelauncerundeInstallerScript
 
             // Poštne predloge odstranimo šele, ko je potrjena pot do odstranitvenega SQL.
             foreach (['com_belauncerunde.prijava', 'com_belauncerunde.gost_potrditev',
-                'com_belauncerunde.runda_sprememba', 'com_belauncerunde.runda_odpoved'] as $predloga) {
+                'com_belauncerunde.runda_sprememba', 'com_belauncerunde.runda_odpoved',
+                'com_belauncerunde.nova_prijava'] as $predloga) {
                 if (!MailTemplate::deleteTemplate($predloga)) {
                     Log::add('ODSTRANITEV_MAIL_NAPAKA', Log::ERROR, 'com_belauncerunde');
                 }
@@ -325,6 +326,7 @@ class Com_BelauncerundeInstallerScript
     private function pripraviPostnoPredlogo(): void
     {
         $this->pripraviPredlogiRunde();
+        $this->pripraviPredlogoNovePrijave();
 
         if (MailTemplate::getTemplate('com_belauncerunde.gost_potrditev', '') === null) {
             if (!MailTemplate::createTemplate(
@@ -346,6 +348,41 @@ class Com_BelauncerundeInstallerScript
             )) {
                 throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
             }
+        }
+    }
+
+    /** Registrira predlogo nove prijave in manjkajoča jezika brez prepisovanja sprememb. */
+    private function pripraviPredlogoNovePrijave(): void
+    {
+        $kljuc = 'com_belauncerunde.nova_prijava';
+
+        if (MailTemplate::getTemplate($kljuc, '') === null
+            && !MailTemplate::createTemplate($kljuc,
+                'COM_BELAUNCERUNDE_MAIL_NOVA_PRIJAVA_SUBJECT',
+                'COM_BELAUNCERUNDE_MAIL_NOVA_PRIJAVA_BODY',
+                ['IME', 'RUNDA', 'ZACETEK', 'STEVILO', 'POVEZAVA', 'SITENAME'])) {
+            throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+        }
+
+        $baza = Factory::getContainer()->get(DatabaseInterface::class);
+
+        // Rezervna vrstica language='' ni dokaz, da obstaja tudi prevod posameznega jezika.
+        foreach (['sl-SI', 'en-GB'] as $jezik) {
+            $poizvedba = $baza->createQuery()->select('COUNT(*)')->from($baza->quoteName('#__mail_templates'))
+                ->where('template_id = :kljuc')->where('language = :jezik')
+                ->bind(':kljuc', $kljuc, ParameterType::STRING)->bind(':jezik', $jezik, ParameterType::STRING);
+
+            if ((int) $baza->setQuery($poizvedba)->loadResult() > 0) {
+                continue;
+            }
+
+            $sql = 'INSERT INTO #__mail_templates'
+                . ' (template_id, language, subject, body, htmlbody, attachments, params, extension)'
+                . ' SELECT template_id, :jezik, subject, body, htmlbody, attachments, params, extension'
+                . " FROM #__mail_templates WHERE template_id = :kljuc AND language = ''";
+            $poizvedba = $baza->createQuery()->setQuery($sql)
+                ->bind(':jezik', $jezik, ParameterType::STRING)->bind(':kljuc', $kljuc, ParameterType::STRING);
+            $baza->setQuery($poizvedba)->execute();
         }
     }
 

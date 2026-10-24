@@ -201,8 +201,19 @@ class GostModel extends FormModel
         }
 
         // Pošta teče šele po COMMIT; njena napaka nikoli ne razveljavi prijave.
-        return $surovi !== null && !$this->posljiPotrditev($rundaId, $ime, $email, $surovi)
+        $stanjePoste = $surovi !== null && !$this->posljiPotrditev($rundaId, $ime, $email, $surovi)
             ? 'gost_mail' : 'gost_prijavljen';
+
+        // Vodjo obvestimo po gostovi potrditvi; napaka ustvarjanja modela ali pošte ne vpliva na vpis.
+        try {
+            $prijave = $this->getMVCFactory()->createModel('Prijave', 'Site', ['ignore_request' => true]);
+            \Belaunce\Component\Belauncerunde\Administrator\Service\MailService::obvestiVodjoOPrijavi(
+                $rundaId, $ime, $prijave->steviloUdelezencev($rundaId), 0
+            );
+        } catch (\Throwable $napaka) {
+        }
+
+        return $stanjePoste;
     }
 
     /** Pošlje urejevalno Joomlino predlogo z lokalnim časom in absolutno SEF povezavo. */

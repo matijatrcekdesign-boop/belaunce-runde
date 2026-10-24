@@ -133,6 +133,10 @@
 			<option value="zacetek">COM_BELAUNCERUNDE_FIELD_ZACETEK_LABEL</option>
 			<option value="lokacija">COM_BELAUNCERUNDE_FIELD_LOKACIJA_LABEL</option>
 		</field>
+		<field name="mail_nova_prijava" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="1"
+			label="COM_BELAUNCERUNDE_CONFIG_MAIL_NOVA_PRIJAVA_LABEL" description="COM_BELAUNCERUNDE_CONFIG_MAIL_NOVA_PRIJAVA_DESC">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
 	</fieldset>
 	<fieldset name="viber" label="COM_BELAUNCERUNDE_CONFIG_VIBER">
 		<field name="viber_predloga" type="textarea" rows="8" filter="string" default=""

@@ -17,7 +17,7 @@ use Joomla\CMS\Router\Route;
 
     <?php if ((int) $this->parametri->get('prikazi_filtre', 1) === 1) : ?>
         <button type="button" class="btn btn-primary br-filtri__toggle d-md-none mb-3" data-bs-toggle="offcanvas" data-bs-target="#br-runde-filtri" aria-controls="br-runde-filtri"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?></button>
-        <div class="br-filtri-panel offcanvas-md offcanvas-start" tabindex="-1" id="br-runde-filtri" aria-labelledby="br-runde-filtri-naslov">
+        <div class="br-filtri-panel offcanvas offcanvas-start" tabindex="-1" id="br-runde-filtri" aria-labelledby="br-runde-filtri-naslov">
             <div class="offcanvas-header d-md-none">
                 <h2 class="offcanvas-title h5" id="br-runde-filtri-naslov"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?></h2>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" data-bs-target="#br-runde-filtri"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ZAPRI_FILTRE')); ?></button>

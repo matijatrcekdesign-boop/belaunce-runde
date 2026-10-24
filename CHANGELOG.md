@@ -6,6 +6,10 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.15.4] - 2026-10-24
+### Popravljeno
+- Mobilni filter uporablja navadno Joomlino stransko ploščo, na namizju pa je s CSS ponastavitvijo viden na svojem mestu brez praznega prostora tudi v predlogi brez odzivnega razreda za stransko ploščo.
+
 ## [0.15.3] - 2026-10-24
 ### Spremenjeno
 - Vodja je ob ploščicah dolžine in težavnosti; začetek, lokacija in trajanje so v isti vrstici.

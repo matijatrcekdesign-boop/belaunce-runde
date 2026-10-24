@@ -358,6 +358,23 @@
     .br-filtri__actions { margin-top: .75rem; }
 }
 
+/* Namizni filter je v toku strani, ker predloga nima razreda .offcanvas-md. */
+@media (min-width: 768px) {
+    .br-runde .br-filtri-panel.offcanvas {
+        --bs-offcanvas-width: auto;
+        position: static;
+        display: block;
+        width: auto;
+        transform: none;
+        visibility: visible;
+        background: transparent;
+        z-index: auto;
+        border: 0;
+    }
+    .br-runde .br-filtri-panel .offcanvas-header { display: none; }
+    .br-runde .br-filtri__toggle { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .br-card { transition: none; }
     .br-card:hover, .br-card:focus-within { transform: none; }

@@ -6,6 +6,10 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.17.0] - 2026-10-25
+### Dodano
+- Nastavitvi za branje AcyMailing list in članstva iz druge baze na isti MySQL instanci; lokalna nastavitev ostaja privzeta.
+
 ## [0.16.0] - 2026-10-24
 ### Dodano
 - Vodja runde prejme nastavljivo email obvestilo z imenom in skupnim številom udeležencev ob novi prijavi člana ali gosta.

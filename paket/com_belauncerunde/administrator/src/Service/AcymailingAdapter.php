@@ -9,6 +9,7 @@
 
 namespace Belaunce\Component\Belauncerunde\Administrator\Service;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
 use Joomla\Database\DatabaseInterface;
@@ -23,7 +24,8 @@ use Joomla\Database\ParameterType;
  * `#__acym_user` (`id`, `name`, `email`, `active`, `cms_id`),
  * `#__acym_user_has_list` (`user_id`, `list_id`, `status`) in
  * `#__acym_list` (`id`, `name`, `active`). Adapter tabele AcyMailinga
- * vedno samo bere in nikoli ne izvaja zapisovalnih poizvedb.
+ * vedno samo bere in nikoli ne izvaja zapisovalnih poizvedb. Po D61 lahko
+ * bere tudi iz druge baze na isti povezavi.
  *
  * @since  0.3.0
  */
@@ -39,6 +41,15 @@ class AcymailingAdapter
     /** @var bool|null Predpomnjen rezultat preverjanja namestitve. */
     private ?bool $namescen = null;
 
+    /** @var string Ime oddaljene baze AcyMailing; prazno = ista baza. */
+    private string $acymBaza = '';
+
+    /** @var string Predpona tabel oddaljene namestitve. */
+    private string $acymPredpona = '';
+
+    /** @var bool Oddaljena nastavitev je nepopolna ali neveljavna. */
+    private bool $nastavitevNeveljavna = false;
+
     /**
      * Pripravi adapter.
      *
@@ -49,6 +60,45 @@ class AcymailingAdapter
     public function __construct(?DatabaseInterface $db = null)
     {
         $this->db = $db ?: Factory::getContainer()->get(DatabaseInterface::class);
+
+        $parametri = ComponentHelper::getParams('com_belauncerunde');
+        $baza      = trim((string) $parametri->get('acym_baza', ''));
+        $predpona  = trim((string) $parametri->get('acym_predpona', ''));
+
+        if ($baza !== '') {
+            // Preverba omeji imena, preden jih uporabimo pri sestavi poizvedb.
+            $this->nastavitevNeveljavna = !preg_match('/^[A-Za-z0-9_$]{1,64}$/', $baza)
+                || !preg_match('/^[A-Za-z0-9_]{1,30}$/', $predpona);
+        }
+
+        $this->acymBaza     = $baza;
+        $this->acymPredpona = $predpona;
+    }
+
+    /**
+     * Sestavi kvalificirano in ubežano ime tabele AcyMailing. Pri lokalni
+     * bazi uporabi predpono povezave (#__), pri oddaljeni bazi lastno
+     * predpono, brez poseganja v povezavo.
+     *
+     * @param   string  $ime    Konstanta TABELA_* (z "#__").
+     * @param   string  $alias  Neobvezen vzdevek.
+     *
+     * @return  string
+     *
+     * @since   0.17.0
+     */
+    private function tabela(string $ime, string $alias = ''): string
+    {
+        if ($this->acymBaza === '') {
+            return $alias === ''
+                ? $this->db->quoteName($ime)
+                : $this->db->quoteName($ime, $alias);
+        }
+
+        $golo   = str_replace('#__', $this->acymPredpona, $ime);
+        $tabela = $this->db->quoteName($this->acymBaza) . '.' . $this->db->quoteName($golo);
+
+        return $alias === '' ? $tabela : $tabela . ' AS ' . $this->db->quoteName($alias);
     }
 
     /**
@@ -64,21 +114,46 @@ class AcymailingAdapter
             return $this->namescen;
         }
 
-        try {
-            $tabele = $this->db->getTableList();
-            $potrebne = [
-                $this->db->replacePrefix(self::TABELA_UPORABNIKI),
-                $this->db->replacePrefix(self::TABELA_NAROCNINE),
-                $this->db->replacePrefix(self::TABELA_LISTE),
-            ];
+        if ($this->nastavitevNeveljavna) {
+            Log::add('ACYM_NASTAVITEV_NEVELJAVNA', Log::WARNING, 'com_belauncerunde');
 
-            foreach ($potrebne as $tabela) {
-                if (!\in_array($tabela, $tabele, true)) {
-                    return $this->namescen = false;
+            return $this->namescen = false;
+        }
+
+        try {
+            if ($this->acymBaza === '') {
+                // Lokalna veja ohrani obstoječe preverjanje in predpono povezave.
+                $tabele = $this->db->getTableList();
+                $potrebne = [
+                    $this->db->replacePrefix(self::TABELA_UPORABNIKI),
+                    $this->db->replacePrefix(self::TABELA_NAROCNINE),
+                    $this->db->replacePrefix(self::TABELA_LISTE),
+                ];
+
+                foreach ($potrebne as $tabela) {
+                    if (!\in_array($tabela, $tabele, true)) {
+                        return $this->namescen = false;
+                    }
                 }
+
+                return $this->namescen = true;
             }
 
-            return $this->namescen = true;
+            // Oddaljena veja preveri vse tri tabele brez menjave povezave.
+            $golaImena = [
+                str_replace('#__', $this->acymPredpona, self::TABELA_UPORABNIKI),
+                str_replace('#__', $this->acymPredpona, self::TABELA_NAROCNINE),
+                str_replace('#__', $this->acymPredpona, self::TABELA_LISTE),
+            ];
+            $query = $this->db->createQuery()
+                ->select('COUNT(*)')
+                ->from($this->db->quoteName('information_schema.tables'))
+                ->where($this->db->quoteName('table_schema') . ' = :baza')
+                ->whereIn($this->db->quoteName('table_name'), $golaImena, ParameterType::STRING)
+                ->bind(':baza', $this->acymBaza);
+            $this->db->setQuery($query);
+
+            return $this->namescen = ((int) $this->db->loadResult() === 3);
         } catch (\Throwable $e) {
             $this->zabeleziNapako('Preverjanje namestitve AcyMailinga ni uspelo.', $e);
 
@@ -102,7 +177,7 @@ class AcymailingAdapter
         try {
             $query = $this->db->createQuery()
                 ->select($this->db->quoteName(['id', 'name']))
-                ->from($this->db->quoteName(self::TABELA_LISTE))
+                ->from($this->tabela(self::TABELA_LISTE))
                 ->order($this->db->quoteName('name') . ' ASC, ' . $this->db->quoteName('id') . ' ASC');
             $this->db->setQuery($query);
 
@@ -150,8 +225,8 @@ class AcymailingAdapter
                         $this->db->quoteName('u.cms_id'),
                     ]
                 )
-                ->from($this->db->quoteName(self::TABELA_UPORABNIKI, 'u'))
-                ->join('INNER', $this->db->quoteName(self::TABELA_NAROCNINE, 'l') . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id'))
+                ->from($this->tabela(self::TABELA_UPORABNIKI, 'u'))
+                ->join('INNER', $this->tabela(self::TABELA_NAROCNINE, 'l') . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id'))
                 ->where('LOWER(' . $this->db->quoteName('u.email') . ') = :email')
                 ->where($this->db->quoteName('u.active') . ' = :aktiven')
                 ->where($this->db->quoteName('l.list_id') . ' = :lista_id')
@@ -206,10 +281,10 @@ class AcymailingAdapter
                         $this->db->quoteName('l.status', 'status_liste'),
                     ]
                 )
-                ->from($this->db->quoteName(self::TABELA_UPORABNIKI, 'u'))
+                ->from($this->tabela(self::TABELA_UPORABNIKI, 'u'))
                 ->join(
                     'LEFT',
-                    $this->db->quoteName(self::TABELA_NAROCNINE, 'l')
+                    $this->tabela(self::TABELA_NAROCNINE, 'l')
                     . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id')
                     . ' AND ' . $this->db->quoteName('l.list_id') . ' = :lista_id'
                 )
@@ -264,8 +339,8 @@ class AcymailingAdapter
             $status  = 1;
             $query = $this->db->createQuery()
                 ->select('COUNT(*)')
-                ->from($this->db->quoteName(self::TABELA_UPORABNIKI, 'u'))
-                ->join('INNER', $this->db->quoteName(self::TABELA_NAROCNINE, 'l') . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id'))
+                ->from($this->tabela(self::TABELA_UPORABNIKI, 'u'))
+                ->join('INNER', $this->tabela(self::TABELA_NAROCNINE, 'l') . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id'))
                 ->where($this->db->quoteName('u.id') . ' = :acym_id')
                 ->where($this->db->quoteName('u.active') . ' = :aktiven')
                 ->where($this->db->quoteName('l.list_id') . ' = :lista_id')
@@ -310,7 +385,7 @@ class AcymailingAdapter
                         $this->db->quoteName('cms_id'),
                     ]
                 )
-                ->from($this->db->quoteName(self::TABELA_UPORABNIKI))
+                ->from($this->tabela(self::TABELA_UPORABNIKI))
                 ->where($this->db->quoteName('id') . ' = :acym_id')
                 ->bind(':acym_id', $acymId, ParameterType::INTEGER);
             $this->db->setQuery($query);
@@ -345,8 +420,8 @@ class AcymailingAdapter
             $status  = 1;
             $query = $this->db->createQuery()
                 ->select($this->db->quoteName('u.id'))
-                ->from($this->db->quoteName(self::TABELA_UPORABNIKI, 'u'))
-                ->join('INNER', $this->db->quoteName(self::TABELA_NAROCNINE, 'l') . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id'))
+                ->from($this->tabela(self::TABELA_UPORABNIKI, 'u'))
+                ->join('INNER', $this->tabela(self::TABELA_NAROCNINE, 'l') . ' ON ' . $this->db->quoteName('l.user_id') . ' = ' . $this->db->quoteName('u.id'))
                 ->where($this->db->quoteName('u.active') . ' = :aktiven')
                 ->where($this->db->quoteName('l.list_id') . ' = :lista_id')
                 ->where($this->db->quoteName('l.status') . ' = :status')

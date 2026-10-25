@@ -91,6 +91,23 @@
 		addfieldprefix="Belaunce\Component\Belauncerunde\Administrator\Field"
 	>
 		<field
+			name="acym_baza"
+			type="text"
+			label="COM_BELAUNCERUNDE_CONFIG_ACYM_BAZA_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_ACYM_BAZA_DESC"
+			default=""
+			filter="string"
+		/>
+		<field
+			name="acym_predpona"
+			type="text"
+			label="COM_BELAUNCERUNDE_CONFIG_ACYM_PREDPONA_LABEL"
+			description="COM_BELAUNCERUNDE_CONFIG_ACYM_PREDPONA_DESC"
+			default=""
+			filter="string"
+			showon="acym_baza!:"
+		/>
+		<field
 			name="lista_clanov"
 			type="acymlista"
 			label="COM_BELAUNCERUNDE_CONFIG_LISTA_CLANOV_LABEL"

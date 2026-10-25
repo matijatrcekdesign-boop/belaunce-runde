@@ -19,6 +19,85 @@ use Joomla\Database\ParameterType;
 class MailService
 {
     /**
+     * Ob dejanski novi prijavi obvesti samo vodjo aktivne runde.
+     *
+     * @param  int     $rundaId        ID runde.
+     * @param  string  $imeUdelezenca  Prikazno ime udeleženca brez kontaktov.
+     * @param  int     $stevilo        Skupno število udeležencev po prijavi.
+     * @param  int     $uporabnikId    ID člana ali nič za gosta.
+     * @return bool
+     */
+    public static function obvestiVodjoOPrijavi(int $rundaId, string $imeUdelezenca, int $stevilo, int $uporabnikId = 0): bool
+    {
+        try {
+            if ((int) ComponentHelper::getParams('com_belauncerunde')->get('mail_nova_prijava', 1) === 0) {
+                return true;
+            }
+
+            $baza = Factory::getContainer()->get(DatabaseInterface::class);
+            $poizvedba = $baza->createQuery()->select($baza->quoteName(['naslov', 'zacetek', 'vodja_id', 'stanje']))
+                ->from($baza->quoteName('#__belaunce_runde'))->where('id = :runda')
+                ->bind(':runda', $rundaId, ParameterType::INTEGER);
+            $runda = $baza->setQuery($poizvedba)->loadObject();
+
+            if ($runda === null || (int) $runda->stanje !== 1) {
+                return true;
+            }
+
+            $vodjaId = (int) $runda->vodja_id;
+
+            if ($uporabnikId !== 0 && $uporabnikId === $vodjaId) {
+                return true;
+            }
+
+            $poizvedba = $baza->createQuery()->select($baza->quoteName('email'))
+                ->from($baza->quoteName('#__users'))->where('id = :vodja')
+                ->bind(':vodja', $vodjaId, ParameterType::INTEGER);
+            $email = trim((string) $baza->setQuery($poizvedba)->loadResult());
+
+            if ($email === '') {
+                return true;
+            }
+
+            $app = Factory::getApplication();
+            // Jezik in lokalni čas sledita istemu pravilu D12 kot obvestila o spremembi runde.
+            $oznaka = $app->isClient('site') ? $app->getLanguage()->getTag()
+                : (string) ComponentHelper::getParams('com_languages')->get('site', 'sl-SI');
+            $jezik = Factory::getContainer()->get(LanguageFactoryInterface::class)->createLanguage($oznaka, false);
+            $jezik->load('com_belauncerunde', JPATH_SITE, $oznaka, true, true);
+            $lokalni = new \DateTimeImmutable(CasHelper::izUtc((string) $runda->zacetek), new \DateTimeZone('UTC'));
+            $zacetek = $lokalni->format($jezik->_('COM_BELAUNCERUNDE_DATUM_OBLIKA'));
+            $povezava = Route::link('site', 'index.php?option=com_belauncerunde&view=runda&id=' . $rundaId,
+                false, Route::TLS_IGNORE, true);
+
+            // En sam prejemnik; v podatkih predloge ni udeleženčevega emaila ali telefona.
+            $posiljatelj = Factory::getContainer()->get(MailerFactoryInterface::class)->createMailer();
+            $predloga = new PosameznaMailTemplate('com_belauncerunde.nova_prijava', $oznaka, $posiljatelj);
+            $podatki = [
+                'IME' => $imeUdelezenca, 'RUNDA' => (string) $runda->naslov,
+                'ZACETEK' => $zacetek, 'STEVILO' => (string) $stevilo,
+                'POVEZAVA' => $povezava, 'SITENAME' => (string) $app->get('sitename'),
+            ];
+            $predloga->addTemplateData($podatki);
+            $predloga->addUnsafeTags(array_keys($podatki));
+            $predloga->addRecipient($email);
+            $uspeh = (bool) $predloga->send();
+        } catch (\Throwable $napaka) {
+            // Napaka lahko vsebuje osebne podatke; njene vsebine ne beležimo.
+            $uspeh = false;
+        }
+
+        // Tudi napaka dnevnika ne sme spremeniti izida že potrjene prijave.
+        try {
+            Log::add(($uspeh ? 'NOVA_PRIJAVA_MAIL' : 'NOVA_PRIJAVA_MAIL_NAPAKA') . ' runda_id=' . $rundaId,
+                $uspeh ? Log::INFO : Log::WARNING, 'com_belauncerunde');
+        } catch (\Throwable $napaka) {
+        }
+
+        return $uspeh;
+    }
+
+    /**
      * Porabi zaznavo iste tabele enkrat; odpoved ima prednost pred spremembo.
      *
      * @param  RundaTable  $tabela

@@ -1,0 +1,1 @@
+-- Naloga 20: obvestilo vodji uporablja obstoječe tabele; shema ostane nespremenjena.

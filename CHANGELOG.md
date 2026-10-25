@@ -6,6 +6,11 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.16.0] - 2026-10-24
+### Dodano
+- Vodja runde prejme nastavljivo email obvestilo z imenom in skupnim številom udeležencev ob novi prijavi člana ali gosta.
+- Poštna predloga `com_belauncerunde.nova_prijava` ima slovensko in angleško različico; ob odstranitvi brez ohranitve podatkov se izbriše.
+
 ## [0.15.6] - 2026-10-24
 ### Spremenjeno
 - Na mobilni podstrani odprte runde je ob spodnjem robu stalno vidna vrstica s tipom, težavnostjo in trenutno akcijo »Pridem« oziroma »Odjava«; namizni prikaz ostane nespremenjen.

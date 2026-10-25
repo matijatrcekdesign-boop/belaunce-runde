@@ -268,6 +268,16 @@ class PrijaveModel extends BaseDatabaseModel
         if ($spremenjeno > 0) {
             Log::add(($prihod ? 'PRIJAVA_DODANA' : 'PRIJAVA_ODSTRANJENA')
                 . ' runda_id=' . $rundaId . ' uporabnik_id=' . $uporabnikId, Log::INFO, 'com_belauncerunde');
+
+            if ($prihod) {
+                // Pošlji šele po novi vrstici; napaka štetja ali pošte ne razveljavi prijave.
+                try {
+                    \Belaunce\Component\Belauncerunde\Administrator\Service\MailService::obvestiVodjoOPrijavi(
+                        $rundaId, (string) $uporabnik->name, $this->steviloUdelezencev($rundaId), $uporabnikId
+                    );
+                } catch (\Throwable $napaka) {
+                }
+            }
         }
 
         return $prihod ? 'prijavljen' : 'odjavljen';

@@ -68,6 +68,8 @@ V *Komponente → Runde Belaunce → Možnosti → AcyMailing* izberi:
 
 Na DDEV sta preverjena ID-ja **6** za člane in **9** za listo Runde. Na produkciji sta ID-ja lahko drugačna, zato list vedno izberi po imenu v spustnem seznamu.
 
+Če je komponenta na ločeni Joomla namestitvi na poddomeni, AcyMailing pa na glavni strani, morata biti bazi na isti MySQL instanci; uporabnik baze poddomene potrebuje pravico `SELECT` za bazo AcyMailinga (npr. `GRANT SELECT ON glavna_baza.* TO 'uporabnik'@'host'`). V *Možnosti → AcyMailing* vpiši **Zunanja baza AcyMailing** in **Predpona tabel oddaljene namestitve**, shrani, ponovno izberi **Lista članov** in **Lista Runde** iz oddaljene baze ter znova shrani. Nato rezultat preveri v **Preveri člana**.
+
 ### Preveri člana
 Orodje je v administraciji pod *Komponente → Runde Belaunce → Preveri člana* in je namenjeno hitremu testu po posodobitvah AcyMailinga ali spremembah list.
 

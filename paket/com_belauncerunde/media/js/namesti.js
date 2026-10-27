@@ -41,7 +41,7 @@
         gumb = document.createElement('button');
         gumb.type = 'button';
         gumb.className = 'btn btn-primary br-namesti-gumb';
-        gumb.textContent = 'Namesti aplikacijo';
+        gumb.textContent = Joomla.Text._('COM_BELAUNCERUNDE_PWA_NAMESTI');
         gumb.hidden = samostojno() || !odlozenPoziv;
         blok.appendChild(gumb);
         koren.prepend(blok);
@@ -80,11 +80,11 @@
             namig.className = 'alert alert-info br-namesti-namig d-flex align-items-center gap-2';
             namig.setAttribute('role', 'note');
             const besedilo = document.createElement('span');
-            besedilo.textContent = "Dodaj na domači zaslon: pritisni Deli, nato 'Dodaj na domači zaslon'.";
+            besedilo.textContent = Joomla.Text._('COM_BELAUNCERUNDE_PWA_IOS_NAMIG');
             const zapri = document.createElement('button');
             zapri.type = 'button';
             zapri.className = 'btn-close ms-auto';
-            zapri.setAttribute('aria-label', 'Zapri');
+            zapri.setAttribute('aria-label', Joomla.Text._('COM_BELAUNCERUNDE_PWA_ZAPRI'));
             zapri.addEventListener('click', () => {
                 namig.remove();
 

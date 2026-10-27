@@ -6,6 +6,10 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.18.1] - 2026-10-27
+### Popravljeno
+- Besedila za namestitev PWA se prikažejo v jeziku strani (sl-SI ali en-GB).
+
 ## [0.18.0] - 2026-10-27
 ### Dodano
 - Namestljiv spletni pogled rund z manifestom, ikonami, gumbom za namestitev in namigom za iOS.

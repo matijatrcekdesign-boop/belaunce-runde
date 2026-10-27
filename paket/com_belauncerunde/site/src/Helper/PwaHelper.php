@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\Helper;
 
 use Joomla\CMS\Document\Document;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 
 \defined('_JEXEC') or die;
@@ -33,6 +34,9 @@ class PwaHelper
         $document->addScriptOptions('com_belauncerunde.pwa', [
             'swUrl' => Uri::root() . 'index.php?option=com_belauncerunde&task=pwa.sw',
         ]);
+        Text::script('COM_BELAUNCERUNDE_PWA_NAMESTI');
+        Text::script('COM_BELAUNCERUNDE_PWA_IOS_NAMIG');
+        Text::script('COM_BELAUNCERUNDE_PWA_ZAPRI');
         $document->getWebAssetManager()->useScript('com_belauncerunde.namesti');
     }
 }

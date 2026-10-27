@@ -43,17 +43,39 @@ class AcymlistaField extends ListField
         $adapter = new AcymailingAdapter();
 
         if (!$adapter->jeNamescen()) {
-            return array_merge(parent::getOptions(), [
+            $options = [
                 HTMLHelper::_('select.option', 0, Text::_('COM_BELAUNCERUNDE_ACYM_LISTA_NI_NAMESCEN')),
-            ]);
+            ];
+        } else {
+            $options = [
+                HTMLHelper::_('select.option', 0, Text::_('COM_BELAUNCERUNDE_ACYM_LISTA_IZBERI')),
+            ];
+
+            foreach ($adapter->seznamList() as $id => $ime) {
+                $options[] = HTMLHelper::_('select.option', $id, Text::sprintf('COM_BELAUNCERUNDE_ACYM_LISTA_OPTION', $ime, $id));
+            }
         }
 
-        $options = [
-            HTMLHelper::_('select.option', 0, Text::_('COM_BELAUNCERUNDE_ACYM_LISTA_IZBERI')),
-        ];
+        $trenutna = (int) $this->value;
 
-        foreach ($adapter->seznamList() as $id => $ime) {
-            $options[] = HTMLHelper::_('select.option', $id, Text::sprintf('COM_BELAUNCERUNDE_ACYM_LISTA_OPTION', $ime, $id));
+        if ($trenutna > 0) {
+            $obstaja = false;
+
+            foreach ($options as $option) {
+                if ((int) $option->value === $trenutna) {
+                    $obstaja = true;
+                    break;
+                }
+            }
+
+            if (!$obstaja) {
+                // Shranjena lista ostane izbrana, tudi ko je trenutno ni mogoče prebrati.
+                $options[] = HTMLHelper::_(
+                    'select.option',
+                    $trenutna,
+                    Text::sprintf('COM_BELAUNCERUNDE_ACYM_LISTA_NEDOSEGLJIVA', $trenutna)
+                );
+            }
         }
 
         return array_merge(parent::getOptions(), $options);

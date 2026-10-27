@@ -1,9 +1,11 @@
 # NALOGA 19 — PWA: namestitev kot samostojen pogled, BREZ push
 
 Veja:    feature/NALOGA-19-pwa  (iz najnovejšega develop)
-Verzija: 0.17.0 (ali naslednja prosta, če je 18/19 drugi po vrsti — uskladi VSE manifeste)
+Verzija: 0.18.0 — uskladi VSE: paket/pkg_belauncerunde.xml, paket/com_belauncerunde/belauncerunde.xml,
+         paket/plg_authentication_belauncerunde/belauncerunde.xml, paket/plg_task_belauncerunde/belauncerunde.xml,
+         posodobitve.xml, CHANGELOG.md (naloga 18 = 0.17.0 in naloga 21 = 0.17.1 sta že v develop)
 PR v:    develop
-Odvisno: D62 (potrjeno: PWA brez push v v1; push je ločena faza 2 po izidu)
+Odvisno: D62 (potrjeno: PWA brez push v v1; push je ločena faza 2 po izidu), D60 (poddomena = ločena namestitev)
 
 ------------------------------------------------------------
 CILJ
@@ -61,10 +63,12 @@ vanjo — ime je fiksno besedilo, ker manifest mora biti servran kot
   ]
 }
 
-Opomba: `start_url: "/runde"` predpostavlja, da obstaja menijska
-postavka z aliasom `runde` (velja za trenutno postavitev — glej
-kontrolni seznam v TASKS.md). Če admin spremeni alias, mora ročno
-popraviti to datoteko (zapiši v NAVODILA.md).
+Opomba (D60): komponenta teče na LOČENI namestitvi na poddomeni, zato
+`scope: "/"` pokriva samo to poddomeno (ne glavne strani belaunce.cc) —
+to je želeno. `start_url: "/runde"` predpostavlja menijsko postavko z
+aliasom `runde` na TEJ namestitvi (kontrolni seznam v TASKS.md). Če je
+alias drugačen, mora admin ročno popraviti to datoteko (zapiši v
+NAVODILA.md). Če je Joomla nameščena v podmapi, popravi tudi `scope`.
 
 ------------------------------------------------------------
 IKONE — media/com_belauncerunde/images/
@@ -124,10 +128,21 @@ glavo `Service-Worker-Allowed: /`:
      e.waitUntil(clients.claim());
    });
    self.addEventListener('fetch', (e) => {
+     // SW sme posegati SAMO v navigacije (odpiranje strani) na istem izvoru
+     // in zunaj /administrator. Vse ostalo (slike, skripte, zunanje vdelave
+     // Strava/Komoot/Bikemap, pisave, POST obrazci) brskalnik obdela sam —
+     // brez respondWith.
+     const zahteva = e.request;
+     const url = new URL(zahteva.url);
+     if (zahteva.mode !== 'navigate' || zahteva.method !== 'GET'
+         || url.origin !== self.location.origin
+         || url.pathname.indexOf('/administrator') === 0) {
+       return;
+     }
      // Minimalen "network-first": offline ne prikaže cache vsebine,
      // samo prepreči, da bi se aplikacija sesula brez omrežja.
      e.respondWith(
-       fetch(e.request).catch(() => new Response(
+       fetch(zahteva).catch(() => new Response(
          'Ni povezave. Poskusi znova, ko bo internet na voljo.',
          { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
        ))
@@ -227,11 +242,12 @@ MERILA SPREJEMA
     nameščena/zagnana v standalone načinu.
 6.  iOS Safari: namig za "Dodaj na domači zaslon" se prikaže enkrat,
     zapiranje ga ne prikaže znova (localStorage).
-7.  Offline (DevTools → Network → Offline): nalaganje strani ne vrže
-    neobdelane brskalnikove napake, prikaže se besedilo iz `sw.js`
-    fallback odgovora (ali predhodno naložena stran, če je SW to že
-    streženo — minimalen SW tega ne cacheira, torej samo fallback na
-    neobstoječih zahtevah je pričakovan).
+7.  Offline (DevTools → Network → Offline): navigacija na stran
+    komponente prikaže besedilo iz fallback odgovora SW (503, "Ni
+    povezave…"), ne surove brskalnikove napake. Zahteve, ki niso
+    navigacije, niso na istem izvoru ali so pod /administrator, SW NE
+    prestreže (v Network tabu niso "from ServiceWorker"); /administrator
+    in zunanje vdelave trase delujejo kot prej.
 8.  BREZ push: noben `push` ali `notificationclick` listener, nobena
     zahteva za `Notification.requestPermission()`, nobena nova tabela
     naročnin.

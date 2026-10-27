@@ -6,6 +6,10 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.17.1] - 2026-10-27
+### Popravljeno
+- Shranjena izbira AcyMailing liste ostane izbrana ob nedosegljivem AcyMailingu ali manjkajočem ID-ju liste.
+
 ## [0.17.0] - 2026-10-25
 ### Dodano
 - Nastavitvi za branje AcyMailing list in članstva iz druge baze na isti MySQL instanci; lokalna nastavitev ostaja privzeta.

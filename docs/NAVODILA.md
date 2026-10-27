@@ -2,6 +2,10 @@
 
 Navodila za člane, vodje, goste in administratorje paketa Runde Belaunce.
 
+## Namestitev aplikacije
+
+V Chromu na strani rund izberi **Namesti aplikacijo**, ko se gumb pojavi, ali uporabi ikono za namestitev v naslovni vrstici. Na iPhonu v Safariju izberi **Deli → Dodaj na domači zaslon**; namig na strani lahko zapreš. Nameščena aplikacija se odpre v samostojnem oknu. Za ogled rund in prijavo je še vedno potrebna internetna povezava; brez nje aplikacija pokaže kratko obvestilo. Na ločeni Joomla namestitvi mora imeti javna menijska postavka seznama alias `runde`. Če je alias drugačen, ročno popravi `start_url` v `media/com_belauncerunde/manifest.webmanifest`; pri namestitvi Joomle v podmapo popravi še `scope`.
+
 ## Videz rund
 
 Kartice na seznamu in v pogledu **Moje runde** imajo barvno zgornjo črto, čip tipa in krogec z začetnico vodje. Barvo določi šifrant tipov v administraciji; tip brez barve dobi nevtralno barvo. Tip, težavnost in odpoved so vedno navedeni tudi z besedilom. Modri merilnik težavnosti prikazuje objavljene ravni po vrstnem redu v šifrantu. Stran runde pokaže dolžino, trajanje in težavnost v ploščicah; dolžina uporablja decimalno vejico in nima odvečne ničle. Na telefonu se kartice zložijo v en stolpec, tipke pa imajo povečano območje za dotik.

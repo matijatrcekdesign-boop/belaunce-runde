@@ -1,0 +1,15 @@
+{
+  "name": "Runde Belaunce",
+  "short_name": "Runde",
+  "description": "Kolesarske runde Belaunce",
+  "start_url": "/runde",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2a76e0",
+  "lang": "sl-SI",
+  "icons": [
+    { "src": "images/ikona.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "images/ikona-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

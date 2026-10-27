@@ -2,6 +2,7 @@
 
 namespace Belaunce\Component\Belauncerunde\Site\View\Odjavagosta;
 
+use Belaunce\Component\Belauncerunde\Site\Helper\PwaHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -57,6 +58,7 @@ class HtmlView extends BaseHtmlView
 
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
+        PwaHelper::pripni($this->getDocument());
         parent::display($tpl);
     }
 }

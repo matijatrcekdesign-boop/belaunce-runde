@@ -4,6 +4,7 @@ namespace Belaunce\Component\Belauncerunde\Site\View\Moje;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\PwaHelper;
 use Belaunce\Component\Belauncerunde\Site\Service\Router;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -114,6 +115,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setTitle(Text::_('COM_BELAUNCERUNDE_MOJE_NASLOV'));
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
+        PwaHelper::pripni($this->getDocument());
         parent::display($tpl);
     }
 }

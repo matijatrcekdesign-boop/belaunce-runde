@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\View\Runde;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\PwaHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
@@ -110,6 +111,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setTitle(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV'));
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
+        PwaHelper::pripni($this->getDocument());
         parent::display($tpl);
     }
 }

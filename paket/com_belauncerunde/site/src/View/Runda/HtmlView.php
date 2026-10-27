@@ -6,6 +6,7 @@ use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\TrasaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
+use Belaunce\Component\Belauncerunde\Site\Helper\PwaHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\VidezHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Log\Log;
@@ -196,6 +197,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setMetaData('og:site_name', (string) $app->get('sitename'), 'property');
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
+        PwaHelper::pripni($this->getDocument());
         if ($this->vodja && $this->odprta) {
             $this->getDocument()->getWebAssetManager()->useScript('bootstrap.modal');
         }

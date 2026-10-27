@@ -2,6 +2,7 @@
 
 namespace Belaunce\Component\Belauncerunde\Site\View\Obrazec;
 
+use Belaunce\Component\Belauncerunde\Site\Helper\PwaHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
@@ -67,6 +68,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->getWebAssetManager()->useScript('form.validate')->useScript('keepalive')
             ->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
+        PwaHelper::pripni($this->getDocument());
         parent::display($tpl);
     }
 }

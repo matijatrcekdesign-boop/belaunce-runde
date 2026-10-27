@@ -6,6 +6,11 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+## [0.18.0] - 2026-10-27
+### Dodano
+- Namestljiv spletni pogled rund z manifestom, ikonami, gumbom za namestitev in namigom za iOS.
+- Service worker za navigacije na strani rund vrne jasno obvestilo, ko ni omrežja; push obvestil ni.
+
 ## [0.17.1] - 2026-10-27
 ### Popravljeno
 - Shranjena izbira AcyMailing liste ostane izbrana ob nedosegljivem AcyMailingu ali manjkajočem ID-ju liste.

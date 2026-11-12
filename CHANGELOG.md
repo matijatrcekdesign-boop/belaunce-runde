@@ -6,6 +6,9 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
 
+### Spremenjeno
+- Grafična prilagoditev videza (mobile-first) v `media/css/site.css`: manjša, subtilnejša zaobljenost — kartice/paneli `--br-radius` 8→5 px, čipi/značke `--br-chip-radius` 7→3 px, gumbi `border-radius` 3 px (filter gumb iz pill `50rem` v 3 px); glavni akcijski gumb `.btn-secondary` (npr. »Odpri rundo«) dobi belo pisavo na modri #6ab7e3.
+
 ## [0.18.1] - 2026-10-27
 ### Popravljeno
 - Besedila za namestitev PWA se prikažejo v jeziku strani (sl-SI ali en-GB).

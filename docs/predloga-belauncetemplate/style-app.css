@@ -1,0 +1,60 @@
+/* APP-GLAVA: glava in meni po canvas zasnovi */
+.navbar.sticky-top{background:#fff;border-bottom:1px solid #e6eef4!important;box-shadow:0 1px 6px rgba(33,33,37,.05);padding-top:.35rem;padding-bottom:.35rem}
+.navbar .navbar-brand img{max-height:34px;width:auto}
+.navbar .mod-menu{gap:.25rem;padding:0;margin:0;list-style:none;flex-direction:row;flex-wrap:wrap}
+.navbar .mod-menu .nav-item>a,.navbar .mod-menu .nav-item>span{display:block;font-family:"Lexend",system-ui,-apple-system,sans-serif;font-weight:500;font-size:.95rem;color:#212125;text-decoration:none;padding:.55rem .95rem;border-radius:3px;transition:background .15s,color .15s}
+.navbar .mod-menu .nav-item>a:hover,.navbar .mod-menu .nav-item>a:focus{background:rgba(106,183,227,.15);color:#212125;text-decoration:none}
+.navbar .mod-menu .nav-item.active>a,.navbar .mod-menu .nav-item.current>a{background:#6ab7e3;color:#fff}
+.navbar .navbar-toggler{border:1px solid #6ab7e3;border-radius:5px;padding:.3rem .55rem}
+.navbar .navbar-toggler:focus{box-shadow:0 0 0 .2rem rgba(106,183,227,.35)}
+@media (max-width:991.98px){
+.navbar .navbar-collapse{padding:.5rem 0 .75rem}
+.navbar .mod-menu{flex-direction:column;gap:.15rem}
+.navbar .mod-menu .nav-item>a{padding:.7rem .9rem}
+}
+
+
+/* APP-LOOK v2: glava, meni in spodnja navigacija po canvasu */
+body{background:#f2f2f3;color:#212125;font-family:"Archivo",system-ui,-apple-system,sans-serif}
+.br-hdr{position:sticky;top:0;z-index:1030;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #e7e7ea}
+.br-hdr__in{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:16px}
+.br-brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.br-brand img{height:22px;width:auto;display:block}
+.br-brand__sep{height:15px;width:1px;background:#d9d9de}
+.br-brand__t{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6ab7e3}
+.br-hnav{display:none;gap:4px;flex:1}
+.br-hnav a{font-size:14px;font-weight:500;color:#6a6a70;text-decoration:none;padding:8px 14px;border-radius:3px;transition:background .15s,color .15s}
+.br-hnav a:hover{background:rgba(106,183,227,.15);color:#212125}
+.br-hnav a.is-active{background:#6ab7e3;color:#fff;font-weight:600}
+.br-hdr__login{display:none;font-size:14px;font-weight:600;color:#fff;background:#212125;text-decoration:none;padding:10px 20px;border-radius:3px}
+.br-hdr__login:hover{color:#fff;background:#000}
+.br-hdr__prof{width:40px;height:40px;border-radius:999px;border:1px solid #e3e3e6;background:#f2f2f3;display:flex;align-items:center;justify-content:center;color:#434445;text-decoration:none}
+.br-hdr__prof svg{width:20px;height:20px}
+.br-tabbar{position:fixed;left:0;right:0;bottom:0;z-index:1030;display:flex;background:#fff;border-top:1px solid #e7e7ea;padding:8px 10px calc(10px + env(safe-area-inset-bottom))}
+.br-tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#a0a0a6;padding:6px 0;font-size:10.5px;font-weight:500}
+.br-tabbar a.is-active{color:#1c5f82;font-weight:600}
+.br-tabbar a.is-active svg{stroke:#6ab7e3}
+body{padding-bottom:76px}
+@media (min-width:992px){
+.br-hnav{display:flex}
+.br-hdr__login{display:inline-flex}
+.br-hdr__prof,.br-tabbar{display:none}
+.br-brand{margin-right:8px}
+.br-brand img{height:26px}
+.br-hdr__in{padding:15px 32px}
+body{padding-bottom:0}
+}
+
+/* razmaki glava-vsebina */
+main .container.my-4{margin-top:.75rem!important;margin-bottom:1rem!important}
+main section.bg-light,main .bg-light{background:transparent!important}
+.br-hdr__back{width:40px;height:40px;margin:0 0 0 -10px;display:flex;align-items:center;justify-content:center;color:#212125;border-radius:3px;text-decoration:none}
+.br-hdr__back:hover{background:rgba(106,183,227,.15);color:#212125}
+.br-hdr__in{gap:8px}
+.br-brand{margin-right:auto}
+@media (min-width:992px){.br-hdr__in{gap:16px}main .container.my-4{margin-top:1.25rem!important}}
+
+/* sticky footer: noga vedno na dnu strani */
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+body>main{flex:1 0 auto}
+body>footer{margin-top:auto;flex-shrink:0}

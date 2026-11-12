@@ -1,32 +1,29 @@
 # SESSION.md — pkg_belauncerunde
 
-**Zadnja posodobitev:** 2026-11-10
-**Fokus seje:** Postavitev v živo na poddomeni `runde.belaunce.cc` (Joomla 6.2)
-**Stanje:** Komponenta 0.18.1 nameščena in konfigurirana na produkciji. Cross-DB AcyMailing, meniji, varnostni `.htaccess` + WAF, URL rewriting in SMTP urejeni in **preverjeni v živo** (prepoznava člana, dostava pošte na Gmail, magic-link prijava). Polni zapis postavitve: **`docs/PRODUKCIJA-runde.md`**. Pred objavo članom ostanejo testi na napravi (Viber, PWA, Bikemap) in preusmeritve starih povezav.
+**Zadnja posodobitev:** 2026-11-12
+**Fokus seje:** App-videz celotne komponente in predloge, ikona aplikacije, OG slika, paket 0.19.0
+**Stanje:** Komponenta 0.19.0 je v živo na `runde.belaunce.cc` (datoteke urejene neposredno prek FF Explorer) in na GitHubu v `develop`. Paket `pkg_belauncerunde-0.19.0.zip` je zgrajen (`orodja/gradnja.sh`), SHA-256 v `posodobitve.xml`. Matija je pregledal delovanje kot član in potrdil, da deluje.
 
 ---
 
 ## Kje smo ostali
 
-- **V1 koda zaključena in združena v `develop`:** naloge 20 (email vodji, 0.16.0), 18 (cross-DB AcyMailing, 0.17.0), 21 (ohrani listo, 0.17.1), 19 (PWA brez push, 0.18.0), 22 (PWA nizi, 0.18.1).
-- **Postavitev v živo (2026-11-10)** na `runde.belaunce.cc` — glej `docs/PRODUKCIJA-runde.md`:
-  - Cross-DB AcyMailing: zunanja baza `vft26375_belaunce`, predpona `dipxn_`, isti MySQL uporabnik → Preveri člana vrne »Member«.
-  - Liste: Člani (6), Runde (9, nova lista na glavni strani).
-  - Meniji: Seznam rund (`runde`, domača), Prijava za člane (`prijava`), component_id 258.
-  - Varnostni `.htaccess` (Admin Tools) z izjemo za `.webmanifest`; URL rewriting vklopljen (čisti `/runde`, `/prijava`).
-  - WAF vklopljen; `ipwl` izklopljen, `tsrenable` 5 poskusov, brez skrivnega URL-ja/htpasswd.
-  - SMTP: `info@belaunce.cc`, 465/SSL, From »Belaunce - Runde«.
-  - Seja 45 min.
-  - Preverjeno: SMTP test OK, magic-link na Gmail v »Prejeto«, prijava uspela, ustvarjen lokalni Joomla uporabnik. »Linked Joomla user: No« je pričakovan cross-DB artefakt (ne vpliva na delovanje).
+- **0.19.0 (2026-11-12)** — mobile-first »app« videz po canvasu (Claude Design artefakt): seznam rund, podrobnost runde (jantarni baner z datumom, kartica trase, statistika, vodja, opombe, lepljiva vrstica »Pridem na rundo«), deli (Viber/Deli/Kopiraj), prijava, Moje runde, obrazec za rundo, spodnja navigacija (Runde · Moje runde · Ustvari), glava (nazaj-puščica + logo | RUNDE). Podrobnosti: `docs/PRODUKCIJA-runde.md` (razdelek »App videz 0.19.0«).
+- **Predloga `belauncetemplate` NI v repozitoriju** — spremembe (`index.php`, `style.css`) obstajajo samo na produkciji. Kopija je v `docs/predloga-belauncetemplate/` (referenca, ne del paketa).
+- **Ikona aplikacije:** PNG 192/512, maskable 512, apple-touch 180 (črka B z balanco iz logotipa, bela podlaga, modri rob). Manifest uporablja PNG, `theme_color` #6ab7e3.
+- **Meta za deljenje:** `og:image` 1200×630 = `/images/og-runde.png` (samo na strežniku, ni v paketu), `og:title`, `twitter:card` na seznamu in podrobnosti.
+- **Izbirnik datuma:** JCLOSE »Potrdi«, JCLEAR »Počisti« (jezikovna datoteka komponente), večja modra ikona koledarja.
+- **Trasa (Strava/Komoot):** neinteraktivna kartica; dotik odpre pot v novem zavihku.
+- **Paket:** `dist/pkg_belauncerunde-0.19.0.zip` (ni v gitu). GitHub Release `v0.19.0` — glej `docs/TASKS.md`.
 
-## Naslednji korak (pred objavo članom)
+## Naslednji korak
 
-1. Na telefonu: Viber deljenje (naloga 11, m14), namestitev PWA Android + iOS (naloga 19, m4–6), Bikemap vdelava na pravi rundi (najprej ustvari testno rundo v adminu).
-2. Preusmeritve starih `belaunce.cc/runde/...` povezav na poddomeno (Viber zgodovina).
-3. `utf8mb4` na tabelah komponente (hitra potrditev — na Joomla 6.2 verjetno že).
-4. Nato objava članom.
+Vrstni red in opisi v `docs/TASKS.md` (naloge 23–29) in v `docs/PROMPT-nova-seja.md`. Na kratko:
+1. Push obvestila (faza 2, naloga 24) — odločeno, da je naslednja faza.
+2. Predloga v repozitorij / otroška predloga (naloga 25 + 17), OG slika in ikone v paket, vektorski logotip (naloga 26).
+3. QA na pravih napravah (iOS Safari, Viber predpomnilnik) (naloga 27), preusmeritve starih povezav (28).
 
-Odprto po izidu: naloga 15 (povzetek načina dela, `docs/NACIN-DELA.md`, z Matijo), naloga 17 (otroška predloga, D41).
+Odprto po izidu: naloga 15 (povzetek načina dela), naloga 17 (otroška predloga, D41).
 
 ## Način dela (povzetek, poln dokument v `docs/NACIN-DELA.md`)
 
@@ -44,9 +41,10 @@ Praktično (iz te seje): produkcijski admin se ureja prek **Claude in Chrome** (
 
 ## Odprta vprašanja
 
-- Viber na pravem telefonu (naloga 11, m14) — ostane za test na napravi.
-- PWA namestitev na telefonu in iOS Safari (naloga 19, m4–6) — test na napravi.
-- Bikemap vdelava (naloga 07) — potrditi na pravi rundi ali ponudnika izklopiti.
-- Dvojniki mail predlog — preveriti, da registracija ne ustvari dvojnikov (ni blokersko).
-- Predloga j4starter in sistemska sporočila (D41) → naloga 17 po izidu.
+- Viber predpomnilnik predogleda: že deljene povezave imajo staro sliko; nove povezave bi morale dobiti `og-runde.png` (preveri na telefonu).
+- iOS Safari: lepljive vrstice (`.br-sticky`, `.br-obrazec` akcijska vrstica, spodnja navigacija), izbirnik datuma, PWA namestitev — preveri na iPhonu.
+- Ali želimo `og-runde.png` v paketu (`media/images`) namesto v `/images/` (zdaj `PwaHelper`/`HtmlView` kažeta na `/images/og-runde.png`)?
+- Logotip je na voljo samo kot 200 px PNG — ikona in OG slika sta zato rahlo mehki; potreben SVG/PDF.
+- Push obvestila (naloga 24): obseg sprožilcev potrditi z Matijo (nova prijava vodji, odpoved/sprememba runde udeležencem, opomnik).
+- Predloga j4starter in sistemska sporočila (D41) → naloga 17.
 - Povzetek načina dela (naloga 15) — dokončati z Matijo.

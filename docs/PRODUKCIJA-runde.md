@@ -85,3 +85,26 @@ Mobile-first prilagoditev po pregledu oblikovanja (bolj »aplikacija«, manj spl
   → jantarno-črna kombinacija: ozadje `#FFE3A5`, besedilo `#212125`, rob `#f6cf7a`.
 
 Oba popravka uveljavljena v živo prek FF Explorer in potrjena s svežim prenosom CSS datotek.
+
+## App videz 0.19.0 (2026-11-12)
+
+Celoten videz po canvasu (Claude Design artefakt »Belaunce Runde – app predogled«): modri poudarki `#6ab7e3`, bela pisava na modrih gumbih, jantarna `#FFE3A5` + temna `#212125`, zaobljenost 5/3 px, naslovi Lexend, besedilo Archivo, spodnja navigacija, lepljivi CTA.
+
+**Komponenta (v gitu, `develop`):**
+- `media/css/site.css` — bloki SKLOP1–10 (kartice, čipi, podrobnost, banner, trasa, vodja, opombe, deli, prijava, Moje runde kot segmentirana izbira, obrazec kot kartica z lepljivo vrstico Shrani/Prekliči, izbirnik datuma, trasa kot neinteraktivna kartica).
+- `tmpl/runda/{default,deli,kartica}.php`, `tmpl/runde/default.php` (čipi s puščicami za drsenje, inline JS prek `WebAssetManager`), `tmpl/prijava/default.php`. `tmpl/moje` in `tmpl/obrazec` NISO spremenjeni (samo CSS).
+- Jezikovni nizi sl-SI/en-GB: `N_PRIJAVLJENIH`, `PRIDEM_NA_RUNDO`, `VODJA_RUNDE`, `RUNDE_PODNASLOV`, `ODPRI_POT`, prijava/deli, ter **`JCLOSE` = »Potrdi«, `JCLEAR` = »Počisti«** (prepišeta Joomlina niza samo na straneh komponente; izbirnik datuma ju bere prek `Text::script`).
+- `Runda/HtmlView`, `Runde/HtmlView`: `og:image` (1200×630, `/images/og-runde.png`), `og:image:width/height`, `twitter:card=summary_large_image`; seznam še `og:title`, `og:type`.
+- Ikona aplikacije: `media/images/icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`; `manifest.webmanifest` s PNG ikonami, `theme_color` `#6ab7e3` (tudi v `PwaHelper`). Stari `ikona*.svg` odstranjeni.
+- CSS za sistemsko sporočilo: `body:has(.br-runda > p.alert) #system-message-container{display:none}` — prepreči dvojno obvestilo o udeležbi.
+
+**Predloga `belauncetemplate` (NI v gitu, samo produkcija; kopija v `docs/predloga-belauncetemplate/`):**
+- `index.php`: `style.css?v=<filemtime>` (samodejni cache-bust); glava `header.br-hdr` = nazaj-puščica (samo `runda`/`obrazec`/`prijava`) + logo | RUNDE + meni (Domov, Runde, Moje runde) + Prijava/Moj profil; spodnja navigacija `nav.br-tabbar` (Runde, Moje runde, za člane še Ustvari → `view=obrazec&id=0`).
+- `style.css`: bloki »APP-GLAVA«, »APP-LOOK v2«, »razmaki glava-vsebina«, »sticky footer« (`body{display:flex;flex-direction:column;min-height:100dvh}`, `body>main{flex:1 0 auto}`, `body>footer{margin-top:auto}`), `.alert-info` jantarno.
+- Varnostne kopije na strežniku: `index.php.bak-pred-app` (predloga), `tmpl/runda/default.php.bak-pred-app` (komponenta).
+
+**OG slika:** `/images/og-runde.png` (naložena prek Joomla Media API, ni v paketu).
+
+**Postopek urejanja v živo (kar je delovalo):** FF Explorer AJAX (`explorer.openFile`, `saveContent`, `upload`, `deleteFile`) iz konzole admin strani; `.webmanifest` se ne da odpreti, `saveContent` pa deluje. Po spremembi CSS: Joomla Cache → Clear All (po novem ni nujno, `?v=filemtime`). Brskalnik predpomni golo `site.css` URL — za preverjanje dodaj `?x=<čas>`.
+
+**Znane omejitve:** logotip je samo 200 px PNG (ikona/OG rahlo mehka); `og-runde.png` ni v paketu; `index.php` predloge ni pod verzijo.

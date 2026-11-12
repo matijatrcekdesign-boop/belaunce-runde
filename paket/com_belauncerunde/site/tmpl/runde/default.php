@@ -7,9 +7,7 @@ use Joomla\CMS\Router\Route;
 ?>
 <div class="br-runde">
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV')); ?></h1>
-    <?php if ($this->clan) : ?>
-        <p><a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a></p>
-    <?php endif; ?>
+    <p class="br-podnaslov"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_RUNDE_PODNASLOV')); ?></p>
 
     <?php if ($this->obvestilo !== null) : ?>
         <p class="alert <?php echo $this->escape($this->obvestilo['razred']); ?>" role="alert"><?php echo $this->escape($this->obvestilo['besedilo']); ?></p>
@@ -33,6 +31,9 @@ use Joomla\CMS\Router\Route;
         };
         $brezFiltra = !$this->tip && !$this->tezavnost;
         ?>
+        <div class="br-cipi-wrap">
+        <button type="button" class="br-cipi__nav br-cipi__nav--l" hidden aria-label="Levo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+        <button type="button" class="br-cipi__nav br-cipi__nav--d" hidden aria-label="Desno"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
         <nav class="br-cipi" aria-label="<?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_FILTRIRAJ')); ?>">
             <a class="br-cip<?php echo $brezFiltra ? ' br-cip--on' : ''; ?>" href="<?php echo $this->escape($urlFilter(0, 0)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_VSE')); ?></a>
             <?php foreach ($this->tipi as $tip) : ?>
@@ -42,6 +43,10 @@ use Joomla\CMS\Router\Route;
                 <a class="br-cip<?php echo (int) $tezavnost->id === $this->tezavnost ? ' br-cip--on' : ''; ?>" href="<?php echo $this->escape($urlFilter($this->tip, $tezavnost->id)); ?>"><?php echo $this->escape($tezavnost->naziv); ?></a>
             <?php endforeach; ?>
         </nav>
+        <?php
+        \Joomla\CMS\Factory::getApplication()->getDocument()->getWebAssetManager()->addInlineScript("document.addEventListener('DOMContentLoaded',function(){var w=document.querySelector('.br-cipi-wrap');if(!w)return;var n=w.querySelector('.br-cipi'),l=w.querySelector('.br-cipi__nav--l'),r=w.querySelector('.br-cipi__nav--d');function u(){var m=n.scrollWidth-n.clientWidth;l.hidden=n.scrollLeft<=2;r.hidden=m<=2||n.scrollLeft>=m-2;}l.addEventListener('click',function(){n.scrollBy({left:-160,behavior:'smooth'});});r.addEventListener('click',function(){n.scrollBy({left:160,behavior:'smooth'});});n.addEventListener('scroll',u,{passive:true});window.addEventListener('resize',u);u();});");
+        ?>
+        </div>
     <?php endif; ?>
 
     <?php if (!$this->runde) : ?>

@@ -38,7 +38,7 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 26 | **Ikona in OG slika v paket**: `og-runde.png` v `media/images` (+ `HtmlView` ga bere od tam); vektorski logotip (SVG/PDF) → ostrejša ikona in OG slika. Skripta za generiranje ikon: ni (glej `docs/PROMPT-nova-seja.md`). | 0.20.x | 23 | ⬜ |
 | 27 | **QA na napravah**: iOS Safari (lepljive vrstice, izbirnik datuma, PWA), Viber predogled po predpomnilniku, člani: ustvari/uredi/odpovej rundo, prijava/odjava, Moje runde. | — | 23 | ⬜ |
 | 28 | **Preusmeritve** starih `belaunce.cc/runde/...` povezav na poddomeno (Viber zgodovina). | — | — | ⬜ |
-| 29 | **GitHub Release v0.19.0** z `pkg_belauncerunde-0.19.0.zip` (da deluje posodobitveni URL v `posodobitve.xml`); odslej: gradnja + release ob vsaki verziji. | 0.19.0 | 23 | 🟡 |
+| 29 | **GitHub Release v0.19.0** (objavljen 2026-11-12, SHA-256 preverjen) z `pkg_belauncerunde-0.19.0.zip` (da deluje posodobitveni URL v `posodobitve.xml`); odslej: gradnja + release ob vsaki verziji. | 0.19.0 | 23 | ✅ |
 
 Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo ostati izpolnjene.
 

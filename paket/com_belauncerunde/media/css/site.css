@@ -13,8 +13,8 @@
     --br-diff: #2560c4;
     --br-diff-soft: #e8eefb;
     --br-danger: #a12732;
-    --br-radius: 8px;
-    --br-chip-radius: 7px;
+    --br-radius: 5px;
+    --br-chip-radius: 3px;
     --br-page: transparent;
     --br-focus: #2560c4;
     color: var(--br-dark);
@@ -247,7 +247,7 @@
     align-items: center;
     justify-content: center;
     padding: .6rem 1rem;
-    border-radius: var(--br-radius);
+    border-radius: 3px;
     font-family: "Lexend", system-ui, sans-serif;
     font-weight: 700;
     line-height: 1.2;
@@ -270,11 +270,23 @@
     background: var(--br-primary-hover);
     border-color: var(--br-primary-hover);
 }
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-secondary {
+    color: #fff;
+    background: #6ab7e3;
+    border-color: #6ab7e3;
+}
+:is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
+    .br-povezava, .br-odjava-gosta) .btn-secondary:hover {
+    color: #fff;
+    background: #58a7d4;
+    border-color: #58a7d4;
+}
 .br-runde .br-filtri .btn { padding: .4rem .75rem; font-size: .85rem; }
 .br-runde .br-filtri__toggle {
     gap: .5rem;
     padding-inline: 1rem;
-    border-radius: 50rem;
+    border-radius: 3px;
     box-shadow: none;
 }
 .br-runde .br-filtri__toggle::after {

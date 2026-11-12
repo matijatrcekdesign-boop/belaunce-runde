@@ -68,3 +68,18 @@ V cross-DB postavitvi polje »Linked Joomla user« v *Preveri člana* bere povez
 - [ ] **Preusmeritve** starih povezav `belaunce.cc/runde/...` (Viber zgodovina) na poddomeno.
 - [ ] `utf8mb4` na tabelah komponente (na svežem Joomla 6.2 verjetno že; hitra potrditev).
 - [ ] Po objavi članom: po želji WAF `tsrenable` ostane 5 poskusov ali poostriš; `ipwl` lahko kasneje vklopiš, če dodaš svoj IP na Exclusive Allow seznam.
+
+## Grafična prilagoditev videza (2026-11-12)
+
+Mobile-first prilagoditev po pregledu oblikovanja (bolj »aplikacija«, manj spletna stran).
+
+**Komponenta `media/css/site.css` (v gitu):**
+- `--br-radius` 8 → **5 px** (kartice, paneli, stat-ploščice).
+- `--br-chip-radius` 7 → **3 px** (čipi, značke `.br-tag`/`.br-chip`).
+- Gumbi `.btn` `border-radius` → **3 px**; filter gumb `.br-filtri__toggle` iz pill `50rem` → **3 px**.
+- Nov `.btn-secondary` (glavni akcijski gumb, npr. »Odpri rundo«): **bela** pisava na modri `#6ab7e3` (hover `#58a7d4`). Opomba: bela na svetli modri ima nizek kontrast (~2,2:1) — zavestna izbira naročnika.
+
+**Predloga `belauncetemplate/style.css` (NI v gitu — samo produkcija, FF Explorer):**
+- Sistemska obvestila `.alert-info` (prej peach `#fcd8cf`/`#902508`, izpeljano iz `--bs-info` #f03e0d) → jantarno-črna kombinacija: ozadje `#FFE3A5`, besedilo `#212125`, rob `#f6cf7a`.
+
+Oba popravka uveljavljena v živo prek FF Explorer in potrjena s svežim prenosom CSS datotek.

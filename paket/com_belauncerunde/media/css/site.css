@@ -453,3 +453,78 @@
     :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
         .br-povezava, .br-odjava-gosta) .btn { transition: none; }
 }
+
+/* === App-videz kartice (Sklop 1 – prilagoditev po canvasu) === */
+.br-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-bottom: .9rem;
+}
+.br-card__top .br-card__chips { margin-bottom: 0; }
+.br-datum {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    padding: .3rem .6rem;
+    border-radius: var(--br-chip-radius);
+    background: var(--br-panel);
+    color: var(--br-dark);
+    font-family: "Lexend", system-ui, sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.br-datum--danes { background: #FFE3A5; color: #212125; }
+.br-card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem .9rem;
+    margin-bottom: 1rem;
+    color: var(--br-muted);
+    font-size: .85rem;
+}
+.br-fact { display: inline-flex; align-items: center; gap: .35rem; min-width: 0; }
+.br-ico {
+    width: 15px; height: 15px; flex: 0 0 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: .75;
+}
+
+/* === Filtrirni čipi (Sklop 2) === */
+.br-cipi {
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    margin: 0 0 1.4rem;
+    padding-bottom: .3rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.br-cipi::-webkit-scrollbar { height: 0; }
+.br-cip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.1rem;
+    padding: .5rem .85rem;
+    border-radius: 3px;
+    background: var(--br-card);
+    color: var(--br-dark);
+    border: 1px solid var(--br-border);
+    font-family: "Archivo", system-ui, sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.br-cip:hover { background: var(--br-panel); color: var(--br-dark); text-decoration: none; }
+.br-cip--on { background: #6ab7e3; color: #fff; border-color: #6ab7e3; }
+.br-cip--on:hover { background: #58a7d4; color: #fff; }

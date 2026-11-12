@@ -16,6 +16,15 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
   - **Filtrirni čipi** namesto spustnih menijev TIP/TEŽAVNOST (vodoravni, drsni);
     nov niz `COM_BELAUNCERUNDE_VSE`.
 
+- App-videz celotne komponente po canvasu (Sklop 3-10): podrobnost runde (jantarni baner z datumom,
+  kartica trase, statistika, vodja, opombe, lepljiva spodnja vrstica »Pridem na rundo«), deli (Viber/Deli/Kopiraj),
+  prijava, Moje runde (segmentirana izbira Prihajajoče/Pretekle), obrazec za rundo (kartica, 2 stolpca,
+  lepljiva vrstica Shrani/Prekliči), spodnja navigacija, glava z nazaj-puščico.
+- Trasa (Strava/Komoot embed) je neinteraktivna kartica; dotik odpre pot v novem zavihku, pod njo gumb »Odpri pot«.
+- Izbirnik datuma: gumba »Potrdi« in »Počisti« (JCLOSE/JCLEAR v jezikovni datoteki), večja ikona koledarja.
+- Meta za deljenje (Viber/družbena omrežja): `og:image` 1200x630 (`images/og-runde.png`), `og:title`, `twitter:card`
+  na seznamu in podrobnosti runde. Slika je naložena v `/images/` (ni del paketa).
+- Nova besedila (sl-SI, en-GB): N_PRIJAVLJENIH, PRIDEM_NA_RUNDO, VODJA_RUNDE, RUNDE_PODNASLOV, ODPRI_POT, prijava in deli.
 ### Spremenjeno
 - Grafična prilagoditev videza (mobile-first) v `media/css/site.css`: manjša, subtilnejša
   zaobljenost — kartice/paneli `--br-radius` 8→5 px, čipi/značke `--br-chip-radius` 7→3 px,

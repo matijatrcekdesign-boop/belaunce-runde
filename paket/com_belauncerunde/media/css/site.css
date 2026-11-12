@@ -1,4 +1,4 @@
-/* Vsi žetoni so omejeni na komponente poglede, ne na predlogo strani. */
+/* Vsi Ĺžetoni so omejeni na komponente poglede, ne na predlogo strani. */
 :is(.br-runde, .br-runda, .br-moje, .br-obrazec, .br-prijava,
     .br-povezava, .br-odjava-gosta) {
     --br-dark: #1d1a16;
@@ -85,7 +85,7 @@
     font-family: "Lexend", system-ui, sans-serif;
 }
 
-/* Skupna kartica: barva tipa je samo poudarek, vse druge površine so mirne. */
+/* Skupna kartica: barva tipa je samo poudarek, vse druge povrĹĄine so mirne. */
 .br-card {
     display: flex;
     flex-direction: column;
@@ -196,7 +196,7 @@
 .br-diff__bar--on { background: var(--br-diff); }
 .br-diff__label { color: inherit; }
 
-/* Podstran runde uporablja isti poudarek pri ploščicah in podpisu vodje. */
+/* Podstran runde uporablja isti poudarek pri ploĹĄÄicah in podpisu vodje. */
 .br-runda { border-top: 3px solid var(--br-type, #6c757d); padding-top: 1rem; }
 .br-nazaj { margin: 0 0 1rem; }
 .br-nazaj a { color: var(--br-muted); text-decoration: none; font-weight: 700; }
@@ -228,7 +228,7 @@
 .br-clanstvo { margin: 1.25rem 0; }
 .br-clanstvo p { margin-bottom: .75rem; }
 
-/* Obrazci ohranijo Joomline oznake in Bootstrap, komponenta določa le ovoj. */
+/* Obrazci ohranijo Joomline oznake in Bootstrap, komponenta doloÄa le ovoj. */
 .br-obrazec, .br-prijava, .br-povezava, .br-odjava-gosta { max-width: 58rem; }
 .br-prijava.container { padding-inline: clamp(1.5rem, 6vw, 3rem); }
 .br-obrazec form, .br-prijava form, .br-povezava form, .br-odjava-gosta form,
@@ -362,7 +362,7 @@
 .br-runda iframe { border: 0; }
 .br-runda .ratio { border: 1px solid var(--br-border); border-radius: var(--br-radius); overflow: hidden; }
 
-/* Honeypot ostane v POST, vendar zunaj vidnega in tipkovniškega toka. */
+/* Honeypot ostane v POST, vendar zunaj vidnega in tipkovniĹĄkega toka. */
 .br-gost-dodatek { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 
 @media (max-width: 575.98px) {
@@ -454,7 +454,7 @@
         .br-povezava, .br-odjava-gosta) .btn { transition: none; }
 }
 
-/* === App-videz kartice (Sklop 1 – prilagoditev po canvasu) === */
+/* === App-videz kartice (Sklop 1 â prilagoditev po canvasu) === */
 .br-card__top {
     display: flex;
     align-items: flex-start;
@@ -498,7 +498,7 @@
     opacity: .75;
 }
 
-/* === Filtrirni čipi (Sklop 2) === */
+/* === Filtrirni Äipi (Sklop 2) === */
 .br-cipi {
     display: flex;
     gap: .5rem;
@@ -528,3 +528,196 @@
 .br-cip:hover { background: var(--br-panel); color: var(--br-dark); text-decoration: none; }
 .br-cip--on { background: #6ab7e3; color: #fff; border-color: #6ab7e3; }
 .br-cip--on:hover { background: #58a7d4; color: #fff; }
+
+
+/* SKLOP3: podrobnosti runde, prijava, moje runde po app predogledu */
+.br-runda,.br-prijava{max-width:720px;margin-left:auto;margin-right:auto;padding-left:16px;padding-right:16px;font-family:"Archivo",system-ui,sans-serif;color:#212125}
+.br-runda h1,.br-prijava h1{font-family:"Lexend",system-ui,sans-serif;font-weight:500;font-size:1.7rem;line-height:1.15;letter-spacing:-.01em;color:#1d1a16;margin:.25rem 0 .9rem}
+.br-runda .br-nazaj{margin:.5rem 0 .25rem}
+.br-runda .br-nazaj a{display:inline-flex;align-items:center;font-size:.85rem;font-weight:600;color:#76767c;text-decoration:none}
+.br-runda .br-nazaj a:hover{color:#212125}
+.br-runda .br-runda__badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.6rem}
+.br-runda .br-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 1rem}
+.br-runda .br-stat{background:#fff;border:0;border-top:0;border-radius:5px;padding:13px 12px;text-align:center;box-shadow:none}
+.br-runda .br-stat .v{display:block;font-family:"Lexend",system-ui,sans-serif;font-size:1.1rem;font-weight:600;color:#1d1a16}
+.br-runda .br-stat .l{display:block;font-size:.7rem;font-weight:500;color:#8a8a90;margin-top:2px;text-transform:none;letter-spacing:0}
+.br-runda .br-stat--leader{text-align:left}
+.br-runda .br-runda__facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 1.1rem}
+.br-runda .br-runda__facts>div{background:#fff;border-radius:5px;padding:12px 14px;margin:0}
+.br-runda .br-runda__facts>div:first-child{grid-column:1/-1;display:flex;flex-direction:column;background:#FFE3A5;color:#212125;padding:14px 16px}
+.br-runda .br-runda__facts dt{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#8a8a90;margin:0 0 2px}
+.br-runda .br-runda__facts>div:first-child dt{color:#4a4a4f}
+.br-runda .br-runda__facts dd{margin:0;font-size:.95rem;font-weight:600;color:#2a2a2e}
+.br-runda .br-runda__facts>div:first-child dd{font-size:1.05rem;font-weight:700;color:#212125}
+.br-runda .br-sec-title{font-family:"Archivo",system-ui,sans-serif;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#8a8a90;margin:1.2rem 0 .5rem}
+.br-runda .br-runda__udelezba .btn,.br-runda .br-runda__mobile-actions .btn{display:block;width:100%;text-align:center;padding:.9rem 1rem;font-size:1rem;font-weight:600}
+.br-runda .br-deli{background:#fff;border:1px solid #e7e7ea;border-radius:5px;padding:16px}
+.br-runda .br-deli .form-control{border-radius:5px;border:1px solid #dcdce0;background:#f7f7f8;font-size:.85rem}
+.br-runda .br-deli .btn{border-radius:3px}
+@media (min-width:768px){.br-runda .br-runda__udelezba .btn{display:inline-block;width:auto;padding:.7rem 1.6rem}}
+
+.br-prijava{max-width:440px;padding-top:2rem;padding-bottom:2rem}
+.br-prijava h1{text-align:center;font-size:1.4rem}
+.br-prijava .br-lead{text-align:center;color:#76767c;font-size:.9rem;line-height:1.5;margin-bottom:1.3rem}
+.br-prijava form{background:#fff;border:1px solid #e7e7ea;border-radius:5px;padding:18px}
+.br-prijava label{font-size:.75rem;font-weight:600;color:#55555b;margin-bottom:.4rem}
+.br-prijava input[type=email],.br-prijava input[type=text]{width:100%;font-size:1rem;padding:.8rem 1rem;border:1px solid #dcdce0;border-radius:5px;background:#fff}
+.br-prijava input:focus{border-color:#6ab7e3;box-shadow:0 0 0 .2rem rgba(106,183,227,.3);outline:0}
+.br-prijava .btn{width:100%;padding:.9rem 1rem;font-size:1rem;font-weight:600;margin-top:.8rem}
+.br-prijava .alert{border-radius:5px}
+.br-runda{border-top:0!important;box-shadow:none}
+.br-prijava{border-top:0!important}
+
+/* SKLOP3b: sticky CTA nad spodnjo navigacijo, stat tiles */
+.br-runda{border-top:0!important}
+.br-runda--mobile-action{padding-bottom:84px}
+.br-runda .br-stat .v{font-size:.95rem;overflow-wrap:break-word;word-break:normal}
+.br-runda .br-stat--leader .v{font-size:.9rem}
+@media (max-width:767.98px){
+.br-runda .br-runda__mobile-actions{position:fixed;left:0;right:0;bottom:66px;z-index:1025;display:flex!important;align-items:center;gap:12px;background:#fff;border-top:1px solid #e7e7ea;padding:10px 16px;margin:0}
+.br-runda .br-runda__mobile-actions .br-runda__badges{display:none}
+.br-runda .br-runda__mobile-actions .btn{flex:1 1 auto;width:auto;display:block;background:#6ab7e3;border-color:#6ab7e3;color:#fff;padding:.85rem 1rem}
+}
+
+/* SKLOP4: kartice seznama po canvasu */
+.br-runde h1{font-family:"Lexend",system-ui,sans-serif;font-weight:500;font-size:1.65rem;line-height:1.12;letter-spacing:-.01em;color:#1d1a16}
+.br-card{border:0!important;border-top:0!important;border-radius:5px;background:#fff;box-shadow:0 1px 2px rgba(20,20,25,.05),0 6px 18px rgba(20,20,25,.04)}
+.br-card .br-card__body{padding:16px}
+.br-card h2,.br-card h3,.br-card .br-card__title,.br-card .card-title{font-family:"Lexend",system-ui,sans-serif;font-weight:600;font-size:1.06rem;line-height:1.25;color:#1d1a16;margin:0 0 .6rem}
+.br-card .br-card__facts{font-size:.78rem;color:#76767c;gap:.9rem;margin-bottom:.85rem}
+.br-card .btn{font-size:.82rem;font-weight:600;padding:.62rem 1.1rem;border-radius:3px;white-space:nowrap}
+.br-card .br-leader,.br-card .br-leader__name{font-size:.78rem;font-weight:600;color:#2a2a2e}
+.br-card .br-leader__avatar{width:30px;height:30px;font-size:.75rem}
+
+/* SKLOP5: seznam, podrobnost, deli, prijava - po canvasu */
+.br-runde .br-podnaslov{margin:0 0 1rem;font-size:.82rem;color:#76767c}
+.br-card .br-tag,.br-card .br-diff{font-size:11px;font-weight:600;padding:4px 9px;border-radius:3px}
+.br-card .br-diff__label{font-size:11px}
+.br-card .br-card__footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:13px;border-top:1px solid #f0f0f2;margin-top:0}
+.br-card .br-card__footer .btn{width:auto!important;flex:0 0 auto;padding:.6rem 1.1rem!important;font-size:.82rem!important;font-weight:600;line-height:1.2;min-height:0}
+.br-card .br-card__footer-info{display:grid;grid-template-columns:30px auto;column-gap:9px;align-items:center;min-width:0}
+.br-card .br-card__footer-info .br-leader{display:contents}
+.br-card .br-card__footer-info .br-leader__avatar{grid-row:1/3;grid-column:1;width:30px;height:30px;font-size:.72rem}
+.br-card .br-card__footer-info .br-leader>span:not(.br-leader__avatar){grid-column:2;font-size:.78rem;font-weight:600;color:#2a2a2e;line-height:1.25}
+.br-card .br-card__count{grid-column:2;font-size:.69rem;color:#9a9aa0;line-height:1.25}
+
+.br-banner{display:flex;align-items:center;gap:12px;background:#FFE3A5;color:#212125;border-radius:5px;padding:14px 16px;margin:0 0 1rem}
+.br-banner__txt{display:flex;flex-direction:column;line-height:1.3}
+.br-banner__txt strong{font-size:.95rem;font-weight:700}
+.br-banner__txt span{font-size:.78rem;color:#4a4a4f}
+.br-mapa{position:relative;border-radius:5px;overflow:hidden;border:1px solid #e7e7ea;margin:0 0 1rem;background:#eef3ee}
+.br-mapa__slika{background:linear-gradient(135deg,#eef3ee 0%,#e7eef2 100%)}
+.br-mapa__slika svg{display:block;width:100%;height:150px}
+.br-mapa__gumb{position:absolute;right:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:#fff;color:#212125;font-size:.78rem;font-weight:600;padding:9px 14px;border-radius:3px;text-decoration:none;box-shadow:0 2px 8px rgba(20,20,25,.12)}
+.br-vodja{display:flex;align-items:center;gap:12px;background:#fff;border-radius:5px;padding:14px 16px;margin:0 0 .9rem}
+.br-vodja .br-leader__avatar{width:42px;height:42px;font-size:.95rem;background:#212125;color:#fff;flex:0 0 auto}
+.br-vodja small{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#8a8a90}
+.br-vodja strong{display:block;font-size:.95rem;font-weight:600;color:#2a2a2e}
+.br-opombe-kartica{background:#fff;border-radius:5px;padding:16px;margin:0 0 1rem}
+.br-opombe-kartica .br-sec-title{margin-top:0}
+.br-opombe-kartica .br-opombe{margin:0;font-size:.85rem;line-height:1.55;color:#45454a}
+.br-runda .br-deli{background:transparent;border:0;padding:0;margin:0 0 1rem}
+.br-deli__vrsta{display:flex;gap:8px}
+.br-deli__gumb{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;border:1px solid #e7e7ea;color:#212125;font-family:inherit;font-size:.78rem;font-weight:600;padding:11px 10px;border-radius:3px;text-decoration:none;cursor:pointer}
+.br-deli__gumb[hidden]{display:none}
+.br-deli__gumb:hover{border-color:#6ab7e3;color:#212125}
+.br-sticky{position:fixed;left:0;right:0;bottom:66px;z-index:1025;display:flex;align-items:center;gap:14px;background:#fff;border-top:1px solid #e7e7ea;padding:12px 18px}
+.br-sticky__info{line-height:1.25;flex:0 0 auto}
+.br-sticky__info span{display:block;font-size:.75rem;color:#8a8a90}
+.br-sticky__info strong{font-family:"Lexend",system-ui,sans-serif;font-size:1rem;font-weight:600;color:#1d1a16}
+.br-sticky form{flex:1;margin:0}
+.br-sticky .btn{display:block;width:100%;padding:.9rem 1rem;font-size:.95rem;font-weight:600;background:#6ab7e3;border-color:#6ab7e3;color:#fff}
+
+.br-prijava__brand{display:flex;flex-direction:column;align-items:center;margin-bottom:1.6rem}
+.br-prijava__brand img{height:34px;width:auto}
+.br-prijava__brand span{margin-top:8px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#6ab7e3}
+.br-prijava form{background:transparent;border:0;padding:0}
+.br-prijava .br-prijava__gumb{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.br-prijava__namig{display:flex;align-items:center;gap:8px;font-size:.75rem;color:#8a8a90;margin:.8rem 0 0}
+.br-prijava__ali{display:flex;align-items:center;gap:14px;margin:1.6rem 0}
+.br-prijava__ali span{flex:1;height:1px;background:#e3e3e6}
+.br-prijava__ali em{font-style:normal;font-size:.75rem;color:#a0a0a6}
+.br-prijava__gost{background:#fff;border:1px solid #e7e7ea;border-radius:5px;padding:18px}
+.br-prijava__gost h2{font-family:"Lexend",system-ui,sans-serif;font-size:1rem;font-weight:600;color:#1d1a16;margin:0 0 5px}
+.br-prijava__gost p{margin:0 0 14px;font-size:.8rem;line-height:1.5;color:#76767c}
+.br-prijava__gost-gumb{display:block;text-align:center;border:1.5px solid #212125;border-radius:3px;padding:.8rem;font-weight:600;font-size:.88rem;color:#212125;text-decoration:none}
+
+/* SKLOP6: vecji razmak med kartico in kartico */
+.br-runde .row{--bs-gutter-y:1.25rem}
+.br-runde .row>[class*="col"]{margin-bottom:1.25rem!important}
+
+/* SKLOP7: razmaki, manjse oznake na podrobnosti, obvestilo */
+.br-runda{padding-top:0}
+.br-runda h1{font-size:1.5rem;margin:.1rem 0 .8rem}
+.br-runda .br-runda__badges{margin-bottom:.5rem}
+.br-runda .br-tag,.br-runda .br-diff{font-size:11px;font-weight:600;padding:3px 8px;border-radius:3px}
+.br-runda .br-diff__label{font-size:11px}
+.br-runda p.alert{border-radius:5px;font-size:.88rem;padding:.7rem 1rem;margin:.2rem 0 .9rem}
+body:has(.br-runda > p.alert) #system-message-container{display:none}
+
+/* SKLOP8: manjsi filtri s puscicami, Moje runde, gumbi */
+.br-runde,.br-moje{padding-top:0}
+.br-moje{max-width:720px;margin-left:auto;margin-right:auto;padding-left:16px;padding-right:16px;font-family:"Archivo",system-ui,sans-serif;color:#212125}
+.br-moje h1{font-family:"Lexend",system-ui,sans-serif;font-weight:500;font-size:1.65rem;line-height:1.12;letter-spacing:-.01em;color:#1d1a16;margin:.1rem 0 .8rem}
+.br-cipi-wrap{position:relative;margin:0 -16px 1rem}
+.br-cipi-wrap .br-cipi{margin:0;padding:2px 16px 4px;gap:6px;overflow-x:auto;scrollbar-width:none}
+.br-cipi-wrap .br-cipi::-webkit-scrollbar{display:none}
+.br-cipi-wrap .br-cip{font-size:12px;padding:6px 12px;border-radius:3px;line-height:1.2}
+.br-cipi__nav{position:absolute;top:0;bottom:2px;width:38px;z-index:2;border:0;padding:0;display:flex;align-items:center;color:#212125;cursor:pointer}
+.br-cipi__nav[hidden]{display:none}
+.br-cipi__nav--l{left:0;justify-content:flex-start;padding-left:6px;background:linear-gradient(90deg,#f2f2f3 55%,rgba(242,242,243,0))}
+.br-cipi__nav--d{right:0;justify-content:flex-end;padding-right:6px;background:linear-gradient(270deg,#f2f2f3 55%,rgba(242,242,243,0))}
+.br-cipi__nav svg{background:#fff;border:1px solid #e3e3e6;border-radius:50%;width:24px;height:24px;padding:4px;box-sizing:border-box}
+.br-moje .btn-primary{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #e0e0e4;color:#212125;font-size:.85rem;font-weight:600;padding:.6rem 1rem;border-radius:3px}
+.br-moje .btn-primary::before{content:"+";font-size:1.15rem;line-height:1;color:#6ab7e3;font-weight:700}
+.br-moje .btn-primary:hover{border-color:#6ab7e3;background:#fff;color:#212125}
+.br-moje .nav-tabs{display:flex;gap:3px;background:#e4e4e8;border:0;border-radius:5px;padding:3px;margin-bottom:1.1rem!important}
+.br-moje .nav-tabs .nav-link{flex:1;text-align:center;border:0!important;border-radius:3px;font-size:.88rem;font-weight:600;color:#55555b;padding:.6rem .5rem;background:transparent}
+.br-moje .nav-tabs .nav-link.active{background:#6ab7e3;color:#fff;box-shadow:0 1px 3px rgba(20,20,25,.15)}
+.br-moje h2.h3{font-family:"Lexend",system-ui,sans-serif;font-size:1.05rem;font-weight:600;color:#1d1a16;margin:1.1rem 0 .6rem}
+.br-moje .alert{border-radius:5px;font-size:.88rem;padding:.8rem 1rem}
+.br-card .br-card__actions{display:flex;gap:8px;margin-top:.8rem;flex-wrap:nowrap}
+.br-card .br-card__actions>*{flex:1 1 0;min-width:0;margin:0}
+.br-card .br-card__actions form{display:flex}
+.br-card .br-card__actions .btn{width:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;line-height:1.2;padding:.6rem .5rem;border-radius:3px;white-space:nowrap}
+
+/* SKLOP9: obrazec za ustvarjanje/urejanje runde */
+.br-obrazec{max-width:720px;margin:0 auto;padding:0 16px;font-family:"Archivo",system-ui,sans-serif;color:#212125}
+.br-obrazec h1{font-family:"Lexend",system-ui,sans-serif;font-weight:500;font-size:1.65rem;line-height:1.12;letter-spacing:-.01em;color:#1d1a16;margin:.1rem 0 .8rem}
+.br-obrazec #br-obrazec{background:#fff;border:0;border-radius:5px;padding:18px 16px 14px;box-shadow:0 1px 2px rgba(20,20,25,.05),0 6px 18px rgba(20,20,25,.04)}
+.br-obrazec .row{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin:0}
+.br-obrazec .row>div{width:auto;max-width:none;padding:0;margin:0}
+.br-obrazec .row>div:nth-child(1),.br-obrazec .row>div:nth-child(4),.br-obrazec .row>div:nth-child(5),.br-obrazec .row>div:nth-child(8),.br-obrazec .row>div:nth-child(9),.br-obrazec .row>div:nth-child(10){grid-column:1/-1}
+.br-obrazec .control-group{margin:0}
+.br-obrazec .control-label label,.br-obrazec label{display:block;font-size:.75rem;font-weight:600;color:#55555b;margin:0 0 .35rem}
+.br-obrazec .star{color:#f03e0d}
+.br-obrazec .form-control-feedback{display:none;color:#c2410c;font-weight:500;margin-left:6px}
+.br-obrazec label.invalid .form-control-feedback{display:inline}
+.br-obrazec .form-control,.br-obrazec .form-select,.br-obrazec input[type=text],.br-obrazec input[type=number],.br-obrazec input[type=url],.br-obrazec select,.br-obrazec textarea{width:100%;font-family:inherit;font-size:.95rem;color:#212125;padding:.7rem .85rem;border:1px solid #dcdce0;border-radius:5px;background-color:#fff;box-shadow:none;min-height:0}
+.br-obrazec .form-control:focus,.br-obrazec .form-select:focus,.br-obrazec textarea:focus{border-color:#6ab7e3;box-shadow:0 0 0 .2rem rgba(106,183,227,.3);outline:0}
+.br-obrazec .invalid,.br-obrazec .form-control.invalid{border-color:#f03e0d}
+.br-obrazec .form-text,.br-obrazec .control-group>.form-text,.br-obrazec [id$="-desc"]{font-size:.72rem;line-height:1.4;color:#8a8a90;margin-top:.35rem}
+.br-obrazec .input-group{display:flex;flex-wrap:nowrap}
+.br-obrazec .input-group .form-control{border-top-right-radius:0;border-bottom-right-radius:0}
+.br-obrazec .input-group .btn,.br-obrazec .input-group-text{background:#fff;border:1px solid #dcdce0;border-left:0;color:#6ab7e3;border-radius:0 5px 5px 0;padding:0 .9rem}
+.br-obrazec .input-group .btn:hover{background:#f2f8fc;color:#1c5f82}
+.br-obrazec #br-obrazec>.d-flex{margin:1rem 0 .25rem!important;gap:8px!important}
+.br-obrazec #br-obrazec .btn-primary{flex:2 1 0;background:#6ab7e3;border:1px solid #6ab7e3;color:#fff;font-weight:600;font-size:.95rem;padding:.8rem 1rem;border-radius:3px}
+.br-obrazec #br-obrazec .btn-outline-secondary{flex:1 1 0;background:#fff;border:1px solid #dcdce0;color:#212125;font-weight:600;font-size:.9rem;padding:.8rem 1rem;border-radius:3px;text-align:center}
+.br-obrazec .alert{border-radius:5px;font-size:.88rem;padding:.7rem 1rem}
+@media (max-width:991.98px){
+.br-obrazec{padding-bottom:84px}
+.br-obrazec #br-obrazec>.d-flex{position:fixed;left:0;right:0;bottom:66px;z-index:1025;background:#fff;border-top:1px solid #e7e7ea;padding:12px 18px;margin:0!important}
+}
+
+.br-obrazec #br-obrazec .input-group .btn{flex:0 0 auto;background:#fff;color:#6ab7e3;border:1px solid #dcdce0;border-left:0;border-radius:0 5px 5px 0;padding:0 .9rem}
+
+/* SKLOP10: zemljevid trase brez drsenja znotraj, koledar, gumbi */
+.br-mapa__ratio{--bs-aspect-ratio:104%}
+.br-mapa iframe{pointer-events:none}
+.br-mapa__link{position:absolute;left:0;right:0;top:0;bottom:46px;z-index:1}
+.br-mapa .br-mapa__gumb{position:static;display:flex;justify-content:center;width:100%;border-radius:0;box-shadow:none;border-top:1px solid #e7e7ea;padding:13px 14px;font-size:.9rem;color:#212125}
+.br-obrazec #br-obrazec .input-group .btn{min-width:52px;background:#e8f4fb!important;border-color:#6ab7e3!important;color:#2f8fc7!important}
+.br-obrazec #br-obrazec .input-group .btn [class^=icon-],.br-obrazec #br-obrazec .input-group .btn [class*=" icon-"],.br-obrazec #br-obrazec .input-group .btn .fa{font-size:1.35rem!important;color:#2f8fc7!important}
+.br-obrazec #br-obrazec .input-group .btn:hover,.br-obrazec #br-obrazec .input-group .btn:focus{background:#6ab7e3!important;border-color:#6ab7e3!important}
+.br-obrazec #br-obrazec .input-group .btn:hover [class^=icon-],.br-obrazec #br-obrazec .input-group .btn:hover [class*=" icon-"]{color:#fff!important}

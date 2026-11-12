@@ -3,11 +3,24 @@
 Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](https://keepachangelog.com/sl/1.1.0/), verzije po semantičnem verzioniranju.
 
 ## [Neizdano]
+
+## [0.19.0] - 2026-11-12
 ### Dodano
 - Dokumentacija projekta (`docs/`), navodila za izvajalca (`AGENTS.md`).
+- App-videz seznama rund (mobile-first, po pregledu oblikovanja):
+  - Prenovljena kartica runde: značke tipa/težavnosti, **datumska značka** z uro
+    (jantarna »DANES« za današnje runde, nevtralna za ostale), podatki (lokacija/
+    dolžina/trajanje) z ikonami, noga z vodjo in številom udeležencev ter modri
+    gumb »Odpri rundo« z belo pisavo. Nova polja v `Runde/HtmlView.php`
+    (`je_danes`, `ura_prikaz`, `datum_kratko`) in niz `COM_BELAUNCERUNDE_DANES`.
+  - **Filtrirni čipi** namesto spustnih menijev TIP/TEŽAVNOST (vodoravni, drsni);
+    nov niz `COM_BELAUNCERUNDE_VSE`.
 
 ### Spremenjeno
-- Grafična prilagoditev videza (mobile-first) v `media/css/site.css`: manjša, subtilnejša zaobljenost — kartice/paneli `--br-radius` 8→5 px, čipi/značke `--br-chip-radius` 7→3 px, gumbi `border-radius` 3 px (filter gumb iz pill `50rem` v 3 px); glavni akcijski gumb `.btn-secondary` (npr. »Odpri rundo«) dobi belo pisavo na modri #6ab7e3.
+- Grafična prilagoditev videza (mobile-first) v `media/css/site.css`: manjša, subtilnejša
+  zaobljenost — kartice/paneli `--br-radius` 8→5 px, čipi/značke `--br-chip-radius` 7→3 px,
+  gumbi `border-radius` 3 px (filter gumb iz pill `50rem` v 3 px); glavni akcijski gumb
+  `.btn-secondary` (npr. »Odpri rundo«) dobi belo pisavo na modri #6ab7e3.
 
 ## [0.18.1] - 2026-10-27
 ### Popravljeno

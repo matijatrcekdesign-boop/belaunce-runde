@@ -96,6 +96,8 @@ class HtmlView extends BaseHtmlView
         $this->paginacija->setAdditionalUrlParam('filter_tip', $this->tip ?: null);
         $this->paginacija->setAdditionalUrlParam('filter_tezavnost', $this->tezavnost ?: null);
 
+        $danesLokalno = substr(CasHelper::izUtc(CasHelper::zdajUtc()), 0, 10);
+
         foreach ($this->runde as $runda) {
             $runda->urejanje = !$app->getIdentity()->guest && (int) $runda->vodja_id === (int) $app->getIdentity()->id
                 && (int) $runda->stanje === 1 && !(bool) $runda->startala;
@@ -106,6 +108,9 @@ class HtmlView extends BaseHtmlView
             // CasHelper že opravi pretvorbo; oblikovanje ne sme znova premakniti ure.
             $lokalni = new \DateTimeImmutable(CasHelper::izUtc($runda->zacetek), new \DateTimeZone('UTC'));
             $runda->zacetek_prikaz = $lokalni->format(Text::_('COM_BELAUNCERUNDE_DATUM_OBLIKA'));
+            $runda->je_danes       = $lokalni->format('Y-m-d') === $danesLokalno;
+            $runda->ura_prikaz     = $lokalni->format('H:i');
+            $runda->datum_kratko   = $lokalni->format('j. n.');
         }
 
         $this->getDocument()->setTitle(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV'));

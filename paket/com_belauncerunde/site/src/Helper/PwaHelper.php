@@ -23,7 +23,7 @@ class PwaHelper
             Uri::root(true) . '/media/com_belauncerunde/manifest.webmanifest',
             'manifest'
         );
-        $document->setMetaData('theme-color', '#2a76e0');
+        $document->setMetaData('theme-color', '#6ab7e3');
         $document->setMetaData('apple-mobile-web-app-capable', 'yes');
         $document->setMetaData('apple-mobile-web-app-title', 'Runde');
         $document->addHeadLink(

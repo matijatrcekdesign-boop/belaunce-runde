@@ -57,12 +57,12 @@ $datumKratko = (string) ($runda->datum_kratko ?? '');
 
         <div class="br-card__footer">
             <div class="br-card__footer-info">
-                <span class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape((string) ($runda->vodja_ime ?? '')); ?></span></span>
+                <span class="br-leader"><span class="br-leader__avatar" aria-hidden="true"><?php echo $this->escape(VidezHelper::zacetnicaVodje($runda->vodja_ime ?? null)); ?></span><span><?php echo $this->escape(strtok(trim((string) ($runda->vodja_ime ?? '')) . ' ', ' ') ?: ''); ?></span></span>
                 <?php if (isset($runda->stevilo_udelezencev)) : ?>
-                    <span class="br-card__count"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_STEVILO_UDELEZENCEV', $runda->stevilo_udelezencev)); ?></span>
+                    <span class="br-card__count"><?php echo $this->escape(Text::sprintf('COM_BELAUNCERUNDE_N_PRIJAVLJENIH', $runda->stevilo_udelezencev)); ?></span>
                 <?php endif; ?>
             </div>
-            <a class="btn btn-secondary" href="<?php echo $this->escape($povezava); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_ODPRI_RUNDO')); ?></a>
+            <a class="btn btn-secondary" href="<?php echo $this->escape($povezava); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_PRIDEM')); ?></a>
         </div>
 
         <?php if ($runda->urejanje || !empty($runda->odjava) || !empty($runda->deljiva)) : ?>

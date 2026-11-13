@@ -101,8 +101,21 @@
 
                 if (obstojeca) {
                     // Tiha osvežitev: ključi po menjavi uporabnika ali naprave ostanejo usklajeni (idempotentno).
-                    stanjeE();
-                    poslji(moznosti.naroci, polja(obstojeca)).catch(() => {});
+                    // Če je strežnik ne sprejme (npr. izbrisana naročnina, nov uporabnik brez pravice),
+                    // pokažemo stanje D, da uporabnik ne misli, da obvestila dobiva.
+                    let sprejeto = false;
+
+                    try {
+                        sprejeto = await poslji(moznosti.naroci, polja(obstojeca));
+                    } catch (x) {
+                        sprejeto = false;
+                    }
+
+                    if (sprejeto) {
+                        stanjeE();
+                    } else {
+                        stanjeD();
+                    }
                 } else {
                     stanjeD();
                 }

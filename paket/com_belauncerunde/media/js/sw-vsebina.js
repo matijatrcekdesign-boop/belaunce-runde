@@ -1,4 +1,4 @@
-const CACHE = 'br-pwa-v1';
+const CACHE = 'br-pwa-v2';
 
 self.addEventListener('install', () => {
     self.skipWaiting();
@@ -26,4 +26,30 @@ self.addEventListener('fetch', (dogodek) => {
             { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
         ))
     );
+});
+
+// Push obvestila (naloga 24). iOS zahteva, da vsak push prikaže obvestilo — brez tihih pushov.
+self.addEventListener('push', (e) => {
+    let p = {};
+    try { p = e.data ? e.data.json() : {}; } catch (x) {}
+    const naslov = p.title || 'Runde Belaunce';
+    e.waitUntil(self.registration.showNotification(naslov, {
+        body: p.body || '',
+        tag: p.tag || undefined,
+        renotify: !!p.tag,
+        icon: '/media/com_belauncerunde/images/icon-192.png',
+        badge: '/media/com_belauncerunde/images/icon-192.png',
+        data: { url: p.url || '/runde' }
+    }));
+});
+
+self.addEventListener('notificationclick', (e) => {
+    e.notification.close();
+    // Odpremo samo naslov na istem izvoru (obvestilo nikoli ne preusmeri drugam).
+    const cilj = new URL((e.notification.data && e.notification.data.url) || '/runde', self.location.origin);
+    if (cilj.origin !== self.location.origin) { return; }
+    e.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then((okna) => {
+        for (const o of okna) { if ('focus' in o) { o.navigate(cilj.href); return o.focus(); } }
+        return clients.openWindow(cilj.href);
+    }));
 });

@@ -2,6 +2,7 @@
 
 namespace Belaunce\Plugin\Task\Belauncerunde\Extension;
 
+use Belaunce\Component\Belauncerunde\Administrator\Service\PushService;
 use Belaunce\Component\Belauncerunde\Administrator\Service\VzdrzevanjeService;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\CMSPlugin;
@@ -12,16 +13,21 @@ use Joomla\Event\SubscriberInterface;
 
 \defined('_JEXEC') or die;
 
-/** Schedulerju ponudi dnevno vzdrževanje članskega dostopa in podatkov rund. */
+/** Schedulerju ponudi dnevno vzdrževanje rund in pogostejši opomnik pred štartom (push). */
 final class Belauncerunde extends CMSPlugin implements SubscriberInterface
 {
     use TaskPluginTrait;
 
-    /** @var array<string, array<string, string>> Edina vrsta opravila tega vtičnika. */
+    /** @var array<string, array<string, string>> Vrsti opravil tega vtičnika. */
     protected const TASKS_MAP = [
         'belaunce_vzdrzevanje' => [
             'langConstPrefix' => 'PLG_TASK_BELAUNCERUNDE_VZDRZEVANJE',
             'method' => 'opraviVzdrzevanje',
+        ],
+        // Ločeno od vzdrževanja, ker teče pogosteje (npr. vsakih 15 minut).
+        'belaunce_opomnik' => [
+            'langConstPrefix' => 'PLG_TASK_BELAUNCERUNDE_OPOMNIK',
+            'method' => 'opraviOpomnik',
         ],
     ];
 
@@ -54,7 +60,7 @@ final class Belauncerunde extends CMSPlugin implements SubscriberInterface
             Log::add('VZDRZEVANJE_START', Log::INFO, 'com_belauncerunde');
             $servis = new VzdrzevanjeService();
 
-            foreach (['sinhronizacijaClanov', 'izbrisGostov', 'ciscenje'] as $del) {
+            foreach (['sinhronizacijaClanov', 'izbrisGostov', 'ciscenje', 'ciscenjePush'] as $del) {
                 try {
                     $servis->{$del}();
                 } catch (\Throwable $napaka) {
@@ -64,6 +70,29 @@ final class Belauncerunde extends CMSPlugin implements SubscriberInterface
             }
 
             Log::add('VZDRZEVANJE_KONEC', Log::INFO, 'com_belauncerunde');
+
+            return Status::OK;
+        } catch (\Throwable $napaka) {
+            return Status::KNOCKOUT;
+        }
+    }
+
+    /**
+     * Pošlje push opomnike za runde, ki štartajo v nastavljenem oknu (push_opomnik_ur).
+     * Napaka pošiljanja nikoli ne ustavi Schedulerja; dnevnik beleži le kode in števila.
+     *
+     * @param  ExecuteTaskEvent  $event
+     * @return  int
+     */
+    protected function opraviOpomnik(ExecuteTaskEvent $event): int
+    {
+        try {
+            $this->pripraviDnevnik();
+            $rund = PushService::posljiOpomnike();
+
+            if ($rund > 0) {
+                Log::add('PUSH_OPOMNIK rund=' . $rund, Log::INFO, 'com_belauncerunde');
+            }
 
             return Status::OK;
         } catch (\Throwable $napaka) {

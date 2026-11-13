@@ -37,6 +37,9 @@ class RundaTable extends Table
     /** @var string Prvotni UTC termin za odpoved, tudi ob sočasni spremembi začetka. */
     public string $_prvotniZacetek = '';
 
+    /** @var bool Ali je zadnji uspešni zapis ustvaril objavljeno rundo ali rundo objavil (push 7.4). */
+    public bool $_novaAliObjava = false;
+
     /**
      * Dovoli NULL za polja, kjer prazna vrednost pomeni odsotnost podatka.
      *
@@ -133,6 +136,7 @@ class RundaTable extends Table
         $this->_sprozilnaSprememba = [];
         $this->_pravkarOdpovedana = false;
         $this->_prvotniZacetek = '';
+        $this->_novaAliObjava = false;
         $sprozilnaPolja = (array) ComponentHelper::getParams('com_belauncerunde')
             ->get('mail_sprozilna_polja', ['zacetek', 'lokacija']);
         $isNew       = empty($this->id);
@@ -153,6 +157,12 @@ class RundaTable extends Table
             $this->odpovedano = $zdaj;
         } elseif ((int) $this->stanje === 1) {
             $this->odpovedano = null;
+        }
+
+        // Nov začetek pomeni nov opomnik (naloga 24, 7.2): oznako poslanega opomnika ponastavimo.
+        // Neodvisno od sprožilnih polj maila, ker opomnik vedno velja za trenutni termin.
+        if ($prejsnje !== null && (string) $prejsnje->zacetek !== (string) $this->zacetek && $this->hasField('opomnik_poslan')) {
+            $this->opomnik_poslan = null;
         }
 
         // D54 velja tudi ob zamenjavi vodje v administraciji: če je bil novi vodja
@@ -183,6 +193,10 @@ class RundaTable extends Table
         }
 
         // Šele potrjen zapis objavi rezultat; omrežja tabela nikoli ne kliče.
+        // Nova objavljena runda ali prehod v objavljeno (naloga 24, 7.4) je neodvisen od sprožilnih polj maila;
+        // dvojno pošiljanje prepreči stolpec nova_obvescena v PushService.
+        $this->_novaAliObjava = (int) $this->stanje === 1 && ($isNew || $prejsnje === null || (int) $prejsnje->stanje !== 1);
+
         if (!$isNew && $prejsnje !== null) {
             $this->_pravkarOdpovedana = (int) $prejsnje->stanje !== 2 && (int) $this->stanje === 2;
             $this->_prvotniZacetek = (string) $prejsnje->zacetek;

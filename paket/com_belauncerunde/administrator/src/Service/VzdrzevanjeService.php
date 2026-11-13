@@ -138,4 +138,15 @@ class VzdrzevanjeService
         $poskusi = (new OmejitevHelper($this->db))->pociscenje();
         Log::add('POSKUSI_CISCENJE izbrisanih=' . $poskusi, Log::INFO, 'com_belauncerunde');
     }
+
+    /**
+     * Počisti mrtve in osirotele naročnine na push obvestila (naloga 24).
+     * Briše samo vrstice naročnin; uporabnikov ne blokira in skupin ne spreminja (D52, D53).
+     *
+     * @return  int  Število izbrisanih naročnin.
+     */
+    public function ciscenjePush(): int
+    {
+        return PushService::ciscenje();
+    }
 }

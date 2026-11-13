@@ -7,6 +7,17 @@ use Joomla\CMS\Router\Route;
 ?>
 <div class="br-moje">
     <h1><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_MOJE_NASLOV')); ?></h1>
+    <?php if ($this->obvestilaNaVoljo) : ?>
+        <?php // Kartica ostane skrita, dokler obvestila.js ne določi stanja (brez JS je ni). ?>
+        <section class="br-obvestila card mb-3" hidden aria-labelledby="br-obvestila-naslov">
+            <div class="card-body">
+                <h2 class="h5 card-title" id="br-obvestila-naslov"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OBVESTILA_NASLOV')); ?></h2>
+                <p class="br-obvestila-besedilo mb-2" aria-live="polite"></p>
+                <button type="button" class="btn btn-secondary br-obvestila-vklopi" hidden><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OBVESTILA_VKLOPI')); ?></button>
+                <button type="button" class="btn btn-outline-secondary br-obvestila-izklopi" hidden><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_OBVESTILA_IZKLOPI')); ?></button>
+            </div>
+        </section>
+    <?php endif; ?>
     <p><a class="btn btn-primary" href="<?php echo $this->escape(Route::_('index.php?option=com_belauncerunde&view=obrazec&id=0', false)); ?>"><?php echo $this->escape(Text::_('COM_BELAUNCERUNDE_USTVARI_RUNDO')); ?></a></p>
 
     <?php if ($this->obvestilo !== null) : ?>

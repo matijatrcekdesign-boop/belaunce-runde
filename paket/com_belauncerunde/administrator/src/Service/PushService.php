@@ -401,12 +401,13 @@ class PushService
             $izbrisanih += $baza->getAffectedRows();
         }
 
-        // 3) Brez uspeha 180 dni.
+        // 3) Brez uspeha 180 dni (ločena spremenljivka za vsako vezavo, pravilo 16).
+        $mejaUstvarjeno = $meja;
         $poizvedba = $baza->createQuery()->delete($baza->quoteName('#__belaunce_push'))
             ->where('((' . $baza->quoteName('zadnji_uspeh') . ' IS NOT NULL AND ' . $baza->quoteName('zadnji_uspeh') . ' < :meja1)'
                 . ' OR (' . $baza->quoteName('zadnji_uspeh') . ' IS NULL AND ' . $baza->quoteName('ustvarjeno') . ' < :meja2))')
             ->bind(':meja1', $meja, ParameterType::STRING)
-            ->bind(':meja2', $meja, ParameterType::STRING);
+            ->bind(':meja2', $mejaUstvarjeno, ParameterType::STRING);
         $baza->setQuery($poizvedba)->execute();
         $izbrisanih += $baza->getAffectedRows();
 

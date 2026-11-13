@@ -254,6 +254,47 @@ Pred zagonom preveri, da je v **Možnosti → AcyMailing** izbrana prava lista �
 
 Na produkciji nastavi **pravi strežniški cron** za Joomlin Scheduler; samo spletno proženje ni dovolj. Ta korak je tudi v [kontrolnem seznamu pred zagonom](TASKS.md#kontrolni-seznam-pred-zagonom-na-produkciji-ni-naloga-za-codex).
 
+## Obvestila
+
+Push obvestila so dodatek k mailom: vsi obstoječi maili delujejo naprej neodvisno, tudi če so obvestila izklopljena ali pošiljanje ne uspe. Obvestilo nikoli ne vsebuje imen ali kontaktov udeležencev, ker je vidno na zaklenjenem zaslonu. Gostje obvestil ne dobijo (zanje ostane email).
+
+### Za člane: kako vklopiš obvestila
+
+1. Odpri **Moje runde**. Na vrhu je kartica **Obvestila na tej napravi**.
+2. Pritisni **Vklopi obvestila** in v brskalniku dovoli obvestila.
+3. Kartica pokaže »Obvestila so vklopljena na tej napravi.« Z gumbom **Izklopi** jih kadarkoli izklopiš.
+
+Vklop velja za napravo in brskalnik, na katerem si ga naredil; na vsaki napravi ga vklopi posebej. Obvestila dobiš:
+- **vodja:** ob vsaki novi prijavi člana ali gosta na tvojo rundo (naslov runde, datum, ura in število prijavljenih);
+- **prijavljeni in vodja:** ob odpovedi runde ali spremembi začetka/lokacije (kdor spremembo naredi sam, obvestila ne dobi);
+- **prijavljeni in vodja:** opomnik pred štartom (privzeto 2 uri prej).
+
+Dotik obvestila odpre stran runde.
+
+**iPhone/iPad (iOS 16.4 ali novejši):** obvestila delujejo samo v nameščeni aplikaciji. V Safariju pritisni **Deli → Dodaj na začetni zaslon**, nato aplikacijo odpri z ikone na začetnem zaslonu in šele tam v **Moje runde** vklopi obvestila. V navadnem Safariju kartica pokaže to navodilo namesto gumba.
+
+Če kartica pravi, da so obvestila zavrnjena, jih omogoči v nastavitvah brskalnika ali telefona (dovoljenja za to spletno mesto) in stran osveži.
+
+### Za administratorja: Možnosti → Obvestila
+
+- **Push obvestila:** glavno stikalo. Izklop ustavi vse pushe; maili delujejo naprej.
+- **Ob novi prijavi (vodji)**, **Ob odpovedi/spremembi runde**, **Opomnik pred štartom:** posamezni sprožilci. Sprememba uporablja ista polja kot maili (zavihek **Maili → sprožilna polja**).
+- **Koliko ur pred štartom:** okno za opomnik (1, 2, 3, 6, 12 ali 24 ur). Vsaka runda dobi en opomnik; ob spremembi začetka se opomnik pošlje znova za novi čas.
+- **Kontakt (mailto: ali https:):** kontakt za push storitve. Prazno pomeni `mailto:` z naslovom pošiljatelja iz globalne nastavitve.
+- **Javni ključ VAPID:** ustvari se samodejno ob namestitvi. **Ne spreminjaj ga** — nov ključ izklopi obvestila na vseh napravah. Ponovna namestitev ali posodobitev paketa ključev ne spremeni. Zasebni ključ je shranjen v Možnostih in se nikoli ne prikaže na strani rund ali v dnevniku.
+
+### Za administratorja: opomnik v Schedulerju
+
+Opomnik pošilja ločeno opravilo, ker mora teči pogosteje kot dnevno vzdrževanje:
+
+1. **System → Scheduled Tasks → New**, tip **Opomnik pred štartom (Runde Belaunce)**.
+2. Nastavi pogost urnik, npr. **vsakih 15 minut**.
+3. Za preizkus uporabi **Run Test**.
+
+Opomnik zanesljivo deluje samo s **pravim strežniškim cronom** za Joomlin Scheduler; spletno proženje ob obiskih (»lazy scheduler«) je za opomnik nezanesljivo. Runda, ustvarjena šele znotraj okna opomnika, dobi opomnik ob naslednjem zagonu opravila.
+
+Dnevno opravilo **Vzdrževanje rund Belaunce** dodatno počisti naročnine na obvestila: naprave izbrisanih uporabnikov, naprave uporabnikov, ki niso več v skupini **Člani** in niso vodja prihodnje runde, ter naprave, ki 180 dni niso prejele nobenega obvestila. Pri tem se briše samo vrstica naročnine; uporabniki se nikoli ne blokirajo in skupine se ne spreminjajo. Dnevnik `com_belauncerunde.php` beleži samo kode, ID-je in števila (nikoli naslovov naprav, ključev, vsebine obvestil ali imen).
+
 ## Statistika in izvoz
 
 Administrator odpre **Komponente → Runde Belaunce → Statistika**. Filtri za iskanje, tip, težavnost, stanje, vodjo in obdobje veljajo za vse tri tabele ter za gumb **Izvozi CSV**. Kazalniki štejejo objavljene in odpovedane runde; skupna in povprečna dolžina sta v kilometrih. Povprečno trajanje v minutah upošteva samo runde, ki imajo trajanje vpisano. Število udeležencev vključuje prijavljene člane, obstoječega vodjo in goste. Razčlenitvi po tipu in težavnosti prikazujeta število rund ter povprečni dolžini in števili udeležencev.

@@ -721,3 +721,14 @@ body:has(.br-runda > p.alert) #system-message-container{display:none}
 .br-obrazec #br-obrazec .input-group .btn [class^=icon-],.br-obrazec #br-obrazec .input-group .btn [class*=" icon-"],.br-obrazec #br-obrazec .input-group .btn .fa{font-size:1.35rem!important;color:#2f8fc7!important}
 .br-obrazec #br-obrazec .input-group .btn:hover,.br-obrazec #br-obrazec .input-group .btn:focus{background:#6ab7e3!important;border-color:#6ab7e3!important}
 .br-obrazec #br-obrazec .input-group .btn:hover [class^=icon-],.br-obrazec #br-obrazec .input-group .btn:hover [class*=" icon-"]{color:#fff!important}
+
+/* Obvestila na tej napravi (naloga 24): kartica na vrhu Moje runde. */
+.br-obvestila {
+    background: var(--br-panel);
+    border: 1px solid var(--br-border);
+    border-radius: var(--br-radius);
+}
+
+.br-obvestila .btn {
+    min-height: 44px;
+}

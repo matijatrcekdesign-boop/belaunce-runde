@@ -145,9 +145,17 @@ class PushModel extends BaseDatabaseModel
         $this->dnevnik('PUSH_ODJAVLJEN id=' . $id . ' uporabnik_id=' . $uporabnikId);
     }
 
+    /** @var string[] Gostitelji push storitev, ki se ujemajo natanko. */
+    private const STORITVE_NATANKO = ['fcm.googleapis.com'];
+
+    /** @var string[] Pripone gostiteljev push storitev (z vodilno piko, torej samo poddomene). */
+    private const STORITVE_PRIPONE = ['.push.apple.com', '.push.services.mozilla.com', '.notify.windows.com'];
+
     /**
-     * Preveri endpoint pred shranjevanjem: strežnik bo nanj pošiljal POST, zato zavrnemo vse,
-     * kar ni javni https naslov (SSRF): IP naslovi, localhost in imena brez domene.
+     * Preveri endpoint pred shranjevanjem: strežnik bo nanj pošiljal POST, zato sprejmemo samo
+     * https naslov znane push storitve (SSRF): Google FCM (natanko fcm.googleapis.com), Apple
+     * (*.push.apple.com), Mozilla (*.push.services.mozilla.com) in Microsoft WNS (*.notify.windows.com).
+     * IP naslovi, localhost, imena brez domene in vsi drugi gostitelji so zavrnjeni.
      *
      * @param   string  $endpoint
      *
@@ -173,7 +181,22 @@ class PushModel extends BaseDatabaseModel
             return false;
         }
 
-        return (bool) preg_match('/^[a-z0-9.-]+$/', $gostitelj);
+        if (!preg_match('/^[a-z0-9.-]+$/', $gostitelj)) {
+            return false;
+        }
+
+        // Seznam dovoljenih storitev: brez njega bi član lahko strežnik usmeril na poljuben javni naslov.
+        if (\in_array($gostitelj, self::STORITVE_NATANKO, true)) {
+            return true;
+        }
+
+        foreach (self::STORITVE_PRIPONE as $pripona) {
+            if (str_ends_with($gostitelj, $pripona)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** ID naročnine po hashu (po želji samo za danega lastnika) ali 0. */

@@ -83,6 +83,9 @@ Priloga: `docs/osnutek-vmesnika.pdf` (5 zaslonov: seznam, stran runde, nova rund
 | D61 | **Branje AcyMailing čez baze:** AcyMailing baza je na ISTI MySQL instanci in dosegljiva z ISTIM DB uporabnikom kot baza komponente. Dostop s polno kvalificiranim imenom (`baza.predpona_tabela`) + `SELECT` pravica; adapter (`AcymailingAdapter`) ostane edina bralna točka, samo za branje. (naloga 18) |
 | D62 | **PWA:** komponenta je namestljiva kot samostojen spletni pogled (manifest + service worker + apple-* meta), BREZ push obvestil v v1. Push je faza 2 (ločena naloga), šele po izidu in testiranju. (naloga 19) |
 | D63 | **Zasebnost obvestila vodji:** ime udeleženca (člana ali gosta) sme v email obvestilo vodji ob novi prijavi, ker vodja po D7/D8 imena in kontakte svoje runde tako ali tako vidi. V obvestilo NE gre email/telefon udeleženca; dnevnik imena/emaila ne beleži. (naloga 20) |
+| D64 | **Push obvestila brez zunanjih knjižnic:** Web Push (RFC 8291 aes128gcm, RFC 8292 VAPID ES256) je lastna implementacija s PHP openssl in `hash_hkdf` (brez composer paketov v paketu). Ključa VAPID se ustvarita samodejno ob namestitvi in se nikoli ne prepišeta; nikoli nista v gitu ali dnevniku, na frontend gre samo javni ključ. (naloga 24) |
+| D65 | **Push nikoli ne vsebuje osebnih podatkov udeležencev** (imena, kontakti) — obvestilo je vidno na zaklenjenem zaslonu. Samo javni podatki runde (naslov, dan, datum, ura, lokacija) in število prijavljenih. Gostje push ne dobijo. (naloga 24) |
+| D66 | **Push je dodatek k mailu:** napaka pri pošiljanju pusha nikoli ne vpliva na prijavo, shranjevanje runde ali mail. Kdor rundo spremeni ali odpove sam, push o tem ne dobi (mail kopijo po D57 še vedno). (naloga 24) |
 
 **Označeno kot *predlog*:** izhodišča, ki jih arhitekt lahko spremeni po dogovoru z Matijo.
 

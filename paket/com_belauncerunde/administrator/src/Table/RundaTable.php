@@ -155,6 +155,12 @@ class RundaTable extends Table
             $this->odpovedano = null;
         }
 
+        // Nov začetek pomeni nov opomnik (naloga 24, 7.2): oznako poslanega opomnika ponastavimo.
+        // Neodvisno od sprožilnih polj maila, ker opomnik vedno velja za trenutni termin.
+        if ($prejsnje !== null && (string) $prejsnje->zacetek !== (string) $this->zacetek && $this->hasField('opomnik_poslan')) {
+            $this->opomnik_poslan = null;
+        }
+
         // D54 velja tudi ob zamenjavi vodje v administraciji: če je bil novi vodja
         // prej prijavljen, njegovo vrstico odstranimo skupaj s spremembo runde.
         $baza = $this->getDatabase();

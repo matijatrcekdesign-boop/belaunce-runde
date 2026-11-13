@@ -277,6 +277,14 @@ class PrijaveModel extends BaseDatabaseModel
                     );
                 } catch (\Throwable $napaka) {
                 }
+
+                // Push vodji je neodvisen od maila (D66) in ne vsebuje imena udeleženca (D65).
+                try {
+                    \Belaunce\Component\Belauncerunde\Administrator\Service\PushService::obvestiVodjoOPrijavi(
+                        $rundaId, $this->steviloUdelezencev($rundaId), $uporabnikId
+                    );
+                } catch (\Throwable $napaka) {
+                }
             }
         }
 

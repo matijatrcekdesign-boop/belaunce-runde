@@ -9,14 +9,16 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 - **Push obvestila** (naloga 24, D64–D66) kot dodatek k mailom:
   - vodja ob novi prijavi člana ali gosta (brez imena udeleženca);
   - prijavljeni člani in vodja ob odpovedi ali spremembi runde (kdor spremeni, obvestila ne dobi);
-  - opomnik pred štartom (privzeto 2 uri) prek nove Scheduler rutine **Opomnik pred štartom**.
+  - opomnik pred štartom (privzeto 2 uri) prek nove Scheduler rutine **Opomnik pred štartom**;
+  - vsi člani z vklopljenimi obvestili ob **novi objavljeni rundi** (tudi ob kasnejši objavi; ustvarjalec ne dobi,
+    obstoječe runde ob posodobitvi ne sprožijo pusha).
 - Lastna implementacija Web Push (RFC 8291 aes128gcm, RFC 8292 VAPID ES256) s PHP openssl,
   brez zunanjih knjižnic; razvojni test `orodja/test-webpush.php` (testni vektor RFC 8291, ni del paketa).
 - Ključa VAPID se ustvarita samodejno ob namestitvi/posodobitvi in se nikoli ne prepišeta.
 - Kartica **Obvestila na tej napravi** v Moje runde (vklop/izklop; navodilo za iPhone, kjer push
   deluje samo v nameščeni aplikaciji). Service worker prikaže obvestilo in ob dotiku odpre rundo.
 - Možnosti: nov zavihek **Obvestila** (glavno stikalo, sprožilci, ure opomnika, kontakt VAPID).
-- Tabela `#__belaunce_push` (naročnine naprav) in stolpec `opomnik_poslan` v `#__belaunce_runde`.
+- Tabela `#__belaunce_push` (naročnine naprav) in stolpca `opomnik_poslan` ter `nova_obvescena` v `#__belaunce_runde`.
 - Dnevno vzdrževanje počisti naročnine izbrisanih uporabnikov, nečlanov in naprav brez uspeha 180 dni.
 
 ### Spremenjeno

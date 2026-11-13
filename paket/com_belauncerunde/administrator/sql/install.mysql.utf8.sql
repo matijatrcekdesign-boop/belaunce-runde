@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_runde` (
   `checked_out_time` DATETIME NULL,
   `dodatno` TEXT NULL,
   `opomnik_poslan` DATETIME NULL DEFAULT NULL,
+  `nova_obvescena` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_stanje_zacetek` (`stanje`, `zacetek`),
   KEY `idx_vodja` (`vodja_id`),

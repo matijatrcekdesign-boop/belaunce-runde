@@ -19,6 +19,7 @@ CILJ
   1. NOVA PRIJAVA  → vodji runde (član ali gost se je prijavil na njegovo rundo)
   2. ODPOVED / SPREMEMBA runde → prijavljenim članom + vodji
   3. OPOMNIK pred štartom → prijavljenim članom + vodji (Joomla Scheduler)
+  4. NOVA RUNDA → vsem naročenim članom (dodatek, potrdil Matija; glej 7.4)
 
 Dotik obvestila odpre stran runde v aplikaciji.
 
@@ -30,17 +31,17 @@ računa); zanje ostane email.
 OBSEG (samo to, nič drugega)
 ------------------------------------------------------------
 1. VAPID ključi: samodejno ustvarjeni ob namestitvi, shranjeni v Možnostih.
-2. Tabela naročnin `#__belaunce_push` + stolpec `opomnik_poslan` v `#__belaunce_runde`.
+2. Tabela naročnin `#__belaunce_push` + stolpca `opomnik_poslan` in `nova_obvescena` v `#__belaunce_runde`.
 3. `Administrator\Service\PushService` — lastna implementacija Web Push
    (RFC 8291 aes128gcm + RFC 8292 VAPID ES256) s PHP openssl, BREZ composer knjižnic.
 4. Site kontroler `PushController` (naroci, odjavi) — JSON, CSRF, samo prijavljeni člani.
 5. SW: `push` + `notificationclick` v `sw-vsebina.js`.
 6. UI v "Moje runde": kartica "Obvestila na tej napravi" + `media/js/obvestila.js`.
-7. Sprožilci 1–3 (glej spodaj).
+7. Sprožilci 1–4 (glej spodaj).
 8. Vzdrževanje: čiščenje mrtvih/osirotelih naročnin v obstoječem opravilu.
 9. Možnosti (nov zavihek "Obvestila"), jezikovni nizi sl-SI + en-GB, NAVODILA.md, CHANGELOG.
 
-NE delaj: push za goste, push ob novi rundi (glej ODPRTE ODLOČITVE), uporabniških
+NE delaj: push za goste, uporabniških
 nastavitev po dogodkih (en vklop na napravo), čakalne vrste/asinhronega pošiljanja,
 predpomnjenja v SW, sprememb predloge (D41), sprememb obstoječih mailov.
 
@@ -59,6 +60,7 @@ predpomnjenja v SW, sprememb predloge (D41), sprememb obstoječih mailov.
 - `config.xml`, nov fieldset `obvestila`:
     push_vklop          radio  default 1   "Push obvestila"
     push_nova_prijava   radio  default 1   "Ob novi prijavi (vodji)"
+    push_nova_runda     radio  default 1   "Ob novi rundi (vsem naročenim članom)"   showon push_vklop:1  (dodatek 7.4)
     push_sprememba      radio  default 1   "Ob odpovedi/spremembi runde"
     push_opomnik        radio  default 1   "Opomnik pred štartom"
     push_opomnik_ur     list   default 2   (1, 2, 3, 6, 12, 24) "Koliko ur pred štartom"
@@ -92,6 +94,9 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_push` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE `#__belaunce_runde` ADD COLUMN `opomnik_poslan` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `#__belaunce_runde` ADD COLUMN `nova_obvescena` DATETIME NULL DEFAULT NULL;   (dodatek 7.4)
+  Obstoječe runde ob posodobitvi: nova_obvescena = UTC zdaj za VSE obstoječe vrstice (v 0.20.0.sql in v
+  skript.php samo ob dodajanju stolpca), da namestitev ne pošlje pusha za stare runde.
   (MariaDB 10.11: brez `IF NOT EXISTS` pri ADD COLUMN ne zanašaj se na idempotenco SQL datoteke —
    zagotovi stolpec idempotentno v `skript.php` po vzoru stolpca `barva` iz naloge 16.)
 
@@ -265,6 +270,21 @@ URL: `Route::link('site', 'index.php?option=com_belauncerunde&view=runda&id=' . 
   Opomba za produkcijo: Scheduler mora teči s pravim cronom (že na kontrolnem seznamu v TASKS.md);
   "lazy scheduler" ob obiskih je za opomnik nezanesljiv.
 
+7.4 NOVA RUNDA → vsi naročeni člani   (push_nova_runda)   — DODATEK (potrdil Matija), velja za 0.20.0
+  Mesto: po uspešnem zapisu, ista točka kot 7.2 (`MailService::poZapisu()` → `PushService::novaRunda()`),
+  za frontend in admin (D56), tudi ko admin rundo kasneje objavi (prehod v stanje 1).
+  `poZapisu` se vrne zgodaj, ko ni odpovedi/sprememb — novo rundo preveri NEODVISNO od tega pogoja,
+  v svojem try/catch (D66). `RundaTable::store()` zazna novo objavljeno rundo in prehod v objavo
+  (`_novaAliObjava`), da se sproži tudi brez sprožilnih polj.
+  Pogoj: stanje=1 AND nova_obvescena IS NULL AND zacetek > UTC zdaj.
+  NAJPREJ UPDATE nova_obvescena = UTC zdaj WHERE id=:id AND nova_obvescena IS NULL (affectedRows=1,
+  brez dvojnega pošiljanja), nato pošlji.
+  Prejemniki: vsi uporabniki z vsaj eno vrstico v `#__belaunce_push`, ki so v skupini skupina_clani
+  (skupina ni nastavljena → nihče). Izpusti uporabnika, ki je shranil (identiteta). Gostje nikoli.
+  Besedilo (site jezik): naslov "Nova runda: {NASLOV}", besedilo "{DAN} {DATUM} ob {URA}, {LOKACIJA}".
+  url = stran runde, oznaka runda-{id}, nujnost normal, TTL do štarta (min 60, max 86400).
+  Brez osebnih podatkov (D65). Mailov ne spreminjaj.
+
 ------------------------------------------------------------
 8. VZDRŽEVANJE (obstoječe opravilo belaunce_vzdrzevanje, nov neodvisen del v svojem try/catch)
 ------------------------------------------------------------
@@ -299,6 +319,10 @@ MERILA SPREJEMA
     (Na DDEV ni izvedljivo — preverita arhitekt in Matija na produkciji, kot merilo 14 naloge 11.)
 19. Android Chrome (produkcija): vklop, prejem, dotik.
 20. NAVODILA.md: "Obvestila" (član: kako vklopi, iPhone pogoj; admin: Možnosti, Scheduler rutina opomnika, cron).
+21. Nova objavljena runda (frontend) → push vsem naročenim članom razen ustvarjalca; drugo shranjevanje iste runde → nič.
+22. Admin ustvari neobjavljeno rundo → nič; objava → en push.
+23. Posodobitev 0.19.0 → 0.20.0 ne pošlje pusha za obstoječe runde.
+24. push_nova_runda=0 → nič, ostali push dogodki delujejo.
 
 ------------------------------------------------------------
 ROČNI TEST ZA MATIJO / ARHITEKTA (DDEV)
@@ -317,7 +341,8 @@ SPREJETE ODLOČITVE (veljajo za to nalogo)
    samo naslov runde, datum/uro in število prijavljenih.
 3. Kdor rundo spremeni ali odpove sam (vodja ali admin), push o tem NE dobi (mail kopijo po D57 še vedno).
 4. En opomnik, privzeto 2 uri pred štartom (nastavljivo 1/2/3/6/12/24 ur).
-5. Push ob NOVI RUNDI NI v 0.20.0 (kasneje, z ločenim vklopom na napravi).
+5. Push ob NOVI RUNDI JE v 0.20.0 (dodatek, potrdil Matija): vsem naročenim članom (skupina Člani z vsaj eno
+   napravo), razen ustvarjalca; nastavljivo s push_nova_runda (privzeto vklopljeno). Glej sprožilec 7.4.
 6. Implementira Codex prek PR v develop; arhitekt pregleda, zažene gradnjo in
    `php orodja/test-webpush.php` ter testira na DDEV; Matija združi.
 

@@ -267,7 +267,8 @@ Push obvestila so dodatek k mailom: vsi obstoječi maili delujejo naprej neodvis
 Vklop velja za napravo in brskalnik, na katerem si ga naredil; na vsaki napravi ga vklopi posebej. Obvestila dobiš:
 - **vodja:** ob vsaki novi prijavi člana ali gosta na tvojo rundo (naslov runde, datum, ura in število prijavljenih);
 - **prijavljeni in vodja:** ob odpovedi runde ali spremembi začetka/lokacije (kdor spremembo naredi sam, obvestila ne dobi);
-- **prijavljeni in vodja:** opomnik pred štartom (privzeto 2 uri prej).
+- **prijavljeni in vodja:** opomnik pred štartom (privzeto 2 uri prej);
+- **vsi člani z vklopljenimi obvestili:** ob novi objavljeni rundi (naslov, dan, datum, ura in lokacija; kdor rundo ustvari, obvestila ne dobi).
 
 Dotik obvestila odpre stran runde.
 
@@ -278,7 +279,7 @@ Dotik obvestila odpre stran runde.
 ### Za administratorja: Možnosti → Obvestila
 
 - **Push obvestila:** glavno stikalo. Izklop ustavi vse pushe; maili delujejo naprej.
-- **Ob novi prijavi (vodji)**, **Ob odpovedi/spremembi runde**, **Opomnik pred štartom:** posamezni sprožilci. Sprememba uporablja ista polja kot maili (zavihek **Maili → sprožilna polja**).
+- **Ob novi prijavi (vodji)**, **Ob novi rundi (vsem naročenim članom)**, **Ob odpovedi/spremembi runde**, **Opomnik pred štartom:** posamezni sprožilci. Obvestilo o novi rundi se za vsako rundo pošlje največ enkrat (tudi ob kasnejši objavi odpovedane runde); runde, ki so obstajale pred posodobitvijo na 0.20.0, ga ne sprožijo. Sprememba uporablja ista polja kot maili (zavihek **Maili → sprožilna polja**).
 - **Koliko ur pred štartom:** okno za opomnik (1, 2, 3, 6, 12 ali 24 ur). Vsaka runda dobi en opomnik; ob spremembi začetka se opomnik pošlje znova za novi čas.
 - **Kontakt (mailto: ali https:):** kontakt za push storitve. Prazno pomeni `mailto:` z naslovom pošiljatelja iz globalne nastavitve.
 - **Javni ključ VAPID:** ustvari se samodejno ob namestitvi. **Ne spreminjaj ga** — nov ključ izklopi obvestila na vseh napravah. Ponovna namestitev ali posodobitev paketa ključev ne spremeni. Zasebni ključ je shranjen v Možnostih in se nikoli ne prikaže na strani rund ali v dnevniku.

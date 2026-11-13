@@ -275,6 +275,84 @@ class PushService
     }
 
     /**
+     * Sprožilec 7.4: nova objavljena runda → vsi člani z vsaj eno naročnino, razen uporabnika,
+     * ki je shranil. Gostje nikoli, brez osebnih podatkov (D65).
+     *
+     * Runda se najprej označi z UPDATE ... WHERE nova_obvescena IS NULL; samo zapis, ki vrstico
+     * dejansko spremeni, pošlje push (brez dvojnega pošiljanja). Oznaka se nastavi tudi, ko je
+     * sprožilec izklopljen, da kasnejši vklop ne pošlje pusha za že obstoječe runde.
+     *
+     * @param   int  $rundaId  ID runde.
+     *
+     * @return  int  Število uspešno poslanih obvestil.
+     */
+    public static function novaRunda(int $rundaId): int
+    {
+        try {
+            $baza = Factory::getContainer()->get(DatabaseInterface::class);
+            $zdaj = CasHelper::zdajUtc();
+            // Ločena spremenljivka za vsako vezavo (pravilo 16).
+            $zdajStart = $zdaj;
+            $poizvedba = $baza->createQuery()->update($baza->quoteName('#__belaunce_runde'))
+                ->set($baza->quoteName('nova_obvescena') . ' = :zdaj')
+                ->where($baza->quoteName('id') . ' = :runda')
+                ->where($baza->quoteName('nova_obvescena') . ' IS NULL')
+                ->where($baza->quoteName('stanje') . ' = 1')
+                ->where($baza->quoteName('zacetek') . ' > :zdajStart')
+                ->bind(':zdaj', $zdaj, ParameterType::STRING)
+                ->bind(':runda', $rundaId, ParameterType::INTEGER)
+                ->bind(':zdajStart', $zdajStart, ParameterType::STRING);
+            $baza->setQuery($poizvedba)->execute();
+
+            if ($baza->getAffectedRows() !== 1) {
+                return 0;
+            }
+
+            $params = ComponentHelper::getParams('com_belauncerunde');
+            $skupina = (int) $params->get('skupina_clani', 0);
+
+            if ((int) $params->get('push_nova_runda', 1) === 0 || $skupina <= 0) {
+                return 0;
+            }
+
+            $runda = self::runda($rundaId);
+
+            if ($runda === null) {
+                return 0;
+            }
+
+            // Samo člani z vsaj eno napravo; brez nastavljene skupine nihče.
+            $poizvedba = $baza->createQuery()->select('DISTINCT ' . $baza->quoteName('p.uporabnik_id'))
+                ->from($baza->quoteName('#__belaunce_push', 'p'))
+                ->join('INNER', $baza->quoteName('#__user_usergroup_map', 'm') . ' ON m.user_id = p.uporabnik_id')
+                ->where($baza->quoteName('m.group_id') . ' = :skupina')
+                ->bind(':skupina', $skupina, ParameterType::INTEGER);
+            $prejemniki = array_map('intval', $baza->setQuery($poizvedba)->loadColumn());
+
+            if ($prejemniki === []) {
+                return 0;
+            }
+
+            $jezik = self::jezik();
+            $cas = self::cas((string) $runda->zacetek, $jezik);
+            $sporocilo = [
+                'naslov'   => sprintf($jezik->_('COM_BELAUNCERUNDE_PUSH_NOVA_RUNDA_NASLOV'), (string) $runda->naslov),
+                'besedilo' => sprintf($jezik->_('COM_BELAUNCERUNDE_PUSH_NOVA_RUNDA_BESEDILO'), $cas['dan'], $cas['datum'],
+                    $cas['ura'], trim((string) $runda->lokacija)),
+                'url'      => self::url($rundaId),
+                'oznaka'   => 'runda-' . $rundaId,
+            ];
+            $izpusti = (int) Factory::getApplication()->getIdentity()->id;
+
+            return self::obvestiUporabnike($prejemniki, $sporocilo, $izpusti, [
+                'dogodek' => 'nova_runda', 'nujnost' => 'normal', 'ttl' => self::doStarta((string) $runda->zacetek),
+            ]);
+        } catch (\Throwable $napaka) {
+            return 0;
+        }
+    }
+
+    /**
      * Sprožilec 7.3: opomnik pred štartom za največ 20 rund na zagon (Scheduler).
      *
      * Runda se najprej označi z UPDATE ... WHERE opomnik_poslan IS NULL; samo zagon, ki vrstico

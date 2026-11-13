@@ -135,7 +135,7 @@ class Com_BelauncerundeInstallerScript
     }
 
     /**
-     * Ob vsaki namestitvi zagotovi stolpec `opomnik_poslan` (naloga 24), po vzoru stolpca barve.
+     * Ob vsaki namestitvi zagotovi stolpca `opomnik_poslan` in `nova_obvescena` (naloga 24), po vzoru stolpca barve.
      *
      * @param   DatabaseInterface  $db  Povezava z bazo.
      *
@@ -155,6 +155,23 @@ class Com_BelauncerundeInstallerScript
         if ((int) $db->setQuery($poizvedba)->loadResult() === 0) {
             $db->setQuery('ALTER TABLE `#__belaunce_runde` ADD COLUMN `opomnik_poslan` DATETIME NULL DEFAULT NULL')->execute();
             Log::add('OPOMNIK_STOLPEC_DODAN', Log::INFO, 'com_belauncerunde');
+        }
+
+        // Oznaka obvestila o novi rundi (7.4), po istem vzorcu.
+        $stolpec = 'nova_obvescena';
+        $poizvedba = $db->createQuery()->select('COUNT(*)')->from('information_schema.COLUMNS')
+            ->where('TABLE_SCHEMA = DATABASE()')
+            ->where('TABLE_NAME = :tabela')
+            ->where('COLUMN_NAME = :stolpec')
+            ->bind(':tabela', $tabela, ParameterType::STRING)
+            ->bind(':stolpec', $stolpec, ParameterType::STRING);
+
+        if ((int) $db->setQuery($poizvedba)->loadResult() === 0) {
+            $db->setQuery('ALTER TABLE `#__belaunce_runde` ADD COLUMN `nova_obvescena` DATETIME NULL DEFAULT NULL')->execute();
+            // Samo ob dodajanju stolpca: vse obstoječe runde veljajo za že obveščene (brez pusha za stare runde).
+            $db->setQuery('UPDATE `#__belaunce_runde` SET `nova_obvescena` = UTC_TIMESTAMP() WHERE `nova_obvescena` IS NULL')
+                ->execute();
+            Log::add('NOVA_OBVESCENA_STOLPEC_DODAN', Log::INFO, 'com_belauncerunde');
         }
     }
 

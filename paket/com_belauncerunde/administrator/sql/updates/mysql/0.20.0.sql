@@ -16,3 +16,8 @@ CREATE TABLE IF NOT EXISTS `#__belaunce_push` (
 
 -- Stolpec dodatno idempotentno zagotovi namestitveni skript (MariaDB 10.11 brez IF NOT EXISTS).
 ALTER TABLE `#__belaunce_runde` ADD COLUMN `opomnik_poslan` DATETIME NULL DEFAULT NULL;
+
+-- Oznaka poslanega obvestila o novi rundi (7.4). Obstoječe runde dobijo oznako takoj,
+-- da posodobitev ne pošlje pusha za stare runde (merilo 23).
+ALTER TABLE `#__belaunce_runde` ADD COLUMN `nova_obvescena` DATETIME NULL DEFAULT NULL;
+UPDATE `#__belaunce_runde` SET `nova_obvescena` = UTC_TIMESTAMP() WHERE `nova_obvescena` IS NULL;

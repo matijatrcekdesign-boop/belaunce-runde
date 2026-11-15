@@ -116,7 +116,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setTitle(Text::_('COM_BELAUNCERUNDE_RUNDE_NASLOV'));
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
-        $ogSlika = \Joomla\CMS\Uri\Uri::root() . 'images/og-runde.png';
+        $ogSlika = \Joomla\CMS\Uri\Uri::root() . 'media/com_belauncerunde/images/og-runde.png';
         $this->getDocument()->setMetaData('og:image', $ogSlika, 'property');
         $this->getDocument()->setMetaData('og:image:width', '1200', 'property');
         $this->getDocument()->setMetaData('og:image:height', '630', 'property');

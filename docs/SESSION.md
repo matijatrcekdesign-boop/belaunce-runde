@@ -11,7 +11,7 @@
 - **0.19.0 (2026-11-12)** — mobile-first »app« videz po canvasu (Claude Design artefakt): seznam rund, podrobnost runde (jantarni baner z datumom, kartica trase, statistika, vodja, opombe, lepljiva vrstica »Pridem na rundo«), deli (Viber/Deli/Kopiraj), prijava, Moje runde, obrazec za rundo, spodnja navigacija (Runde · Moje runde · Ustvari), glava (nazaj-puščica + logo | RUNDE). Podrobnosti: `docs/PRODUKCIJA-runde.md` (razdelek »App videz 0.19.0«).
 - **Predloga `belauncetemplate` NI v repozitoriju** — spremembe (`index.php`, `style.css`) obstajajo samo na produkciji. Kopija je v `docs/predloga-belauncetemplate/` (referenca, ne del paketa).
 - **Ikona aplikacije:** PNG 192/512, maskable 512, apple-touch 180 (črka B z balanco iz logotipa, bela podlaga, modri rob). Manifest uporablja PNG, `theme_color` #6ab7e3.
-- **Meta za deljenje:** `og:image` 1200×630 = `/images/og-runde.png` (samo na strežniku, ni v paketu), `og:title`, `twitter:card` na seznamu in podrobnosti.
+- **Meta za deljenje:** `og:image` 1200×630 = od 0.20.1 `media/com_belauncerunde/images/og-runde.png` (v paketu; prej `/images/og-runde.png` samo na strežniku), `og:title`, `twitter:card` na seznamu in podrobnosti.
 - **Izbirnik datuma:** JCLOSE »Potrdi«, JCLEAR »Počisti« (jezikovna datoteka komponente), večja modra ikona koledarja.
 - **Trasa (Strava/Komoot):** neinteraktivna kartica; dotik odpre pot v novem zavihku.
 - **Paket:** `dist/pkg_belauncerunde-0.19.0.zip` (ni v gitu). GitHub Release `v0.19.0` — glej `docs/TASKS.md`.
@@ -43,7 +43,7 @@ Praktično (iz te seje): produkcijski admin se ureja prek **Claude in Chrome** (
 
 - Viber predpomnilnik predogleda: že deljene povezave imajo staro sliko; nove povezave bi morale dobiti `og-runde.png` (preveri na telefonu).
 - iOS Safari: lepljive vrstice (`.br-sticky`, `.br-obrazec` akcijska vrstica, spodnja navigacija), izbirnik datuma, PWA namestitev — preveri na iPhonu.
-- Ali želimo `og-runde.png` v paketu (`media/images`) namesto v `/images/` (zdaj `PwaHelper`/`HtmlView` kažeta na `/images/og-runde.png`)?
+- ~~Ali želimo `og-runde.png` v paketu?~~ Da — od 0.20.1 `Runda`/`Runde` `HtmlView` kažeta na `media/com_belauncerunde/images/og-runde.png` (naloga 26).
 - Logotip je na voljo samo kot 200 px PNG — ikona in OG slika sta zato rahlo mehki; potreben SVG/PDF.
 - Push obvestila (naloga 24): obseg sprožilcev potrditi z Matijo (nova prijava vodji, odpoved/sprememba runde udeležencem, opomnik).
 - Predloga j4starter in sistemska sporočila (D41) → naloga 17.

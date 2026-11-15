@@ -108,3 +108,11 @@ Celoten videz po canvasu (Claude Design artefakt »Belaunce Runde – app predog
 **Postopek urejanja v živo (kar je delovalo):** FF Explorer AJAX (`explorer.openFile`, `saveContent`, `upload`, `deleteFile`) iz konzole admin strani; `.webmanifest` se ne da odpreti, `saveContent` pa deluje. Po spremembi CSS: Joomla Cache → Clear All (po novem ni nujno, `?v=filemtime`). Brskalnik predpomni golo `site.css` URL — za preverjanje dodaj `?x=<čas>`.
 
 **Znane omejitve:** `index.php` predloge ni pod verzijo. (Od 0.20.1 sta ikona in OG slika iz vektorskega logotipa, OG slika je v paketu.)
+
+## Izdaje in posodobitve (od 0.20.1, 2026-11-15)
+- **Posodobitveni strežnik:** manifest paketa bere `posodobitve.xml` z veje `main` (raw.githubusercontent.com). Do 0.20.1 je bil `main` prazen (404), zato Joomla ni javljala različic; 2026-11-15 je `main` premaknjen na `develop`.
+- **Zgrajeni ZIP-i** so na veji `izdaje` (samo paketi, brez izvorne kode); `downloadurl` v `posodobitve.xml` kaže tja: `https://raw.githubusercontent.com/matijatrcekdesign-boop/belaunce-runde/izdaje/pkg_belauncerunde-X.Y.Z.zip`. GitHub Releases niso več potrebni (seja arhitekta jih prek API ne sme ustvarjati).
+- **Postopek nove verzije (arhitekt):** pregled PR → združi v `develop` → `bash orodja/gradnja.sh` → ZIP push v `izdaje` → SHA-256 tega ZIP-a v `posodobitve.xml` → commit na `develop` → `main` fast-forward na `develop` → v adminu Razširitve → Posodobi (ali Namesti z URL-ja).
+- **Akeeba** varnostna kopija pred vsako namestitvijo (Akeeba Backup CORE je nameščen).
+- **Scheduler:** Web Cron vklopljen (DirectAdmin cron vsakih 5 min kliče `component/ajax?plugin=RunSchedulerWebcron&group=system&format=json&hash=…`; ključ je v Možnostih Scheduled Tasks, ne v gitu). Rutini: »Belaunce – opomnik pred štartom (push)« na 15 min, »Belaunce – dnevno vzdrževanje« dnevno ob 02:00 UTC.
+- **Ikone in OG slika** so v paketu (`media/com_belauncerunde/images/`), izvor `orodja/ikone/`. `/images/og-runde.png` ni več v uporabi (izbrisan).

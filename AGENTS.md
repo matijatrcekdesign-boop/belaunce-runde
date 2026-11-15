@@ -128,6 +128,9 @@ Predpona tabel na DDEV: `dipxn_`. Namesto CLI lahko tudi *System → Install →
 
 **Nikoli** ročno kopiranje datotek v Joomlo (D39).
 
+### posodobitve.xml
+`downloadurl` kaže na vejo `izdaje`: `https://raw.githubusercontent.com/matijatrcekdesign-boop/belaunce-runde/izdaje/pkg_belauncerunde-X.Y.Z.zip` (ne na GitHub Release). Ob novi verziji posodobi verzijo in pot; SHA-256 dokončno vpiše arhitekt iz ZIP-a, ki ga potisne v `izdaje`.
+
 ### PHP v tvojem okolju
 Če PHP ni na voljo, `php -l` preskoči in to navedi v PR; arhitekt ob pregledu zažene gradnjo s PHP.
 

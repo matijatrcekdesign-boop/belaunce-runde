@@ -9,7 +9,7 @@
 		<client>site</client>
 		<infourl title="Runde Belaunce">https://github.com/matijatrcekdesign-boop/belaunce-runde</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/matijatrcekdesign-boop/belaunce-runde/releases/download/v0.20.1/pkg_belauncerunde-0.20.1.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://raw.githubusercontent.com/matijatrcekdesign-boop/belaunce-runde/izdaje/pkg_belauncerunde-0.20.1.zip</downloadurl>
 		</downloads>
 		<sha256>384e8296b0862af274ce3ed1998c737ea062fece9079b832e2d177a1c2672210</sha256>
 		<targetplatform name="joomla" version="6\.[0-9]+" />

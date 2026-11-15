@@ -4,6 +4,13 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 
 ## [Neizdano]
 
+## [0.20.1] - 2026-11-15
+### Spremenjeno
+- Nove ikone aplikacije (192, 512, maskable 512, apple-touch) in OG slika (1200 × 630) iz vektorskega
+  logotipa (`orodja/ikone/`, ni del paketa) — ostre namesto povečanega 200 px PNG.
+- OG slika je v paketu: `og:image` na seznamu in strani runde kaže na
+  `media/com_belauncerunde/images/og-runde.png` namesto ročno naložene `/images/og-runde.png`.
+
 ## [0.20.0] - 2026-11-13
 ### Dodano
 - **Push obvestila** (naloga 24, D64–D66) kot dodatek k mailom:

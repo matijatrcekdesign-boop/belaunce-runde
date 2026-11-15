@@ -108,15 +108,32 @@ class MailService
         $odpoved = $tabela->_pravkarOdpovedana;
         $polja = $tabela->_sprozilnaSprememba;
         $prvotni = $tabela->_prvotniZacetek;
+        $nova = $tabela->_novaAliObjava;
         $tabela->_pravkarOdpovedana = false;
         $tabela->_sprozilnaSprememba = [];
         $tabela->_prvotniZacetek = '';
+        $tabela->_novaAliObjava = false;
+        $uspeh = true;
 
-        if (!$odpoved && $polja === []) {
-            return true;
+        if ($odpoved || $polja !== []) {
+            $uspeh = (new self())->poslji((int) $tabela->id, $odpoved ? 'odpoved' : 'sprememba', $polja, $prvotni);
+
+            // Push je dodatek k mailu (D66): ista točka za frontend in admin (D56), izid maila ostane nespremenjen.
+            try {
+                PushService::poZapisu((int) $tabela->id, $odpoved, $polja, $prvotni);
+            } catch (\Throwable $napaka) {
+            }
         }
 
-        return (new self())->poslji((int) $tabela->id, $odpoved ? 'odpoved' : 'sprememba', $polja, $prvotni);
+        // Nova runda (7.4) se preveri neodvisno od odpovedi/sprememb, v svojem try/catch (D66); mailov ne sproži.
+        if ($nova) {
+            try {
+                PushService::novaRunda((int) $tabela->id);
+            } catch (\Throwable $napaka) {
+            }
+        }
+
+        return $uspeh;
     }
 
     /**

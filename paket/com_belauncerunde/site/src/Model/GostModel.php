@@ -213,6 +213,15 @@ class GostModel extends FormModel
         } catch (\Throwable $napaka) {
         }
 
+        // Push vodji o gostu (gost sam pusha ne dobi); ločeno od maila, brez imena gosta (D65, D66).
+        try {
+            $prijave = $prijave ?? $this->getMVCFactory()->createModel('Prijave', 'Site', ['ignore_request' => true]);
+            \Belaunce\Component\Belauncerunde\Administrator\Service\PushService::obvestiVodjoOPrijavi(
+                $rundaId, $prijave->steviloUdelezencev($rundaId), 0
+            );
+        } catch (\Throwable $napaka) {
+        }
+
         return $stanjePoste;
     }
 

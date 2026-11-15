@@ -54,6 +54,24 @@ class Com_BelauncerundeInstallerScript
         }
 
         try {
+            $this->zagotoviStolpecOpomnika(Factory::getContainer()->get(DatabaseInterface::class));
+        } catch (\Throwable $napaka) {
+            // Brez stolpca opomnika shranjevanje runde ne deluje, zato namestitve ne potrdimo.
+            Log::add('OPOMNIK_STOLPEC_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_OPOMNIK_NAPAKA'), 'error');
+
+            return false;
+        }
+
+        try {
+            $this->pripraviKljucaVapid(Factory::getContainer()->get(DatabaseInterface::class));
+        } catch (\Throwable $napaka) {
+            // Brez ključev push ostane tiho onemogočen; ostala namestitev je veljavna.
+            Log::add('PUSH_KLJUC_NAPAKA', Log::ERROR, 'com_belauncerunde');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_BELAUNCERUNDE_INSTALL_PUSH_NAPAKA'), 'warning');
+        }
+
+        try {
             $db = Factory::getContainer()->get(DatabaseInterface::class);
             $id = $this->pripraviSkupinoClani($db);
             $this->shraniParameter($db, 'skupina_clani', $id);
@@ -114,6 +132,89 @@ class Com_BelauncerundeInstallerScript
                 ->bind(':alias', $alias, ParameterType::STRING);
             $db->setQuery($poizvedba)->execute();
         }
+    }
+
+    /**
+     * Ob vsaki namestitvi zagotovi stolpca `opomnik_poslan` in `nova_obvescena` (naloga 24), po vzoru stolpca barve.
+     *
+     * @param   DatabaseInterface  $db  Povezava z bazo.
+     *
+     * @return  void
+     */
+    private function zagotoviStolpecOpomnika(DatabaseInterface $db): void
+    {
+        $tabela = $db->getPrefix() . 'belaunce_runde';
+        $stolpec = 'opomnik_poslan';
+        $poizvedba = $db->createQuery()->select('COUNT(*)')->from('information_schema.COLUMNS')
+            ->where('TABLE_SCHEMA = DATABASE()')
+            ->where('TABLE_NAME = :tabela')
+            ->where('COLUMN_NAME = :stolpec')
+            ->bind(':tabela', $tabela, ParameterType::STRING)
+            ->bind(':stolpec', $stolpec, ParameterType::STRING);
+
+        if ((int) $db->setQuery($poizvedba)->loadResult() === 0) {
+            $db->setQuery('ALTER TABLE `#__belaunce_runde` ADD COLUMN `opomnik_poslan` DATETIME NULL DEFAULT NULL')->execute();
+            Log::add('OPOMNIK_STOLPEC_DODAN', Log::INFO, 'com_belauncerunde');
+        }
+
+        // Oznaka obvestila o novi rundi (7.4), po istem vzorcu.
+        $stolpec = 'nova_obvescena';
+        $poizvedba = $db->createQuery()->select('COUNT(*)')->from('information_schema.COLUMNS')
+            ->where('TABLE_SCHEMA = DATABASE()')
+            ->where('TABLE_NAME = :tabela')
+            ->where('COLUMN_NAME = :stolpec')
+            ->bind(':tabela', $tabela, ParameterType::STRING)
+            ->bind(':stolpec', $stolpec, ParameterType::STRING);
+
+        if ((int) $db->setQuery($poizvedba)->loadResult() === 0) {
+            $db->setQuery('ALTER TABLE `#__belaunce_runde` ADD COLUMN `nova_obvescena` DATETIME NULL DEFAULT NULL')->execute();
+            // Samo ob dodajanju stolpca: vse obstoječe runde veljajo za že obveščene (brez pusha za stare runde).
+            $db->setQuery('UPDATE `#__belaunce_runde` SET `nova_obvescena` = UTC_TIMESTAMP() WHERE `nova_obvescena` IS NULL')
+                ->execute();
+            Log::add('NOVA_OBVESCENA_STOLPEC_DODAN', Log::INFO, 'com_belauncerunde');
+        }
+    }
+
+    /**
+     * Ustvari par ključev VAPID (P-256), če katerikoli manjka (D64).
+     *
+     * Obstoječih ključev nikoli ne prepiše: nova ključa bi razveljavila vse naročnine. Parametri se
+     * preberejo neposredno iz baze (ne iz predpomnilnika) in zapišejo nazaj z ohranitvijo ostalih
+     * nastavitev. Vrednosti ključev nikoli ne gredo v dnevnik ali sporočila.
+     *
+     * @param   DatabaseInterface  $db  Povezava z bazo.
+     *
+     * @return  void
+     */
+    private function pripraviKljucaVapid(DatabaseInterface $db): void
+    {
+        $poizvedba = $db->createQuery()->select($db->quoteName('params'))
+            ->from($db->quoteName('#__extensions'))
+            ->where($db->quoteName('type') . ' = ' . $db->quote('component'))
+            ->where($db->quoteName('element') . ' = ' . $db->quote('com_belauncerunde'));
+        $params = new Registry((string) ($db->setQuery($poizvedba)->loadResult() ?: '{}'));
+
+        if (trim((string) $params->get('push_vapid_javni', '')) !== ''
+            && trim((string) $params->get('push_vapid_zasebni', '')) !== '') {
+            return;
+        }
+
+        $kljuc = openssl_pkey_new(['curve_name' => 'prime256v1', 'private_key_type' => OPENSSL_KEYTYPE_EC]);
+        $podrobnosti = $kljuc === false ? false : openssl_pkey_get_details($kljuc);
+
+        if (!\is_array($podrobnosti) || !isset($podrobnosti['ec']['x'], $podrobnosti['ec']['y'], $podrobnosti['ec']['d'])) {
+            throw new \RuntimeException('PUSH_KLJUC_NAPAKA');
+        }
+
+        // Nestisnjena točka 0x04 || X || Y (65 B) in skalar d (32 B), levo podložena z ničlami.
+        $ec = $podrobnosti['ec'];
+        $javni = "\x04" . str_pad($ec['x'], 32, "\0", STR_PAD_LEFT) . str_pad($ec['y'], 32, "\0", STR_PAD_LEFT);
+        $zasebni = str_pad($ec['d'], 32, "\0", STR_PAD_LEFT);
+        $b64 = static fn (string $v): string => rtrim(strtr(base64_encode($v), '+/', '-_'), '=');
+
+        $this->shraniParameter($db, 'push_vapid_javni', $b64($javni));
+        $this->shraniParameter($db, 'push_vapid_zasebni', $b64($zasebni));
+        Log::add('PUSH_KLJUC_USTVARJEN', Log::INFO, 'com_belauncerunde');
     }
 
     /**

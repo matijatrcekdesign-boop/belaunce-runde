@@ -7,3 +7,4 @@ DROP TABLE IF EXISTS `#__belaunce_clani`;
 DROP TABLE IF EXISTS `#__belaunce_poskusi`;
 
 DROP TABLE IF EXISTS `#__belaunce_gostje`;
+DROP TABLE IF EXISTS `#__belaunce_push`;

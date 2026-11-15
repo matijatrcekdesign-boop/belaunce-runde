@@ -155,6 +155,45 @@
 			<option value="0">JNO</option><option value="1">JYES</option>
 		</field>
 	</fieldset>
+	<fieldset name="obvestila" label="COM_BELAUNCERUNDE_CONFIG_OBVESTILA">
+		<field name="push_vklop" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="1"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_VKLOP_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_VKLOP_DESC">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
+		<field name="push_nova_prijava" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="1"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_NOVA_PRIJAVA_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_NOVA_PRIJAVA_DESC"
+			showon="push_vklop:1">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
+		<field name="push_nova_runda" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="1"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_NOVA_RUNDA_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_NOVA_RUNDA_DESC"
+			showon="push_vklop:1">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
+		<field name="push_sprememba" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="1"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_SPREMEMBA_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_SPREMEMBA_DESC"
+			showon="push_vklop:1">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
+		<field name="push_opomnik" type="radio" layout="joomla.form.field.radio.switcher" filter="integer" default="1"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_OPOMNIK_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_OPOMNIK_DESC"
+			showon="push_vklop:1">
+			<option value="0">JNO</option><option value="1">JYES</option>
+		</field>
+		<field name="push_opomnik_ur" type="list" filter="integer" default="2"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_OPOMNIK_UR_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_OPOMNIK_UR_DESC"
+			showon="push_vklop:1[AND]push_opomnik:1">
+			<option value="1">1</option><option value="2">2</option><option value="3">3</option>
+			<option value="6">6</option><option value="12">12</option><option value="24">24</option>
+		</field>
+		<field name="push_vapid_subject" type="text" filter="string" default="" maxlength="255"
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_SUBJECT_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_SUBJECT_DESC" />
+		<!-- Javni ključ je viden samo za prikaz; readonly polje se ob shranjevanju pošlje in ohrani. -->
+		<field name="push_vapid_javni" type="text" readonly="true" filter="string" default=""
+			label="COM_BELAUNCERUNDE_CONFIG_PUSH_JAVNI_LABEL" description="COM_BELAUNCERUNDE_CONFIG_PUSH_JAVNI_DESC" />
+		<!-- Zasebni ključ MORA biti v obrazcu, sicer ga shranjevanje Možnosti pobriše (merilo 4). -->
+		<field name="push_vapid_zasebni" type="hidden" filter="string" default="" />
+	</fieldset>
 	<fieldset name="viber" label="COM_BELAUNCERUNDE_CONFIG_VIBER">
 		<field name="viber_predloga" type="textarea" rows="8" filter="string" default=""
 			label="COM_BELAUNCERUNDE_CONFIG_VIBER_PREDLOGA" description="COM_BELAUNCERUNDE_CONFIG_VIBER_PREDLOGA_OPIS" />

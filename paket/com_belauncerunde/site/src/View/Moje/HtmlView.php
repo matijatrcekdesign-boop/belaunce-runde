@@ -3,6 +3,7 @@
 namespace Belaunce\Component\Belauncerunde\Site\View\Moje;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Administrator\Service\PushService;
 use Belaunce\Component\Belauncerunde\Site\Helper\DeljenjeHelper;
 use Belaunce\Component\Belauncerunde\Site\Helper\PwaHelper;
 use Belaunce\Component\Belauncerunde\Site\Service\Router;
@@ -38,6 +39,8 @@ class HtmlView extends BaseHtmlView
     public ?Pagination $paginacija = null;
     /** @var array|null Prevedeno obvestilo in varen Bootstrap razred. */
     public ?array $obvestilo = null;
+    /** @var bool Ali se izpiše kartica "Obvestila na tej napravi" (push vklopljen in ključ veljaven). */
+    public bool $obvestilaNaVoljo = false;
 
     /**
      * Preveri dostop pred branjem seznamov ter pripravi čas, gumbe in povezave brez N+1.
@@ -116,6 +119,43 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->getWebAssetManager()->useStyle('com_belauncerunde.pisave')
             ->useStyle('com_belauncerunde.site');
         PwaHelper::pripni($this->getDocument());
+        $this->pripraviObvestila($app);
         parent::display($tpl);
+    }
+
+    /**
+     * Pripravi kartico push obvestil (naloga 24). Pogled je dostopen samo članom (jeClan zgoraj),
+     * kar je ista pravica kot push.naroci; strežnik jo pri naročilu preveri znova.
+     * Na frontend gre samo javni ključ VAPID (D64).
+     *
+     * @param   \Joomla\CMS\Application\CMSApplicationInterface  $app
+     *
+     * @return  void
+     */
+    private function pripraviObvestila($app): void
+    {
+        if ((int) $app->getParams('com_belauncerunde')->get('push_vklop', 1) === 0) {
+            return;
+        }
+
+        $kljuc = PushService::javniKljuc();
+
+        if ($kljuc === '') {
+            return;
+        }
+
+        $this->obvestilaNaVoljo = true;
+        $dokument = $this->getDocument();
+        $dokument->addScriptOptions('com_belauncerunde.push', [
+            'kljuc'  => $kljuc,
+            'naroci' => Route::_('index.php?option=com_belauncerunde&task=push.naroci', false),
+            'odjavi' => Route::_('index.php?option=com_belauncerunde&task=push.odjavi', false),
+        ]);
+
+        foreach (['IOS', 'ZAVRNJENO', 'VKLOPLJENO', 'NAPAKA'] as $kljucNiza) {
+            Text::script('COM_BELAUNCERUNDE_OBVESTILA_' . $kljucNiza);
+        }
+
+        $dokument->getWebAssetManager()->useScript('com_belauncerunde.obvestila');
     }
 }

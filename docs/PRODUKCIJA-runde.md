@@ -94,7 +94,7 @@ Celoten videz po canvasu (Claude Design artefakt »Belaunce Runde – app predog
 - `media/css/site.css` — bloki SKLOP1–10 (kartice, čipi, podrobnost, banner, trasa, vodja, opombe, deli, prijava, Moje runde kot segmentirana izbira, obrazec kot kartica z lepljivo vrstico Shrani/Prekliči, izbirnik datuma, trasa kot neinteraktivna kartica).
 - `tmpl/runda/{default,deli,kartica}.php`, `tmpl/runde/default.php` (čipi s puščicami za drsenje, inline JS prek `WebAssetManager`), `tmpl/prijava/default.php`. `tmpl/moje` in `tmpl/obrazec` NISO spremenjeni (samo CSS).
 - Jezikovni nizi sl-SI/en-GB: `N_PRIJAVLJENIH`, `PRIDEM_NA_RUNDO`, `VODJA_RUNDE`, `RUNDE_PODNASLOV`, `ODPRI_POT`, prijava/deli, ter **`JCLOSE` = »Potrdi«, `JCLEAR` = »Počisti«** (prepišeta Joomlina niza samo na straneh komponente; izbirnik datuma ju bere prek `Text::script`).
-- `Runda/HtmlView`, `Runde/HtmlView`: `og:image` (1200×630, `/images/og-runde.png`), `og:image:width/height`, `twitter:card=summary_large_image`; seznam še `og:title`, `og:type`.
+- `Runda/HtmlView`, `Runde/HtmlView`: `og:image` (1200×630, od 0.20.1 `media/com_belauncerunde/images/og-runde.png` iz paketa; prej `/images/og-runde.png`), `og:image:width/height`, `twitter:card=summary_large_image`; seznam še `og:title`, `og:type`.
 - Ikona aplikacije: `media/images/icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`; `manifest.webmanifest` s PNG ikonami, `theme_color` `#6ab7e3` (tudi v `PwaHelper`). Stari `ikona*.svg` odstranjeni.
 - CSS za sistemsko sporočilo: `body:has(.br-runda > p.alert) #system-message-container{display:none}` — prepreči dvojno obvestilo o udeležbi.
 
@@ -103,8 +103,8 @@ Celoten videz po canvasu (Claude Design artefakt »Belaunce Runde – app predog
 - `style.css`: bloki »APP-GLAVA«, »APP-LOOK v2«, »razmaki glava-vsebina«, »sticky footer« (`body{display:flex;flex-direction:column;min-height:100dvh}`, `body>main{flex:1 0 auto}`, `body>footer{margin-top:auto}`), `.alert-info` jantarno.
 - Varnostne kopije na strežniku: `index.php.bak-pred-app` (predloga), `tmpl/runda/default.php.bak-pred-app` (komponenta).
 
-**OG slika:** `/images/og-runde.png` (naložena prek Joomla Media API, ni v paketu).
+**OG slika:** od 0.20.1 v paketu: `media/com_belauncerunde/images/og-runde.png` (iz vektorskega logotipa, `orodja/ikone/`). Stara `/images/og-runde.png` (naložena prek Joomla Media API) se ne uporablja več in jo je mogoče izbrisati.
 
 **Postopek urejanja v živo (kar je delovalo):** FF Explorer AJAX (`explorer.openFile`, `saveContent`, `upload`, `deleteFile`) iz konzole admin strani; `.webmanifest` se ne da odpreti, `saveContent` pa deluje. Po spremembi CSS: Joomla Cache → Clear All (po novem ni nujno, `?v=filemtime`). Brskalnik predpomni golo `site.css` URL — za preverjanje dodaj `?x=<čas>`.
 
-**Znane omejitve:** logotip je samo 200 px PNG (ikona/OG rahlo mehka); `og-runde.png` ni v paketu; `index.php` predloge ni pod verzijo.
+**Znane omejitve:** `index.php` predloge ni pod verzijo. (Od 0.20.1 sta ikona in OG slika iz vektorskega logotipa, OG slika je v paketu.)

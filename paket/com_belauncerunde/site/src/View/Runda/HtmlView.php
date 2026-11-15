@@ -195,7 +195,7 @@ class HtmlView extends BaseHtmlView
         $this->getDocument()->setMetaData('og:url', $kanonicna, 'property');
         $this->getDocument()->setMetaData('og:type', 'article', 'property');
         $this->getDocument()->setMetaData('og:site_name', (string) $app->get('sitename'), 'property');
-        $ogSlika = \Joomla\CMS\Uri\Uri::root() . 'images/og-runde.png';
+        $ogSlika = \Joomla\CMS\Uri\Uri::root() . 'media/com_belauncerunde/images/og-runde.png';
         $this->getDocument()->setMetaData('og:image', $ogSlika, 'property');
         $this->getDocument()->setMetaData('og:image:width', '1200', 'property');
         $this->getDocument()->setMetaData('og:image:height', '630', 'property');

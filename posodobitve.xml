@@ -11,7 +11,7 @@
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/matijatrcekdesign-boop/belaunce-runde/releases/download/v0.20.1/pkg_belauncerunde-0.20.1.zip</downloadurl>
 		</downloads>
-		<sha256>8ae0c45c32833c7de4441b55bdf0edfecceb4bd08370e8dfcfd83a84acd3197d</sha256>
+		<sha256>384e8296b0862af274ce3ed1998c737ea062fece9079b832e2d177a1c2672210</sha256>
 		<targetplatform name="joomla" version="6\.[0-9]+" />
 	</update>
 </updates>

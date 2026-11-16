@@ -4,6 +4,15 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 
 ## [Neizdano]
 
+## [0.20.2] - 2026-11-16
+### Popravljeno
+- Koledar v obrazcu runde: izbrani dan ni bil označen (videti je bilo, kot da ostane izbran današnji dan),
+  ker predloga ne določa spremenljivk `--btn-primary-bg/--btn-primary-color`, ki jih uporablja Joomlin
+  `calendar.css`. Določeni sta v `site.css` (modra #6ab7e3, bela pisava) — obarva tudi hover in gumbe
+  Počisti/Danes/Potrdi.
+- Gumb koledarja je bil prazen (ikona `icon-calendar` potrebuje Font Awesome, ki ga predloga ne nalaga);
+  ikona je zdaj SVG v `site.css`.
+
 ## [0.20.1] - 2026-11-15
 ### Spremenjeno
 - Nove ikone aplikacije (192, 512, maskable 512, apple-touch) in OG slika (1200 × 630) iz vektorskega

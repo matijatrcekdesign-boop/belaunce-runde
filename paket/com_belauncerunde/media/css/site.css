@@ -732,3 +732,29 @@ body:has(.br-runda > p.alert) #system-message-container{display:none}
 .br-obvestila .btn {
     min-height: 44px;
 }
+
+/* Koledar (polje calendar v obrazcu runde). Joomlin calendar.css obarva izbrani dan,
+   hover in spodnje gumbe s spremenljivkama --btn-primary-bg/--btn-primary-color, ki ju določata
+   samo Joomlini predlogi Cassiopeia/Atum; predloga Belaunce ju nima, zato izbrani dan ni bil označen. */
+.calendar-container {
+    --btn-primary-bg: #6ab7e3;
+    --btn-primary-color: #fff;
+}
+
+/* Gumb koledarja ima Joomlino ikono icon-calendar (Font Awesome), ki je predloga ne nalaga;
+   namesto celotne pisave ikon jo narišemo z majhnim SVG (maska prevzame barvo besedila gumba). */
+.field-calendar .input-group > .btn {
+    min-width: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.field-calendar .icon-calendar {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E") center / contain no-repeat;
+}

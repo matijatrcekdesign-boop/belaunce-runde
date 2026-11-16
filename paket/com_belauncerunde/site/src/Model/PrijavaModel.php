@@ -2,11 +2,13 @@
 
 namespace Belaunce\Component\Belauncerunde\Site\Model;
 
+use Belaunce\Component\Belauncerunde\Administrator\Service\HtmlMailTemplate;
+use Belaunce\Component\Belauncerunde\Administrator\Service\MailPodatki;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Mail\Exception\MailDisabledException;
-use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\MVC\Model\FormModel;
 use Joomla\CMS\Uri\Uri;
 use PHPMailer\PHPMailer\Exception as phpmailerException;
@@ -52,15 +54,19 @@ class PrijavaModel extends FormModel
         $params = ComponentHelper::getParams('com_belauncerunde');
 
         try {
-            $predloga = new MailTemplate('com_belauncerunde.prijava', $app->getLanguage()->getTag());
+            $predloga = new HtmlMailTemplate('com_belauncerunde.prijava', $app->getLanguage()->getTag());
+            $veljavnost = (int) $params->get('veljavnost_min', 15);
             $predloga->addTemplateData([
                 'IME' => (string) $clan->ime,
                 'POVEZAVA' => Uri::root() . 'index.php?option=com_belauncerunde&view=povezava&zeton=' . $surovi,
-                'VELJAVNOST' => (int) $params->get('veljavnost_min', 15),
+                'VELJAVNOST' => $veljavnost,
                 'SITENAME' => (string) $app->get('sitename'),
+                // HTML predloga (naloga 30): absolutni naslov za logotip in predglavno besedilo.
+                'SITEURL' => MailPodatki::siteUrl(),
+                'PREDGLAVA' => Text::sprintf('COM_BELAUNCERUNDE_MAIL_PREDGLAVA_PRIJAVA', $veljavnost),
             ]);
             // Admin lahko predlogo spremeni v HTML; osebne vrednosti naj tudi takrat ostanejo ubežane.
-            $predloga->addUnsafeTags(['IME', 'POVEZAVA', 'SITENAME']);
+            $predloga->addUnsafeTags(['IME', 'POVEZAVA', 'SITENAME', 'SITEURL', 'PREDGLAVA']);
             $predloga->addRecipient((string) $clan->email, (string) $clan->ime);
 
             if (!$predloga->send()) {

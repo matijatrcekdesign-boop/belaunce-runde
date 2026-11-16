@@ -79,7 +79,10 @@ class MailService
                 'POVEZAVA' => $povezava, 'SITENAME' => (string) $app->get('sitename'),
             ];
             $predloga->addTemplateData($podatki);
-            $predloga->addUnsafeTags(array_keys($podatki));
+            // HTML predloga (naloga 30): javni podatki runde; ime udeleženca ostane po D63.
+            $html = MailPodatki::runda($rundaId, $jezik);
+            $predloga->addTemplateData($html);
+            $predloga->addUnsafeTags(array_merge(array_keys($podatki), array_keys($html)));
             $predloga->addRecipient($email);
             $uspeh = (bool) $predloga->send();
         } catch (\Throwable $napaka) {
@@ -175,14 +178,21 @@ class MailService
             $lokalni = new \DateTimeImmutable(CasHelper::izUtc($termin), new \DateTimeZone('UTC'));
             $zacetek = $lokalni->format($jezik->_('COM_BELAUNCERUNDE_DATUM_OBLIKA'));
             $spremembe = [];
+            // HTML različica (naloga 30): isti seznam kot elementi bloka {SPREMEMBE}…{/SPREMEMBE}.
+            $htmlSpremembe = [];
+            $htmlRunda = MailPodatki::runda($rundaId, $jezik, $termin);
 
             // Sestavljamo samo dejansko spremenjena vključena polja, ne celotnega povzetka.
             if (\in_array('zacetek', $polja, true)) {
                 $spremembe[] = sprintf($jezik->_('COM_BELAUNCERUNDE_MAIL_NOV_ZACETEK'), $zacetek);
+                $htmlSpremembe[] = ['NAZIV' => $jezik->_('COM_BELAUNCERUNDE_MAIL_HTML_NOV_ZACETEK'),
+                    'VREDNOST' => MailPodatki::kdaj($termin, $jezik)];
             }
 
             if (\in_array('lokacija', $polja, true)) {
                 $spremembe[] = sprintf($jezik->_('COM_BELAUNCERUNDE_MAIL_NOVA_LOKACIJA'), trim((string) $runda->lokacija));
+                $htmlSpremembe[] = ['NAZIV' => $jezik->_('COM_BELAUNCERUNDE_MAIL_HTML_NOVA_LOKACIJA'),
+                    'VREDNOST' => trim((string) $runda->lokacija)];
             }
 
             $povezava = Route::link('site', 'index.php?option=com_belauncerunde&view='
@@ -193,6 +203,7 @@ class MailService
             foreach ($prejemniki as $email => $gostje) {
                 try {
                     $odjave = [];
+                    $htmlOdjave = [];
 
                     // En naslov lahko pripada več gostom ali tudi vodji: pošljemo en mail
                     // z odjavnimi povezavami vseh pripadajočih gostov, brez njihovih imen.
@@ -209,6 +220,7 @@ class MailService
                             $url = Route::link('site', 'index.php?option=com_belauncerunde&view=odjavagosta&zeton='
                                 . $surovi, false, Route::TLS_IGNORE, true);
                             $odjave[] = sprintf($jezik->_('COM_BELAUNCERUNDE_MAIL_ODJAVA_GOSTA'), $url);
+                            $htmlOdjave[] = ['URL' => $url];
                         }
                     }
 
@@ -220,8 +232,13 @@ class MailService
                         'SPREMEMBE' => implode("\n", $spremembe), 'POVEZAVA' => $povezava,
                         'ODJAVA' => implode("\n\n", $odjave), 'SITENAME' => (string) $app->get('sitename'),
                     ];
-                    $predloga->addTemplateData($podatki);
-                    $predloga->addUnsafeTags(array_keys($podatki));
+                    // Besedilna različica dobi nespremenjene nize (plain_data), HTML pa bloka kot sezname:
+                    // prazen seznam (član, vodja, brez sprememb) Joomla nadomesti s praznim nizom.
+                    $predloga->addTemplateData($podatki, true);
+                    $predloga->addTemplateData(array_merge($podatki, $htmlRunda, [
+                        'SPREMEMBE' => $htmlSpremembe, 'ODJAVA' => $htmlOdjave,
+                    ]));
+                    $predloga->addUnsafeTags(array_merge(array_keys($podatki), array_keys($htmlRunda), MailPodatki::OZNAKE_BLOKOV));
                     $predloga->addRecipient($email);
 
                     if (!$predloga->send()) {

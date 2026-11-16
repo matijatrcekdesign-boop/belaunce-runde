@@ -3,12 +3,13 @@
 namespace Belaunce\Component\Belauncerunde\Site\Model;
 
 use Belaunce\Component\Belauncerunde\Administrator\Helper\CasHelper;
+use Belaunce\Component\Belauncerunde\Administrator\Service\HtmlMailTemplate;
+use Belaunce\Component\Belauncerunde\Administrator\Service\MailPodatki;
 use Belaunce\Component\Belauncerunde\Site\Helper\GostCaptchaHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
-use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\MVC\Model\FormModel;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\User\User;
@@ -232,15 +233,22 @@ class GostModel extends FormModel
             $app = Factory::getApplication();
             $runda = $app->bootComponent('com_belauncerunde')->getMVCFactory()->createModel('Runda', 'Site', [])->getItem($rundaId);
             $lokalni = new \DateTimeImmutable(CasHelper::izUtc($runda->zacetek), new \DateTimeZone('UTC'));
-            $predloga = new MailTemplate('com_belauncerunde.gost_potrditev', $app->getLanguage()->getTag());
+            $predloga = new HtmlMailTemplate('com_belauncerunde.gost_potrditev', $app->getLanguage()->getTag());
+            $odjava = Route::_('index.php?option=com_belauncerunde&view=odjavagosta&zeton=' . $surovi, false, Route::TLS_IGNORE, true);
             $predloga->addTemplateData([
                 'IME' => $ime, 'RUNDA' => $runda->naslov,
                 'ZACETEK' => $lokalni->format(Text::_('COM_BELAUNCERUNDE_DATUM_OBLIKA')),
                 'LOKACIJA' => $runda->lokacija, 'VODJA' => (string) ($runda->vodja_ime ?? ''),
-                'POVEZAVA' => Route::_('index.php?option=com_belauncerunde&view=odjavagosta&zeton=' . $surovi, false, Route::TLS_IGNORE, true),
+                'POVEZAVA' => $odjava,
                 'SITENAME' => (string) $app->get('sitename'),
             ]);
-            $predloga->addUnsafeTags(['IME', 'RUNDA', 'ZACETEK', 'LOKACIJA', 'VODJA', 'POVEZAVA', 'SITENAME']);
+            // HTML predloga (naloga 30): javni podatki runde, gumb na rundo in blok odjave z enim elementom.
+            $predloga->addTemplateData(MailPodatki::runda($rundaId, $app->getLanguage()) + [
+                'URL_RUNDE' => Route::_('index.php?option=com_belauncerunde&view=runda&id=' . $rundaId, false, Route::TLS_IGNORE, true),
+                'ODJAVA' => [['URL' => $odjava]],
+            ]);
+            $predloga->addUnsafeTags(array_merge(['IME', 'RUNDA', 'ZACETEK', 'LOKACIJA', 'VODJA', 'POVEZAVA', 'SITENAME', 'URL_RUNDE'],
+                MailPodatki::OZNAKE, MailPodatki::OZNAKE_BLOKOV));
             $predloga->addRecipient($email, $ime);
 
             if ($predloga->send()) {

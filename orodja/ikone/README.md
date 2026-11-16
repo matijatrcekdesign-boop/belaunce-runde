@@ -10,3 +10,13 @@ Iz njiju so zgrajeni (naloga 26):
 - `og-runde.png` (1200 × 630) – logotip, RUNDE (Lexend 800), opis (Archivo), modra spodnja vrstica
 
 Barve in pisave po canvasu videza 0.19.0.
+
+## Logotip za maile (naloga 30)
+
+- `paket/com_belauncerunde/media/images/logo-mail.png` – 600 px širok PNG iz `logo.svg`, **bela podlaga zapečena**
+  (ne prozorna, sicer ga temni način Outlooka/Gmaila skrije); v mailu prikazan pri širini 200 px.
+- Ukaz (Node + Playwright s Chromium, kot je v razvojnem okolju):
+
+  ```bash
+  node orodja/ikone/logo-mail.js
+  ```

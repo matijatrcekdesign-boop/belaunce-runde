@@ -25,6 +25,28 @@ while IFS= read -r file; do
     done < <(sed -n 's:.*<version>\([^<][^<]*\)</version>.*:\1:p' "$file")
 done < <(find paket -name '*.xml' -print; printf '%s\n' posodobitve.xml)
 
+# joomla.asset.json: lokalne datoteke (CSS/JS) imajo izrecno verzijo paketa. Joomla jo doda v URL (?X.Y.Z),
+# zato brskalniki in nameščena aplikacija po posodobitvi naložijo nove datoteke. "auto" ne zadošča:
+# Joomla takrat uporabi globalno oznako medijev, ki se ob namestitvi paketa ne spremeni (0.20.2/0.20.3).
+ASSET_JSON="paket/com_belauncerunde/media/joomla.asset.json"
+if ! python3 - "$ASSET_JSON" "$VERSION" <<'PY'
+import json, sys
+pot, verzija = sys.argv[1], sys.argv[2]
+d = json.load(open(pot, encoding="utf-8"))
+napake = []
+if d.get("version") != verzija:
+    napake.append(f"vrhnja verzija {d.get('version')}")
+for a in d.get("assets", []):
+    if not a.get("uri", "").startswith("http") and a.get("version") != verzija:
+        napake.append(f"{a.get('name')}: {a.get('version')}")
+if napake:
+    print("Napaka: joomla.asset.json ne ustreza verziji " + verzija + ": " + "; ".join(napake), file=sys.stderr)
+    sys.exit(1)
+PY
+then
+    exit 1
+fi
+
 echo "Preverjanje verzij: OK"
 
 if command -v php >/dev/null 2>&1; then

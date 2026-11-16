@@ -4,6 +4,13 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 
 ## [Neizdano]
 
+## [0.20.4] - 2026-11-16
+### Popravljeno
+- CSS in JS komponente imajo v `joomla.asset.json` izrecno verzijo paketa (URL `?0.20.4`) namesto `auto`.
+  Joomla pri `auto` uporabi globalno oznako medijev, ki se ob namestitvi paketa ne spremeni, zato je
+  popravek koledarja (0.20.2) ostal v predpomnilniku. `orodja/gradnja.sh` zdaj preveri, da se verzije
+  v `joomla.asset.json` ujemajo z verzijo paketa.
+
 ## [0.20.3] - 2026-11-16
 ### Popravljeno
 - CSS in JS komponente (`site.css`, `deli.js`, `obvestila.js`, `namesti.js`) imajo v `joomla.asset.json`

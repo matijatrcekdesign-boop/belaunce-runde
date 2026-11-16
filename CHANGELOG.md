@@ -4,6 +4,20 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 
 ## [Neizdano]
 
+## [0.21.0] - 2026-11-16
+### Dodano
+- **Oblikovani (HTML) maili** (naloga 30) za vseh 5 mailov komponente (prijava, potrdilo gostu, nova prijava
+  vodji, sprememba, odpoved) v enotnem videzu Belaunce: logotip, kartica runde z oznakama tipa in težavnosti,
+  modri gumb, temna noga. Postavitev s tabelami in inline slogi, VML gumb in „ghost table“ za Outlook (Word),
+  brez spletnih pisav, SVG in base64 slik; vsak mail < 10 KB.
+- HTML se pošlje skupaj z nespremenjeno besedilno različico (multipart/alternative), ne glede na globalno
+  obliko pošte v com_mails in brez Joomline postavitve maila (naš HTML je celoten dokument).
+- Logotip za maile `media/images/logo-mail.png` (600 px, bela podlaga) iz vektorja; nove oznake predlog
+  (SITEURL, NASLOV, DAN, DATUM, URA, LOKACIJA, DOLZINA, VODJA, TIP, TEZAVNOST, barve, PREDGLAVA, URL_RUNDE)
+  in bloka `{SPREMEMBE}…{/SPREMEMBE}`, `{ODJAVA}…{/ODJAVA}`.
+- Posodobitev napolni HTML samo v predlogah, kjer je prazen (ročno urejen HTML ostane); besedila ostanejo.
+- Razvojni predogled `orodja/maili/predogled.php` (ni v paketu).
+
 ## [0.20.4] - 2026-11-16
 ### Popravljeno
 - CSS in JS komponente imajo v `joomla.asset.json` izrecno verzijo paketa (URL `?0.20.4`) namesto `auto`.

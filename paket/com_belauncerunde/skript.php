@@ -451,6 +451,100 @@ class Com_BelauncerundeInstallerScript
         }
 
         $this->pripraviPredlogoNovePrijave();
+        $this->pripraviHtmlPredloge();
+    }
+
+    /**
+     * Naloga 30: HTML različice vseh petih predlog (sl-SI in en-GB) in nove oznake v urejevalniku com_mails.
+     *
+     * Za vsako predlogo zagotovi jezikovni vrstici sl-SI/en-GB (kopija vrstice '' s praznim htmlbody),
+     * nato za '', sl-SI in en-GB nastavi htmlbody SAMO, če je prazen (adminov HTML ostane), in dopolni
+     * seznam oznak v params. Besedilnega body ne spreminja. Idempotentno: ponovni zagon ne spremeni ničesar.
+     *
+     * @return  void
+     */
+    private function pripraviHtmlPredloge(): void
+    {
+        $baza = Factory::getContainer()->get(DatabaseInterface::class);
+        $mapa = JPATH_ADMINISTRATOR . '/components/com_belauncerunde/mail';
+        // Nove oznake HTML predlog (enak seznam kot MailPodatki::OZNAKE; razredi komponente med namestitvijo
+        // še niso nujno v samodejnem nalagalniku, zato je seznam tu zapisan izrecno).
+        $runda = ['SITEURL', 'NASLOV', 'DAN', 'DATUM', 'URA', 'LOKACIJA', 'DOLZINA', 'VODJA', 'TIP', 'TIP_BARVA',
+            'TIP_BARVA_BESEDILA', 'TEZAVNOST', 'TEZAVNOST_BARVA', 'TEZAVNOST_BARVA_BESEDILA', 'PREDGLAVA'];
+        $oznake = [
+            'com_belauncerunde.prijava'         => ['SITEURL', 'PREDGLAVA'],
+            'com_belauncerunde.gost_potrditev'  => array_merge($runda, ['URL_RUNDE', 'ODJAVA']),
+            'com_belauncerunde.nova_prijava'    => $runda,
+            'com_belauncerunde.runda_sprememba' => $runda,
+            'com_belauncerunde.runda_odpoved'   => $runda,
+        ];
+
+        foreach ($oznake as $kljuc => $nove) {
+            $html = [
+                'sl' => (string) @file_get_contents($mapa . '/' . $kljuc . '.html'),
+                'en' => (string) @file_get_contents($mapa . '/en-GB/' . $kljuc . '.html'),
+            ];
+
+            if ($html['sl'] === '' || $html['en'] === '') {
+                throw new \RuntimeException('COM_BELAUNCERUNDE_INSTALL_MAIL_NAPAKA');
+            }
+
+            // Jezikovni vrstici s praznim htmlbody, da ju spodaj napolnimo s pravim jezikom.
+            foreach (['sl-SI', 'en-GB'] as $jezik) {
+                $poizvedba = $baza->createQuery()->select('COUNT(*)')->from($baza->quoteName('#__mail_templates'))
+                    ->where('template_id = :kljuc')->where('language = :jezik')
+                    ->bind(':kljuc', $kljuc, ParameterType::STRING)->bind(':jezik', $jezik, ParameterType::STRING);
+
+                if ((int) $baza->setQuery($poizvedba)->loadResult() > 0) {
+                    continue;
+                }
+
+                $sql = 'INSERT INTO #__mail_templates'
+                    . ' (template_id, language, subject, body, htmlbody, attachments, params, extension)'
+                    . " SELECT template_id, :jezik, subject, body, '', attachments, params, extension"
+                    . " FROM #__mail_templates WHERE template_id = :kljuc AND language = ''";
+                $poizvedba = $baza->createQuery()->setQuery($sql)
+                    ->bind(':jezik', $jezik, ParameterType::STRING)->bind(':kljuc', $kljuc, ParameterType::STRING);
+                $baza->setQuery($poizvedba)->execute();
+            }
+
+            $poizvedba = $baza->createQuery()->select($baza->quoteName(['language', 'htmlbody', 'params']))
+                ->from($baza->quoteName('#__mail_templates'))->where('template_id = :kljuc')
+                ->bind(':kljuc', $kljuc, ParameterType::STRING);
+
+            foreach ($baza->setQuery($poizvedba)->loadObjectList() as $vrstica) {
+                $jezik = (string) $vrstica->language;
+
+                if (!\in_array($jezik, ['', 'sl-SI', 'en-GB'], true)) {
+                    continue;
+                }
+
+                $params = new Registry((string) ($vrstica->params ?: '{}'));
+                $obstojece = array_values(array_map('strval', (array) $params->get('tags', [])));
+                $vse = array_values(array_unique(array_merge($obstojece, $nove)));
+                $prazen = trim((string) $vrstica->htmlbody) === '';
+
+                if (!$prazen && $vse === $obstojece) {
+                    continue;
+                }
+
+                $params->set('tags', $vse);
+                $paramsJson = $params->toString();
+                // Vrstica '' je rezerva za vse jezike; stran je slovenska, zato dobi slovenski HTML.
+                $htmlbody = $prazen ? $html[$jezik === 'en-GB' ? 'en' : 'sl'] : (string) $vrstica->htmlbody;
+                $poizvedba = $baza->createQuery()->update($baza->quoteName('#__mail_templates'))
+                    ->set($baza->quoteName('htmlbody') . ' = :htmlbody')
+                    ->set($baza->quoteName('params') . ' = :params')
+                    ->where('template_id = :kljuc')->where('language = :jezik')
+                    ->bind(':htmlbody', $htmlbody, ParameterType::STRING)
+                    ->bind(':params', $paramsJson, ParameterType::STRING)
+                    ->bind(':kljuc', $kljuc, ParameterType::STRING)
+                    ->bind(':jezik', $jezik, ParameterType::STRING);
+                $baza->setQuery($poizvedba)->execute();
+            }
+        }
+
+        Log::add('MAIL_HTML_PRIPRAVLJENO', Log::INFO, 'com_belauncerunde');
     }
 
     /** Registrira predlogo nove prijave in manjkajoča jezika brez prepisovanja sprememb. */

@@ -4,6 +4,13 @@ Vse pomembne spremembe paketa `pkg_belauncerunde`. Oblika po [Keep a Changelog](
 
 ## [Neizdano]
 
+## [0.20.3] - 2026-11-16
+### Popravljeno
+- CSS in JS komponente (`site.css`, `deli.js`, `obvestila.js`, `namesti.js`) imajo v `joomla.asset.json`
+  `"version": "auto"`: oznaka v URL-ju se spremeni ob vsaki novi datoteki, zato brskalniki in nameščena
+  aplikacija po posodobitvi takoj naložijo novo različico (popravek koledarja iz 0.20.2 je ostal v
+  predpomnilniku pod isto globalno oznako Joomle).
+
 ## [0.20.2] - 2026-11-16
 ### Popravljeno
 - Koledar v obrazcu runde: izbrani dan ni bil označen (videti je bilo, kot da ostane izbran današnji dan),

@@ -1,40 +1,60 @@
 {
   "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
   "name": "com_belauncerunde",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "assets": [
     {
       "name": "com_belauncerunde.pisave",
       "type": "style",
       "uri": "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Lexend:wght@400;500;700;800&display=swap",
-      "attributes": {"crossorigin": "anonymous"}
+      "attributes": {
+        "crossorigin": "anonymous"
+      }
     },
     {
       "name": "com_belauncerunde.site",
       "type": "style",
       "uri": "com_belauncerunde/site.css",
-      "dependencies": ["com_belauncerunde.pisave"]
+      "dependencies": [
+        "com_belauncerunde.pisave"
+      ],
+      "version": "auto"
     },
     {
       "name": "com_belauncerunde.deli",
       "type": "script",
       "uri": "com_belauncerunde/deli.js",
-      "dependencies": ["core"],
-      "attributes": {"defer": true}
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "defer": true
+      },
+      "version": "auto"
     },
     {
       "name": "com_belauncerunde.obvestila",
       "type": "script",
       "uri": "com_belauncerunde/obvestila.js",
-      "dependencies": ["core"],
-      "attributes": {"defer": true}
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "defer": true
+      },
+      "version": "auto"
     },
     {
       "name": "com_belauncerunde.namesti",
       "type": "script",
       "uri": "com_belauncerunde/namesti.js",
-      "dependencies": ["core"],
-      "attributes": {"defer": true}
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "defer": true
+      },
+      "version": "auto"
     }
   ]
 }

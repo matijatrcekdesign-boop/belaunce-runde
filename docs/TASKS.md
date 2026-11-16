@@ -39,6 +39,7 @@ Oznake: ⬜ ni začeto · 🟡 v delu · 🔍 v pregledu · ✅ združeno
 | 27 | **QA na napravah**: iOS Safari (lepljive vrstice, izbirnik datuma, PWA), Viber predogled po predpomnilniku, člani: ustvari/uredi/odpovej rundo, prijava/odjava, Moje runde. | — | 23 | ⬜ |
 | 28 | **Preusmeritve** starih `belaunce.cc/runde/...` povezav na poddomeno (Viber zgodovina). | — | — | ⬜ |
 | 29 | **GitHub Release v0.19.0** (objavljen 2026-11-12, SHA-256 preverjen) z `pkg_belauncerunde-0.19.0.zip` (da deluje posodobitveni URL v `posodobitve.xml`); odslej: gradnja + release ob vsaki verziji. | 0.19.0 | 23 | ✅ |
+| 30 | **HTML maili** — enoten oblikovan videz vseh 5 mailov (Gmail, Apple Mail in Outlook, tudi Windows/Word), besedilna različica ostane. Specifikacija `docs/naloge/NALOGA-30.md`. | 0.21.0 | 10, 20 | 📝 specifikacija |
 
 Vrstni red se lahko po dogovoru spremeni (npr. 05 pred 03), odvisnosti pa morajo ostati izpolnjene.
 
